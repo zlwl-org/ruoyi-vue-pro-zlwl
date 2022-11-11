@@ -56,6 +56,11 @@ export const DICT_TYPE = {
   PAY_ORDER_REFUND_STATUS: 'pay_order_refund_status', // 商户支付订单退款状态
   PAY_REFUND_ORDER_STATUS: 'pay_refund_order_status', // 退款订单状态
   PAY_REFUND_ORDER_TYPE: 'pay_refund_order_type', // 退款订单类别
+
+  // ========== SHOP 模块 ==========
+  DISABLE_STATUS: 'disable_status', // 禁用状态
+  SHOP_CUSTOMER_TYPE: 'shop_customer_type', // 禁用状态
+  SHOP_MEMBER_STATUS: 'shop_member_status', // 禁用状态
 }
 
 /**
