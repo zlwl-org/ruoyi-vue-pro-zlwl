@@ -52,3 +52,11 @@ export function exportBranchExcel(query) {
     responseType: 'blob'
   })
 }
+
+// 获取门店精简信息列表
+export function listSimpleBranches() {
+  return request({
+    url: '/shop/branch/list-all-simple',
+    method: 'get'
+  })
+}

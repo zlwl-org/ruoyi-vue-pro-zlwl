@@ -1,31 +1,30 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch;
 
-import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.prepost.PreAuthorize;
-import io.swagger.annotations.*;
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
-
-import javax.validation.constraints.*;
-import javax.validation.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.IOException;
-
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
-import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
-
 import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchDO;
 import cn.iocoder.yudao.module.shop.convert.branch.BranchConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchDO;
 import cn.iocoder.yudao.module.shop.service.branch.BranchService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Api(tags = "管理后台 - 门店")
 @RestController
@@ -99,7 +98,7 @@ public class BranchController {
     }
 
     @GetMapping("/list-all-simple")
-    @ApiOperation(value = "获取用户精简信息列表", notes = "只包含被开启的用户，主要用于前端的下拉选项")
+    @ApiOperation(value = "获取门店精简信息列表", notes = "只包含被开启的门店，主要用于前端的下拉选项")
     public CommonResult<List<BranchSimpleRespVO>>  getSimpleBranches() {
         List<BranchDO> list = branchService.getBranchesByStatus(CommonStatusEnum.ENABLE.getStatus());
         return success(BranchConvert.INSTANCE.convertList03(list));
