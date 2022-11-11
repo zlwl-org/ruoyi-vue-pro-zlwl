@@ -25,4 +25,7 @@ public interface ErrorCodeConstants {
     // ========== 会员充值套餐 TODO 补充编号 ==========
     ErrorCode RECHARGE_NOT_EXISTS = new ErrorCode(1022005001, "会员充值套餐不存在");
 
+    // ========== 充值订单 TODO 补充编号 ==========
+    ErrorCode RECHARGE_ORDER_NOT_EXISTS = new ErrorCode(1022006001, "充值订单不存在");
+
 }

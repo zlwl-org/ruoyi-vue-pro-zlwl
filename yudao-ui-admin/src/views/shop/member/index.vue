@@ -13,9 +13,7 @@
         <el-input v-model="queryParams.mobile" placeholder="请输入手机号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="销售员" prop="salesman">
-        <el-select v-model="queryParams.salesman" placeholder="请选择销售员" clearable style="width: 100%">
-          <el-option v-for="item in users" :key="parseInt(item.id)" :label="item.nickname" :value="parseInt(item.id)" />
-        </el-select>
+        <el-input v-model="queryParams.salesman" placeholder="请输入销售员" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="客户类型" prop="type">
         <el-select v-model="queryParams.type" placeholder="请选择客户类型" clearable size="small">
@@ -29,11 +27,8 @@
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="店铺" prop="branchId">
-        <el-select v-model="queryParams.branchId" placeholder="请选择店铺" clearable style="width: 100%">
-          <el-option v-for="item in branches" :key="parseInt(item.id)" :label="item.name" :value="parseInt(item.id)" />
-        </el-select>
-
+      <el-form-item label="店铺编号" prop="branchId">
+        <el-input v-model="queryParams.branchId" placeholder="请输入店铺编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
@@ -64,7 +59,7 @@
       <el-table-column label="姓名" align="center" prop="name" />
       <el-table-column label="昵称" align="center" prop="nickname" />
       <el-table-column label="手机号" align="center" prop="mobile" />
-      <el-table-column label="销售员" :formatter="userNicknameFormat" align="center" prop="salesman" />
+      <el-table-column label="销售员" align="center" prop="salesman" />
       <el-table-column label="客户类型" align="center" prop="type">
         <template slot-scope="scope">
           <dict-tag :type="DICT_TYPE.SHOP_CUSTOMER_TYPE" :value="scope.row.type" />
@@ -78,7 +73,7 @@
       <el-table-column label="积分" align="center" prop="point" />
       <el-table-column label="余额" align="center" prop="balance" />
       <el-table-column label="成长值" align="center" prop="growth" />
-<!--      <el-table-column label="店铺编号" align="center" prop="branchId" />-->
+      <el-table-column label="店铺编号" align="center" prop="branchId" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -110,9 +105,7 @@
           <el-input v-model="form.mobile" placeholder="请输入手机号" />
         </el-form-item>
         <el-form-item label="销售员" prop="salesman">
-          <el-select v-model="form.salesman" placeholder="请选择销售员" clearable style="width: 100%">
-            <el-option v-for="item in users" :key="parseInt(item.id)" :label="item.nickname" :value="parseInt(item.id)" />
-          </el-select>
+          <el-input v-model="form.salesman" placeholder="请输入销售员" />
         </el-form-item>
         <el-form-item label="客户类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择客户类型">
@@ -126,9 +119,9 @@
                       :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-<!--        <el-form-item label="店铺" prop="branchId">-->
-<!--          <el-input v-model="form.branchId" placeholder="请输入店铺" />-->
-<!--        </el-form-item>-->
+        <el-form-item label="店铺编号" prop="branchId">
+          <el-input v-model="form.branchId" placeholder="请输入店铺编号" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -140,9 +133,6 @@
 
 <script>
 import { createMember, updateMember, deleteMember, getMember, getMemberPage, exportMemberExcel } from "@/api/shop/member";
-import { listSimpleUsers } from '@/api/system/user'
-import { CommonStatusEnum } from '@/utils/constants'
-import { listSimpleBranches } from '@/api/shop/branch'
 
 export default {
   name: "Member",
@@ -179,9 +169,6 @@ export default {
       },
       // 表单参数
       form: {},
-      // 用户下拉列表
-      users: [],
-      branches: [],
       // 表单校验
       rules: {
         mobile: [{ required: true, message: "手机号不能为空", trigger: "blur" }],
@@ -191,13 +178,6 @@ export default {
   },
   created() {
     this.getList();
-    // 获得用户列表
-    listSimpleUsers().then(response => {
-      this.users = response.data;
-    });
-    listSimpleBranches().then(response =>{
-      this.branches = response.data
-    });
   },
   methods: {
     /** 查询列表 */
@@ -223,23 +203,11 @@ export default {
         nickname: undefined,
         mobile: undefined,
         salesman: undefined,
-        type: 1,
-        status: CommonStatusEnum.ENABLE,
+        type: undefined,
+        status: undefined,
         branchId: undefined,
       };
       this.resetForm("form");
-    },
-    // 用户昵称展示
-    userNicknameFormat(row, column) {
-      if (!row.salesman) {
-        return '未设置';
-      }
-      for (const user of this.users) {
-        if (row.salesman === user.id) {
-          return user.nickname;
-        }
-      }
-      return '未知【' + row.salesman + '】';
     },
     /** 搜索按钮操作 */
     handleQuery() {
