@@ -25,7 +25,7 @@ public class ShopMemberBaseVO {
 
     @ApiModelProperty(value = "销售员", required = true)
     @NotNull(message = "销售员不能为空")
-    private String salesman;
+    private Long salesman;
 
     @ApiModelProperty(value = "客户类型")
     private Integer type;

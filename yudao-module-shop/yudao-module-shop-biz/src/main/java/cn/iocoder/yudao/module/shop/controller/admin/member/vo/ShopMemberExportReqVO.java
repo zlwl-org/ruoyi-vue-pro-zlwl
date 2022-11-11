@@ -22,7 +22,7 @@ public class ShopMemberExportReqVO {
     private String mobile;
 
     @ApiModelProperty(value = "销售员")
-    private String salesman;
+    private Long salesman;
 
     @ApiModelProperty(value = "客户类型")
     private Integer type;

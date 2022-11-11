@@ -31,7 +31,7 @@ public class ShopMemberExcelVO {
     private String mobile;
 
     @ExcelProperty("销售员")
-    private String salesman;
+    private Long salesman;
 
     @ExcelProperty(value = "客户类型", converter = DictConvert.class)
     @DictFormat("shop_customer_type") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中

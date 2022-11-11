@@ -41,7 +41,7 @@ public class ShopMemberDO extends BaseDO {
     /**
      * 销售员
      */
-    private String salesman;
+    private Long salesman;
     /**
      * 客户类型
      *
