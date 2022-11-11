@@ -1,11 +1,12 @@
 package cn.iocoder.yudao.module.shop.controller.admin.recharge.vo;
 
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
+import java.util.*;
+    import java.math.BigDecimal;
+import io.swagger.annotations.*;
+import javax.validation.constraints.*;
 
-@ApiModel("管理后台 - 会员充值套餐创建 Request VO")
+@ApiModel("管理后台 - 充值活动创建 Request VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)

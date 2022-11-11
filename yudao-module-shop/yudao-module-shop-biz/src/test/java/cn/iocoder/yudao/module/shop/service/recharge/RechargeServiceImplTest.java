@@ -109,7 +109,6 @@ public class RechargeServiceImplTest extends BaseDbUnitTest {
        // mock 数据
        RechargeDO dbRecharge = randomPojo(RechargeDO.class, o -> { // 等会查询到
            o.setName(null);
-           o.setFaceValue(null);
            o.setPrice(null);
            o.setStatus(null);
            o.setCreateTime(null);
@@ -117,8 +116,6 @@ public class RechargeServiceImplTest extends BaseDbUnitTest {
        rechargeMapper.insert(dbRecharge);
        // 测试 name 不匹配
        rechargeMapper.insert(cloneIgnoreId(dbRecharge, o -> o.setName(null)));
-       // 测试 faceValue 不匹配
-       rechargeMapper.insert(cloneIgnoreId(dbRecharge, o -> o.setFaceValue(null)));
        // 测试 price 不匹配
        rechargeMapper.insert(cloneIgnoreId(dbRecharge, o -> o.setPrice(null)));
        // 测试 status 不匹配
@@ -128,7 +125,6 @@ public class RechargeServiceImplTest extends BaseDbUnitTest {
        // 准备参数
        RechargePageReqVO reqVO = new RechargePageReqVO();
        reqVO.setName(null);
-       reqVO.setFaceValue(null);
        reqVO.setPrice(null);
        reqVO.setStatus(null);
        reqVO.setCreateTime((new Date[]{}));
@@ -147,7 +143,6 @@ public class RechargeServiceImplTest extends BaseDbUnitTest {
        // mock 数据
        RechargeDO dbRecharge = randomPojo(RechargeDO.class, o -> { // 等会查询到
            o.setName(null);
-           o.setFaceValue(null);
            o.setPrice(null);
            o.setStatus(null);
            o.setCreateTime(null);
@@ -155,8 +150,6 @@ public class RechargeServiceImplTest extends BaseDbUnitTest {
        rechargeMapper.insert(dbRecharge);
        // 测试 name 不匹配
        rechargeMapper.insert(cloneIgnoreId(dbRecharge, o -> o.setName(null)));
-       // 测试 faceValue 不匹配
-       rechargeMapper.insert(cloneIgnoreId(dbRecharge, o -> o.setFaceValue(null)));
        // 测试 price 不匹配
        rechargeMapper.insert(cloneIgnoreId(dbRecharge, o -> o.setPrice(null)));
        // 测试 status 不匹配
@@ -166,7 +159,6 @@ public class RechargeServiceImplTest extends BaseDbUnitTest {
        // 准备参数
        RechargeExportReqVO reqVO = new RechargeExportReqVO();
        reqVO.setName(null);
-       reqVO.setFaceValue(null);
        reqVO.setPrice(null);
        reqVO.setStatus(null);
        reqVO.setCreateTime((new Date[]{}));

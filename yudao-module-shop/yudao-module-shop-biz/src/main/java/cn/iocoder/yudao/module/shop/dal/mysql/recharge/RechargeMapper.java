@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
 
 /**
- * 会员充值套餐 Mapper
+ * 充值活动 Mapper
  *
  * @author ZLWL
  */
@@ -20,7 +20,6 @@ public interface RechargeMapper extends BaseMapperX<RechargeDO> {
     default PageResult<RechargeDO> selectPage(RechargePageReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<RechargeDO>()
                 .likeIfPresent(RechargeDO::getName, reqVO.getName())
-                .eqIfPresent(RechargeDO::getFaceValue, reqVO.getFaceValue())
                 .eqIfPresent(RechargeDO::getPrice, reqVO.getPrice())
                 .eqIfPresent(RechargeDO::getStatus, reqVO.getStatus())
                 .betweenIfPresent(RechargeDO::getCreateTime, reqVO.getCreateTime())
@@ -30,7 +29,6 @@ public interface RechargeMapper extends BaseMapperX<RechargeDO> {
     default List<RechargeDO> selectList(RechargeExportReqVO reqVO) {
         return selectList(new LambdaQueryWrapperX<RechargeDO>()
                 .likeIfPresent(RechargeDO::getName, reqVO.getName())
-                .eqIfPresent(RechargeDO::getFaceValue, reqVO.getFaceValue())
                 .eqIfPresent(RechargeDO::getPrice, reqVO.getPrice())
                 .eqIfPresent(RechargeDO::getStatus, reqVO.getStatus())
                 .betweenIfPresent(RechargeDO::getCreateTime, reqVO.getCreateTime())

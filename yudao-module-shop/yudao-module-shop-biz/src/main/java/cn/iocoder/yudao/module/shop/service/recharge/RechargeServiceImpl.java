@@ -16,7 +16,7 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
 
 /**
- * 会员充值套餐 Service 实现类
+ * 充值活动 Service 实现类
  *
  * @author ZLWL
  */

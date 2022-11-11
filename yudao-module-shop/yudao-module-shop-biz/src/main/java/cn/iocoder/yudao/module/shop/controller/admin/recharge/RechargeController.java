@@ -26,7 +26,7 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
 import cn.iocoder.yudao.module.shop.convert.recharge.RechargeConvert;
 import cn.iocoder.yudao.module.shop.service.recharge.RechargeService;
 
-@Api(tags = "管理后台 - 会员充值套餐")
+@Api(tags = "管理后台 - 充值活动")
 @RestController
 @RequestMapping("/shop/recharge")
 @Validated
@@ -36,14 +36,14 @@ public class RechargeController {
     private RechargeService rechargeService;
 
     @PostMapping("/create")
-    @ApiOperation("创建会员充值套餐")
+    @ApiOperation("创建充值活动")
     @PreAuthorize("@ss.hasPermission('shop:recharge:create')")
     public CommonResult<Long> createRecharge(@Valid @RequestBody RechargeCreateReqVO createReqVO) {
         return success(rechargeService.createRecharge(createReqVO));
     }
 
     @PutMapping("/update")
-    @ApiOperation("更新会员充值套餐")
+    @ApiOperation("更新充值活动")
     @PreAuthorize("@ss.hasPermission('shop:recharge:update')")
     public CommonResult<Boolean> updateRecharge(@Valid @RequestBody RechargeUpdateReqVO updateReqVO) {
         rechargeService.updateRecharge(updateReqVO);
@@ -51,7 +51,7 @@ public class RechargeController {
     }
 
     @DeleteMapping("/delete")
-    @ApiOperation("删除会员充值套餐")
+    @ApiOperation("删除充值活动")
     @ApiImplicitParam(name = "id", value = "编号", required = true, dataTypeClass = Long.class)
     @PreAuthorize("@ss.hasPermission('shop:recharge:delete')")
     public CommonResult<Boolean> deleteRecharge(@RequestParam("id") Long id) {
@@ -60,7 +60,7 @@ public class RechargeController {
     }
 
     @GetMapping("/get")
-    @ApiOperation("获得会员充值套餐")
+    @ApiOperation("获得充值活动")
     @ApiImplicitParam(name = "id", value = "编号", required = true, example = "1024", dataTypeClass = Long.class)
     @PreAuthorize("@ss.hasPermission('shop:recharge:query')")
     public CommonResult<RechargeRespVO> getRecharge(@RequestParam("id") Long id) {
@@ -69,7 +69,7 @@ public class RechargeController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("获得会员充值套餐列表")
+    @ApiOperation("获得充值活动列表")
     @ApiImplicitParam(name = "ids", value = "编号列表", required = true, example = "1024,2048", dataTypeClass = List.class)
     @PreAuthorize("@ss.hasPermission('shop:recharge:query')")
     public CommonResult<List<RechargeRespVO>> getRechargeList(@RequestParam("ids") Collection<Long> ids) {
@@ -78,7 +78,7 @@ public class RechargeController {
     }
 
     @GetMapping("/page")
-    @ApiOperation("获得会员充值套餐分页")
+    @ApiOperation("获得充值活动分页")
     @PreAuthorize("@ss.hasPermission('shop:recharge:query')")
     public CommonResult<PageResult<RechargeRespVO>> getRechargePage(@Valid RechargePageReqVO pageVO) {
         PageResult<RechargeDO> pageResult = rechargeService.getRechargePage(pageVO);
@@ -86,7 +86,7 @@ public class RechargeController {
     }
 
     @GetMapping("/export-excel")
-    @ApiOperation("导出会员充值套餐 Excel")
+    @ApiOperation("导出充值活动 Excel")
     @PreAuthorize("@ss.hasPermission('shop:recharge:export')")
     @OperateLog(type = EXPORT)
     public void exportRechargeExcel(@Valid RechargeExportReqVO exportReqVO,
@@ -94,7 +94,7 @@ public class RechargeController {
         List<RechargeDO> list = rechargeService.getRechargeList(exportReqVO);
         // 导出 Excel
         List<RechargeExcelVO> datas = RechargeConvert.INSTANCE.convertList02(list);
-        ExcelUtils.write(response, "会员充值套餐.xls", "数据", RechargeExcelVO.class, datas);
+        ExcelUtils.write(response, "充值活动.xls", "数据", RechargeExcelVO.class, datas);
     }
 
 }

@@ -23,7 +23,7 @@ public interface ErrorCodeConstants {
     ErrorCode CATEGORY_NOT_EXISTS = new ErrorCode(1022004001, "商品分类不存在");
 
     // ========== 会员充值套餐 TODO 补充编号 ==========
-    ErrorCode RECHARGE_NOT_EXISTS = new ErrorCode(1022005001, "会员充值套餐不存在");
+    ErrorCode RECHARGE_NOT_EXISTS = new ErrorCode(1022005001, "充值活动不存在");
 
     // ========== 充值订单 TODO 补充编号 ==========
     ErrorCode RECHARGE_ORDER_NOT_EXISTS = new ErrorCode(1022006001, "充值订单不存在");

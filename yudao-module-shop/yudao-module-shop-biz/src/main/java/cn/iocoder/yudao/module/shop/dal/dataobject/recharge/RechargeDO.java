@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 
 /**
- * 会员充值套餐 DO
+ * 充值活动 DO
  *
  * @author ZLWL
  */
@@ -22,44 +22,34 @@ import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 public class RechargeDO extends BaseDO {
 
     /**
-     * 充值套餐编号
+     * 活动编号
      */
     @TableId
     private Long id;
     /**
-     * 套餐名称
+     * 名称
      */
     private String name;
     /**
-     * 面值
-     */
-    private BigDecimal faceValue;
-    /**
-     * 售价
+     * 充值金额
      */
     private BigDecimal price;
     /**
-     * 积分
+     * 赠送金额
+     */
+    private BigDecimal gift;
+    /**
+     * 赠送积分
      */
     private BigDecimal point;
     /**
-     * 成长值
+     * 赠送成长值
      */
     private BigDecimal growth;
     /**
-     * 优惠券
+     * 赠送优惠券
      */
-    private String couponId;
-    /**
-     * 不限数量
-     *
-     * 枚举 {@link TODO infra_boolean_string 对应的类}
-     */
-    private Boolean unlimited;
-    /**
-     * 发放数量
-     */
-    private Integer saleNum;
+    private String coupon;
     /**
      * 状态
      *

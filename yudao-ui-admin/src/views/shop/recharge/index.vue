@@ -3,14 +3,11 @@
 
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="套餐名称" prop="name">
-        <el-input v-model="queryParams.name" placeholder="请输入套餐名称" clearable @keyup.enter.native="handleQuery"/>
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="queryParams.name" placeholder="请输入名称" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="面值" prop="faceValue">
-        <el-input v-model="queryParams.faceValue" placeholder="请输入面值" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="售价" prop="price">
-        <el-input v-model="queryParams.price" placeholder="请输入售价" clearable @keyup.enter.native="handleQuery"/>
+      <el-form-item label="充值金额" prop="price">
+        <el-input v-model="queryParams.price" placeholder="请输入充值金额" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
@@ -43,19 +40,13 @@
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="充值套餐编号" align="center" prop="id" />
-      <el-table-column label="套餐名称" align="center" prop="name" />
-      <el-table-column label="面值" align="center" prop="faceValue" />
-      <el-table-column label="售价" align="center" prop="price" />
-      <el-table-column label="积分" align="center" prop="point" />
-      <el-table-column label="成长值" align="center" prop="growth" />
-      <el-table-column label="优惠券" align="center" prop="couponId" />
-      <el-table-column label="不限数量" align="center" prop="unlimited">
-        <template slot-scope="scope">
-          <dict-tag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="scope.row.unlimited" />
-        </template>
-      </el-table-column>
-      <el-table-column label="发放数量" align="center" prop="saleNum" />
+      <el-table-column label="活动编号" align="center" prop="id" />
+      <el-table-column label="名称" align="center" prop="name" />
+      <el-table-column label="充值金额" align="center" prop="price" />
+      <el-table-column label="赠送金额" align="center" prop="gift" />
+      <el-table-column label="赠送积分" align="center" prop="point" />
+      <el-table-column label="赠送成长值" align="center" prop="growth" />
+      <el-table-column label="赠送优惠券" align="center" prop="coupon" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :type="DICT_TYPE.DISABLE_STATUS" :value="scope.row.status" />
@@ -82,32 +73,23 @@
     <!-- 对话框(添加 / 修改) -->
     <el-dialog :title="title" :visible.sync="open" width="500px" v-dialogDrag append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="套餐名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入套餐名称" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="面值" prop="faceValue">
-          <el-input v-model="form.faceValue" placeholder="请输入面值" />
+        <el-form-item label="充值金额" prop="price">
+          <el-input v-model="form.price" placeholder="请输入充值金额" />
         </el-form-item>
-        <el-form-item label="售价" prop="price">
-          <el-input v-model="form.price" placeholder="请输入售价" />
+        <el-form-item label="赠送金额" prop="gift">
+          <el-input v-model="form.gift" placeholder="请输入赠送金额" />
         </el-form-item>
-        <el-form-item label="积分" prop="point">
-          <el-input v-model="form.point" placeholder="请输入积分" />
+        <el-form-item label="赠送积分" prop="point">
+          <el-input v-model="form.point" placeholder="请输入赠送积分" />
         </el-form-item>
-        <el-form-item label="成长值" prop="growth">
-          <el-input v-model="form.growth" placeholder="请输入成长值" />
+        <el-form-item label="赠送成长值" prop="growth">
+          <el-input v-model="form.growth" placeholder="请输入赠送成长值" />
         </el-form-item>
-        <el-form-item label="优惠券" prop="couponId">
-          <el-input v-model="form.couponId" placeholder="请输入优惠券" />
-        </el-form-item>
-        <el-form-item label="不限数量" prop="unlimited">
-          <el-radio-group v-model="form.unlimited">
-            <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.INFRA_BOOLEAN_STRING)"
-                      :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="发放数量" prop="saleNum" v-if="form.unlimited !== 'true'">
-          <el-input v-model="form.saleNum" placeholder="请输入发放数量" />
+        <el-form-item label="赠送优惠券" prop="coupon">
+          <el-input v-model="form.coupon" placeholder="请输入赠送优惠券" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -142,7 +124,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 会员充值套餐列表
+      // 充值活动列表
       list: [],
       // 弹出层标题
       title: "",
@@ -153,7 +135,6 @@ export default {
         pageNo: 1,
         pageSize: 10,
         name: null,
-        faceValue: null,
         price: null,
         status: null,
         createTime: [],
@@ -162,12 +143,11 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        name: [{ required: true, message: "套餐名称不能为空", trigger: "blur" }],
-        faceValue: [{ required: true, message: "面值不能为空", trigger: "blur" }],
-        price: [{ required: true, message: "售价不能为空", trigger: "blur" }],
-        point: [{ required: true, message: "积分不能为空", trigger: "blur" }],
-        growth: [{ required: true, message: "成长值不能为空", trigger: "blur" }],
-        unlimited: [{ required: true, message: "不限数量不能为空", trigger: "blur" }],
+        name: [{ required: true, message: "名称不能为空", trigger: "blur" }],
+        price: [{ required: true, message: "充值金额不能为空", trigger: "blur" }],
+        gift: [{ required: true, message: "赠送金额不能为空", trigger: "blur" }],
+        point: [{ required: true, message: "赠送积分不能为空", trigger: "blur" }],
+        growth: [{ required: true, message: "赠送成长值不能为空", trigger: "blur" }],
         status: [{ required: true, message: "状态不能为空", trigger: "blur" }],
       }
     };
@@ -196,13 +176,11 @@ export default {
       this.form = {
         id: undefined,
         name: undefined,
-        faceValue: undefined,
         price: undefined,
+        gift: undefined,
         point: 0,
         growth: 0,
-        couponId: undefined,
-        unlimited: "true",
-        saleNum: undefined,
+        coupon: undefined,
         status: CommonStatusEnum.ENABLE,
       };
       this.resetForm("form");
@@ -221,7 +199,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加会员充值套餐";
+      this.title = "添加充值活动";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -230,7 +208,7 @@ export default {
       getRecharge(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改会员充值套餐";
+        this.title = "修改充值活动";
       });
     },
     /** 提交按钮 */
@@ -259,7 +237,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const id = row.id;
-      this.$modal.confirm('是否确认删除会员充值套餐编号为"' + id + '"的数据项?').then(function() {
+      this.$modal.confirm('是否确认删除充值活动编号为"' + id + '"的数据项?').then(function() {
           return deleteRecharge(id);
         }).then(() => {
           this.getList();
@@ -272,11 +250,11 @@ export default {
       let params = {...this.queryParams};
       params.pageNo = undefined;
       params.pageSize = undefined;
-      this.$modal.confirm('是否确认导出所有会员充值套餐数据项?').then(() => {
+      this.$modal.confirm('是否确认导出所有充值活动数据项?').then(() => {
           this.exportLoading = true;
           return exportRechargeExcel(params);
         }).then(response => {
-          this.$download.excel(response, '会员充值套餐.xls');
+          this.$download.excel(response, '充值活动.xls');
           this.exportLoading = false;
         }).catch(() => {});
     }

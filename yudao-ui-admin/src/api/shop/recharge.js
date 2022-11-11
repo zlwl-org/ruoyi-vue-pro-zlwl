@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 创建会员充值套餐
+// 创建充值活动
 export function createRecharge(data) {
   return request({
     url: '/shop/recharge/create',
@@ -9,7 +9,7 @@ export function createRecharge(data) {
   })
 }
 
-// 更新会员充值套餐
+// 更新充值活动
 export function updateRecharge(data) {
   return request({
     url: '/shop/recharge/update',
@@ -18,7 +18,7 @@ export function updateRecharge(data) {
   })
 }
 
-// 删除会员充值套餐
+// 删除充值活动
 export function deleteRecharge(id) {
   return request({
     url: '/shop/recharge/delete?id=' + id,
@@ -26,7 +26,7 @@ export function deleteRecharge(id) {
   })
 }
 
-// 获得会员充值套餐
+// 获得充值活动
 export function getRecharge(id) {
   return request({
     url: '/shop/recharge/get?id=' + id,
@@ -34,7 +34,7 @@ export function getRecharge(id) {
   })
 }
 
-// 获得会员充值套餐分页
+// 获得充值活动分页
 export function getRechargePage(query) {
   return request({
     url: '/shop/recharge/page',
@@ -43,7 +43,7 @@ export function getRechargePage(query) {
   })
 }
 
-// 导出会员充值套餐 Excel
+// 导出充值活动 Excel
 export function exportRechargeExcel(query) {
   return request({
     url: '/shop/recharge/export-excel',

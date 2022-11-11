@@ -10,7 +10,7 @@ import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
 import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
 
 /**
- * 会员充值套餐 Convert
+ * 充值活动 Convert
  *
  * @author ZLWL
  */

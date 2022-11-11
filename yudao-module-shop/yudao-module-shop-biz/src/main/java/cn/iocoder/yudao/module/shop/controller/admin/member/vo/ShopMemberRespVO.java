@@ -1,6 +1,8 @@
 package cn.iocoder.yudao.module.shop.controller.admin.member.vo;
 
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.*;
 import io.swagger.annotations.*;
 
