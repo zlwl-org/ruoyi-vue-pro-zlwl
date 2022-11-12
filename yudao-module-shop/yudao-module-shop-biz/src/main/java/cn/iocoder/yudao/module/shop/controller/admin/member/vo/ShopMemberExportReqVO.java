@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.shop.controller.admin.member.vo;
 
 import lombok.*;
 import java.util.*;
+    import java.math.BigDecimal;
 import io.swagger.annotations.*;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import org.springframework.format.annotation.DateTimeFormat;

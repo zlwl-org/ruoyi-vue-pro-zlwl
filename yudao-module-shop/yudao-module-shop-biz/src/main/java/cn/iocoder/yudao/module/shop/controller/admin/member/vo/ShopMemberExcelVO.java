@@ -56,4 +56,7 @@ public class ShopMemberExcelVO {
     @ExcelProperty("创建时间")
     private Date createTime;
 
+    @ExcelProperty("赠送余额")
+    private BigDecimal gift;
+
 }

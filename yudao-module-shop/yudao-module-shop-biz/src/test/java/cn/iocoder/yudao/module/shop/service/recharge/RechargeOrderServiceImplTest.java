@@ -147,7 +147,7 @@ public class RechargeOrderServiceImplTest extends BaseDbUnitTest {
        reqVO.setRechargeAmount(null);
        reqVO.setPayType(null);
        reqVO.setStatus(null);
-       reqVO.setPayTime((new Date[]{}));
+//       reqVO.setPayTime((new Date[]{}));
        reqVO.setMemberId(null);
        reqVO.setOrderFrom(null);
        reqVO.setOrderFromName(null);
@@ -205,7 +205,7 @@ public class RechargeOrderServiceImplTest extends BaseDbUnitTest {
        reqVO.setRechargeAmount(null);
        reqVO.setPayType(null);
        reqVO.setStatus(null);
-       reqVO.setPayTime((new Date[]{}));
+//       reqVO.setPayTime((new Date[]{}));
        reqVO.setMemberId(null);
        reqVO.setOrderFrom(null);
        reqVO.setOrderFromName(null);

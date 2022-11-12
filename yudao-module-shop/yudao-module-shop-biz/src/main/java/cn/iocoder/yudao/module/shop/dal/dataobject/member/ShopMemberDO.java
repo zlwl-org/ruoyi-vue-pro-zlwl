@@ -70,5 +70,9 @@ public class ShopMemberDO extends BaseDO {
      * 店铺编号
      */
     private Long branchId;
+    /**
+     * 赠送余额
+     */
+    private BigDecimal gift;
 
 }

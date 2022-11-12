@@ -1,9 +1,8 @@
 package cn.iocoder.yudao.module.shop.controller.admin.member.vo;
 
 import lombok.*;
-
-import java.math.BigDecimal;
 import java.util.*;
+import java.math.BigDecimal;
 import io.swagger.annotations.*;
 
 @ApiModel("管理后台 - 会员 Response VO")
@@ -26,5 +25,8 @@ public class ShopMemberRespVO extends ShopMemberBaseVO {
 
     @ApiModelProperty(value = "创建时间", required = true)
     private Date createTime;
+
+    @ApiModelProperty(value = "赠送余额", required = true)
+    private BigDecimal gift;
 
 }
