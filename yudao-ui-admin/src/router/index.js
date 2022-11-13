@@ -168,7 +168,18 @@ export const constantRoutes = [
         meta: {title: '流程详情', activeMenu: '/bpm/task/my'}
       }
     ]
-  }
+  },{
+    path: '/shop-member',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'detail/:memberId(\\d+)',
+      component: (resolve) => require(['@/views/shop/member/detail'], resolve),
+      name: 'GenEdit',
+      meta: {title: '会员详情', activeMenu: '/shop-member/member'}
+    }
+    ]
+  },
 ]
 
 // 防止连续点击多次路由报错

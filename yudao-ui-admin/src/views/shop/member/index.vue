@@ -19,13 +19,13 @@
       </el-form-item>
       <el-form-item label="客户类型" prop="type">
         <el-select v-model="queryParams.type" placeholder="请选择客户类型" clearable size="small">
-          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_CUSTOMER_TYPE)"
+          <el-option v-for="dict in getDictDatas(DICT_TYPE.SHOP_CUSTOMER_TYPE)"
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
-          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
+          <el-option v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
@@ -60,7 +60,13 @@
       <el-table-column label="会员编号" align="center" prop="id" />
       <el-table-column label="姓名" align="center" prop="name" />
       <el-table-column label="昵称" align="center" prop="nickname" />
-      <el-table-column label="手机号" align="center" prop="mobile" />
+      <el-table-column label="手机号" align="center" prop="mobile" >
+        <template slot-scope="scope">
+          <router-link :to="'/shop-member/detail/' + scope.row.id" class="link-type">
+            <span>{{ scope.row.mobile }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="销售员" :formatter="userNicknameFormat" align="center" prop="salesman" />
       <el-table-column label="客户类型" align="center" prop="type">
         <template slot-scope="scope">
@@ -114,13 +120,13 @@
         </el-form-item>
         <el-form-item label="客户类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择客户类型">
-            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_CUSTOMER_TYPE)"
+            <el-option v-for="dict in getDictDatas(DICT_TYPE.SHOP_CUSTOMER_TYPE)"
                        :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
+            <el-radio v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
                       :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
