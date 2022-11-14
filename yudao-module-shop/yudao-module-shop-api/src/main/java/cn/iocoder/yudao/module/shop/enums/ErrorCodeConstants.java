@@ -28,4 +28,7 @@ public interface ErrorCodeConstants {
     // ========== 充值订单 TODO 补充编号 ==========
     ErrorCode RECHARGE_ORDER_NOT_EXISTS = new ErrorCode(1022006001, "充值订单不存在");
 
+    ErrorCode MEMBER_ACCOUNT_LOG_NOT_EXISTS = new ErrorCode(1022007001, "会员账户流水不存在");
+
+
 }

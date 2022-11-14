@@ -62,8 +62,8 @@
       <el-table-column label="昵称" align="center" prop="nickname" />
       <el-table-column label="手机号" align="center" prop="mobile" >
         <template slot-scope="scope">
-          <router-link :to="'/shop-member/detail/' + scope.row.id" class="link-type">
-            <span>{{ scope.row.mobile }}</span>
+          <router-link :to="'/shop/member/detail/' + scope.row.id" class="link-type">
+            <span style="font-weight: bold">{{ scope.row.mobile }}</span>
           </router-link>
         </template>
       </el-table-column>

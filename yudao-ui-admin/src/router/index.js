@@ -169,15 +169,20 @@ export const constantRoutes = [
       }
     ]
   },{
-    path: '/shop-member',
+    path: '/shop',
     component: Layout,
     hidden: true,
     children: [{
-      path: 'detail/:memberId(\\d+)',
+      path: 'member/detail/:memberId(\\d+)',
       component: (resolve) => require(['@/views/shop/member/detail'], resolve),
       name: 'GenEdit',
       meta: {title: '会员详情', activeMenu: '/shop-member/member'}
-    }
+    },{
+      path: 'cashier/detail/:memberId(\\d+)',
+      component: (resolve) => require(['@/views/shop/cashier/log'], resolve),
+      name: 'GenEdit',
+      meta: {title: '会员详情', activeMenu: '/shop-member/member'}
+    },
     ]
   },
 ]

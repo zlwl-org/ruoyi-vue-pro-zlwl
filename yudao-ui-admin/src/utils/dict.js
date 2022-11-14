@@ -61,6 +61,7 @@ export const DICT_TYPE = {
   DISABLE_STATUS: 'disable_status', // 禁用状态
   SHOP_CUSTOMER_TYPE: 'shop_customer_type', // 禁用状态
   SHOP_MEMBER_STATUS: 'shop_member_status', // 禁用状态
+  SHOP_MEMBER_ACCOUNT_LOG_TYPE: 'shop_member_account_log_type', // 禁用状态
 }
 
 /**
