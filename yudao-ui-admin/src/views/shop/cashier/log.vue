@@ -1,38 +1,26 @@
 <template>
   <div class="app-container">
 
-    <!-- 搜索工作栏 -->
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="会员编号" prop="memberId">
-        <el-input v-model="queryParams.memberId" placeholder="请输入会员编号" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="发生方式" prop="action">
-        <el-select v-model="queryParams.action" placeholder="请选择发生方式" clearable size="small">
-          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_MEMBER_ACCOUNT_LOG_TYPE)"
-                     :key="dict.value" :label="dict.label" :value="dict.value"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
-                        range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
     <!-- 操作工具栏 -->
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   v-hasPermi="['shop:member-account-log:create']">新增</el-button>
+      <el-col :span="1.5" style=" border: 1px solid green;">
+<!--        <div style="background: url(~@/assets/images/member-bg.png) no-repeat center;">-->
+<!--          <span>会员</span>-->
+<!--        </div>-->
+<!--          <el-image :src="require('@/assets/images/member-bg.png')" fit="fill"/>-->
+        <div class="member">
+          <el-image :src="require('@/assets/images/member-bg.png')" fit="fill"/>
+          <div class="member_name">
+            刘德华
+          </div>
+        </div>
+
       </el-col>
       <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" :loading="exportLoading"
                    v-hasPermi="['shop:member-account-log:export']">导出</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+<!--      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
     </el-row>
 
     <!-- 列表 -->
@@ -100,6 +88,18 @@
     </el-dialog>
   </div>
 </template>
+<style>
+.member {
+  position: relative;
+}
+.member .member_name {
+  position: relative;
+  left: 25px;
+  top: 250px;
+
+  color: white;
+}
+</style>
 
 <script>
 import { createMemberAccountLog, updateMemberAccountLog, deleteMemberAccountLog, getMemberAccountLog, getMemberAccountLogPage, exportMemberAccountLogExcel } from "@/api/shop/memberAccountLog";

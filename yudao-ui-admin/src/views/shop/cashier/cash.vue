@@ -4,11 +4,11 @@
       <span style="color: #ffd04b">收 银 台</span>
     </el-header>
 
-      <el-tabs type="border-card" tab-position="left" :stretch="true" style="height:  900px">
+      <el-tabs type="border-card" tab-position="left" :stretch="true" style="height:  900px" >
         <el-tab-pane style="height: 150px">
-          <div slot="label" align="center">
+          <div slot="label" align="center" style="margin-top: 15px">
             <div >
-              <i class="el-icon-setting"></i>
+              <i class="el-icon-setting" style="font-size: 32px"></i>
             </div>
             <div>
               <span >开单</span>
