@@ -12,48 +12,11 @@
       <el-form-item label="手机号" prop="mobile">
         <el-input v-model="queryParams.mobile" placeholder="请输入手机号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="销售员" prop="salesman">
-        <el-select v-model="queryParams.salesman" placeholder="请选择客户归属" clearable style="width: 100%">
-          <el-option v-for="item in users" :key="parseInt(item.id)" :label="item.nickname" :value="parseInt(item.id)" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="客户类型" prop="type">
-        <el-select v-model="queryParams.type" placeholder="请选择客户类型" clearable size="small">
-          <el-option v-for="dict in getDictDatas(DICT_TYPE.SHOP_CUSTOMER_TYPE)"
-                       :key="dict.value" :label="dict.label" :value="dict.value"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
-          <el-option v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
-                       :key="dict.value" :label="dict.label" :value="dict.value"/>
-        </el-select>
-      </el-form-item>
-<!--      <el-form-item label="店铺编号" prop="branchId">-->
-<!--        <el-input v-model="queryParams.branchId" placeholder="请输入店铺编号" clearable @keyup.enter.native="handleQuery"/>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="创建时间" prop="createTime">-->
-<!--        <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"-->
-<!--                        range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />-->
-<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
-    <!-- 操作工具栏 -->
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   v-hasPermi="['shop:member:create']">新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" :loading="exportLoading"
-                   v-hasPermi="['shop:member:export']">导出</el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-    </el-row>
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
@@ -67,33 +30,13 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="销售员" :formatter="userNicknameFormat" align="center" prop="salesman" />
-      <el-table-column label="客户类型" align="center" prop="type">
-        <template slot-scope="scope">
-          <dict-tag :type="DICT_TYPE.SHOP_CUSTOMER_TYPE" :value="scope.row.type" />
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" prop="status">
-        <template slot-scope="scope">
-          <dict-tag :type="DICT_TYPE.SHOP_MEMBER_STATUS" :value="scope.row.status" />
-        </template>
-      </el-table-column>
       <el-table-column label="充值余额" align="center" prop="balance" />
       <el-table-column label="赠送余额" align="center" prop="gift" />
       <el-table-column label="积分" align="center" prop="point" />
-      <el-table-column label="成长值" align="center" prop="growth" />
-      <el-table-column label="店铺编号" align="center" prop="branchId" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['shop:member:update']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['shop:member:delete']">删除</el-button>
+          <el-button size="mini" type="text"  @click="handleSelect(scope.row)">选择</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -149,7 +92,7 @@ import { CommonStatusEnum } from '@/utils/constants'
 import { listSimpleBranches } from '@/api/shop/branch'
 
 export default {
-  name: "Member",
+  name: "CashierMember",
   components: {
   },
   data() {
@@ -261,14 +204,8 @@ export default {
       this.title = "添加会员";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const id = row.id;
-      getMember(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改会员";
-      });
+    handleSelect(row) {
+      this.$emit("memberSelected", row);
     },
     /** 提交按钮 */
     submitForm() {
@@ -293,30 +230,6 @@ export default {
         });
       });
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const id = row.id;
-      this.$modal.confirm('是否确认删除会员编号为"' + id + '"的数据项?').then(function() {
-          return deleteMember(id);
-        }).then(() => {
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        }).catch(() => {});
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      // 处理查询参数
-      let params = {...this.queryParams};
-      params.pageNo = undefined;
-      params.pageSize = undefined;
-      this.$modal.confirm('是否确认导出所有会员数据项?').then(() => {
-          this.exportLoading = true;
-          return exportMemberExcel(params);
-        }).then(response => {
-          this.$download.excel(response, '会员.xls');
-          this.exportLoading = false;
-        }).catch(() => {});
-    }
   }
 };
 </script>

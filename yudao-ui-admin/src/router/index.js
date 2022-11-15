@@ -179,7 +179,7 @@ export const constantRoutes = [
       meta: {title: '会员详情', activeMenu: '/shop-member/member'}
     },{
       path: 'cashier/detail/:memberId(\\d+)',
-      component: (resolve) => require(['@/views/shop/cashier/log'], resolve),
+      component: (resolve) => require(['@/views/shop/cashier/order'], resolve),
       name: 'GenEdit',
       meta: {title: '会员详情', activeMenu: '/shop-member/member'}
     },

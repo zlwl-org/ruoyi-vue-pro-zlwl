@@ -5,7 +5,7 @@
     </el-header>
 
       <el-tabs type="border-card" tab-position="left" :stretch="true" style="height:  900px">
-        <el-tab-pane style="height: 150px">
+        <el-tab-pane >
           <div slot="label" align="center">
             <div >
               <i class="el-icon-setting"></i>
@@ -48,7 +48,7 @@ li .icon-name {
 <script>
 import { createLeave}  from "@/api/bpm/leave"
 import { getDictDatas, DICT_TYPE } from '@/utils/dict'
-import CashierMemberAccountLog from '@/views/shop/cashier/log'
+import CashierMemberAccountLog from '@/views/shop/cashier/order'
 
 export default {
   // name: "Cashier",
