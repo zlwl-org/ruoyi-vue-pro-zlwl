@@ -52,3 +52,11 @@ export function exportRechargeExcel(query) {
     responseType: 'blob'
   })
 }
+
+// 获得所有充值活动
+export function getAllRecharge() {
+  return request({
+    url: '/shop/recharge/list-all',
+    method: 'get',
+  })
+}

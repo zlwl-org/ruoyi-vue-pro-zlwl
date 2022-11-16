@@ -6,47 +6,43 @@ import java.math.BigDecimal;
 import io.swagger.annotations.*;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
+import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
+
 
 /**
  * 充值订单 Excel VO
  *
- * @author ZLWL
+ * @author ruanzh
  */
 @Data
 public class RechargeOrderExcelVO {
 
-    @ExcelProperty("充值订单编号")
-    private Long id;
-
     @ExcelProperty("订单编号")
-    private String orderNo;
-
-    @ExcelProperty("订单流水号")
-    private String outTradeNo;
-
-    @ExcelProperty("充值金额")
-    private BigDecimal rechargeAmount;
-
-    @ExcelProperty("套餐编号")
-    private Integer rechargeId;
-
-    @ExcelProperty("支付方式")
-    private String payType;
-
-    @ExcelProperty("支付状态")
-    private Integer status;
-
-    @ExcelProperty("支付时间")
-    private Integer payTime;
+    private Long id;
 
     @ExcelProperty("会员编号")
     private Integer memberId;
 
-    @ExcelProperty("订单来源")
-    private String orderFrom;
+    @ExcelProperty("充值金额")
+    private BigDecimal amount;
 
-    @ExcelProperty("订单来源名称")
-    private String orderFromName;
+    @ExcelProperty("充值活动编号")
+    private Integer rechargeId;
+
+    @ExcelProperty("充值活动名称")
+    private String rechargeName;
+
+    @ExcelProperty(value = "支付方式", converter = DictConvert.class)
+    @DictFormat("shop_recharge_pay_type") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
+    private String payType;
+
+    @ExcelProperty(value = "支付状态", converter = DictConvert.class)
+    @DictFormat("pay_order_status") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
+    private Integer payStatus;
+
+    @ExcelProperty("支付时间")
+    private Date payTime;
 
     @ExcelProperty("创建时间")
     private Date createTime;

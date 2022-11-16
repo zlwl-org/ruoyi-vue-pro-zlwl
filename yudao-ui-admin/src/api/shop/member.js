@@ -52,3 +52,11 @@ export function exportMemberExcel(query) {
     responseType: 'blob'
   })
 }
+
+// 获得店員会员
+export function getMemberByUser () {
+  return request({
+    url: '/shop/member/list-by-user',
+    method: 'get',
+  })
+}

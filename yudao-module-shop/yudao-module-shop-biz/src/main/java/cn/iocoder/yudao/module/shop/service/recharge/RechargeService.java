@@ -1,10 +1,16 @@
 package cn.iocoder.yudao.module.shop.service.recharge;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargePageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 充值活动 Service 接口
@@ -66,5 +72,20 @@ public interface RechargeService {
      * @return 充值活动列表
      */
     List<RechargeDO> getRechargeList(RechargeExportReqVO exportReqVO);
+
+    /**
+     * 获得所有充值活动列表
+     *
+     * @return {@link List}<{@link RechargeDO}>
+     */
+    List<RechargeDO> getAll();
+
+    /**
+     * 得到最好的充值方案
+     *
+     * @param amount 充值金额
+     * @return {@link RechargeDO}
+     */
+    RechargeDO getBestRecharge(BigDecimal amount);
 
 }

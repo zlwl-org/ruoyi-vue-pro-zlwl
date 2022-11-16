@@ -1,19 +1,24 @@
 package cn.iocoder.yudao.module.shop.service.member;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.member.ShopMemberConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.member.ShopMemberMapper;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.member.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.member.ShopMemberConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.member.ShopMemberMapper;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.MEMBER_BALANCE_NOT_ENOUGH;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.MEMBER_NOT_EXISTS;
 
 /**
  * 会员 Service 实现类
@@ -77,6 +82,21 @@ public class ShopMemberServiceImpl implements ShopMemberService {
     @Override
     public List<ShopMemberDO> getMemberList(ShopMemberExportReqVO exportReqVO) {
         return memberMapper.selectList(exportReqVO);
+    }
+
+    @Override
+    public List<ShopMemberDO> getMemberListByUser() {
+        //TODO: 会员列表还没有控制权限
+        return memberMapper.selectList();
+    }
+
+    @Override
+    public int updateMemberAccount(BigDecimal balance, BigDecimal gift, BigDecimal point, BigDecimal growth, Long memberId) {
+        int result = memberMapper.updateAccount(balance, gift, point, growth, memberId);
+        if (result == 0){
+            throw exception(MEMBER_BALANCE_NOT_ENOUGH);
+        }
+        return result;
     }
 
 }

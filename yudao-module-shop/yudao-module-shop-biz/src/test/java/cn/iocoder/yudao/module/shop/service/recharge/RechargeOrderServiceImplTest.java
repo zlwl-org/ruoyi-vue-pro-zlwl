@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 /**
 * {@link RechargeOrderServiceImpl} 的单元测试类
 *
-* @author ZLWL
+* @author ruanzh
 */
 @Import(RechargeOrderServiceImpl.class)
 public class RechargeOrderServiceImplTest extends BaseDbUnitTest {
@@ -108,49 +108,41 @@ public class RechargeOrderServiceImplTest extends BaseDbUnitTest {
     public void testGetRechargeOrderPage() {
        // mock 数据
        RechargeOrderDO dbRechargeOrder = randomPojo(RechargeOrderDO.class, o -> { // 等会查询到
-           o.setOrderNo(null);
-           o.setOutTradeNo(null);
-           o.setRechargeAmount(null);
-           o.setPayType(null);
-           o.setStatus(null);
-           o.setPayTime(null);
            o.setMemberId(null);
-           o.setOrderFrom(null);
-           o.setOrderFromName(null);
+           o.setAmount(null);
+           o.setRechargeId(null);
+           o.setRechargeName(null);
+           o.setPayType(null);
+           o.setPayStatus(null);
+           o.setPayTime(null);
            o.setCreateTime(null);
        });
        rechargeOrderMapper.insert(dbRechargeOrder);
-       // 测试 orderNo 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOrderNo(null)));
-       // 测试 outTradeNo 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOutTradeNo(null)));
-       // 测试 rechargeAmount 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setRechargeAmount(null)));
-       // 测试 payType 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayType(null)));
-       // 测试 status 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setStatus(null)));
-       // 测试 payTime 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayTime(null)));
        // 测试 memberId 不匹配
        rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setMemberId(null)));
-       // 测试 orderFrom 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOrderFrom(null)));
-       // 测试 orderFromName 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOrderFromName(null)));
+       // 测试 amount 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setAmount(null)));
+       // 测试 rechargeId 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setRechargeId(null)));
+       // 测试 rechargeName 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setRechargeName(null)));
+       // 测试 payType 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayType(null)));
+       // 测试 payStatus 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayStatus(null)));
+       // 测试 payTime 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayTime(null)));
        // 测试 createTime 不匹配
        rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setCreateTime(null)));
        // 准备参数
        RechargeOrderPageReqVO reqVO = new RechargeOrderPageReqVO();
-       reqVO.setOrderNo(null);
-       reqVO.setOutTradeNo(null);
-       reqVO.setRechargeAmount(null);
-       reqVO.setPayType(null);
-       reqVO.setStatus(null);
-//       reqVO.setPayTime((new Date[]{}));
        reqVO.setMemberId(null);
-       reqVO.setOrderFrom(null);
-       reqVO.setOrderFromName(null);
+       reqVO.setAmount(null);
+       reqVO.setRechargeId(null);
+       reqVO.setRechargeName(null);
+       reqVO.setPayType(null);
+       reqVO.setPayStatus(null);
+       reqVO.setPayTime((new Date[]{}));
        reqVO.setCreateTime((new Date[]{}));
 
        // 调用
@@ -166,49 +158,41 @@ public class RechargeOrderServiceImplTest extends BaseDbUnitTest {
     public void testGetRechargeOrderList() {
        // mock 数据
        RechargeOrderDO dbRechargeOrder = randomPojo(RechargeOrderDO.class, o -> { // 等会查询到
-           o.setOrderNo(null);
-           o.setOutTradeNo(null);
-           o.setRechargeAmount(null);
-           o.setPayType(null);
-           o.setStatus(null);
-           o.setPayTime(null);
            o.setMemberId(null);
-           o.setOrderFrom(null);
-           o.setOrderFromName(null);
+           o.setAmount(null);
+           o.setRechargeId(null);
+           o.setRechargeName(null);
+           o.setPayType(null);
+           o.setPayStatus(null);
+           o.setPayTime(null);
            o.setCreateTime(null);
        });
        rechargeOrderMapper.insert(dbRechargeOrder);
-       // 测试 orderNo 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOrderNo(null)));
-       // 测试 outTradeNo 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOutTradeNo(null)));
-       // 测试 rechargeAmount 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setRechargeAmount(null)));
-       // 测试 payType 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayType(null)));
-       // 测试 status 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setStatus(null)));
-       // 测试 payTime 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayTime(null)));
        // 测试 memberId 不匹配
        rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setMemberId(null)));
-       // 测试 orderFrom 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOrderFrom(null)));
-       // 测试 orderFromName 不匹配
-       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setOrderFromName(null)));
+       // 测试 amount 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setAmount(null)));
+       // 测试 rechargeId 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setRechargeId(null)));
+       // 测试 rechargeName 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setRechargeName(null)));
+       // 测试 payType 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayType(null)));
+       // 测试 payStatus 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayStatus(null)));
+       // 测试 payTime 不匹配
+       rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setPayTime(null)));
        // 测试 createTime 不匹配
        rechargeOrderMapper.insert(cloneIgnoreId(dbRechargeOrder, o -> o.setCreateTime(null)));
        // 准备参数
        RechargeOrderExportReqVO reqVO = new RechargeOrderExportReqVO();
-       reqVO.setOrderNo(null);
-       reqVO.setOutTradeNo(null);
-       reqVO.setRechargeAmount(null);
-       reqVO.setPayType(null);
-       reqVO.setStatus(null);
-//       reqVO.setPayTime((new Date[]{}));
        reqVO.setMemberId(null);
-       reqVO.setOrderFrom(null);
-       reqVO.setOrderFromName(null);
+       reqVO.setAmount(null);
+       reqVO.setRechargeId(null);
+       reqVO.setRechargeName(null);
+       reqVO.setPayType(null);
+       reqVO.setPayStatus(null);
+       reqVO.setPayTime((new Date[]{}));
        reqVO.setCreateTime((new Date[]{}));
 
        // 调用

@@ -10,5 +10,6 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class MemberAccountLogCreateReqVO extends MemberAccountLogBaseVO {
-
+    private Long relatedId;
+    private Long memberId;
 }

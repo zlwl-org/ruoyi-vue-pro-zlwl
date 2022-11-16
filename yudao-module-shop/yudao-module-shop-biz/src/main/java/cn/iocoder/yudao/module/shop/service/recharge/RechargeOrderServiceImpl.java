@@ -1,37 +1,47 @@
 package cn.iocoder.yudao.module.shop.service.recharge;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.recharge.RechargeOrderConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.recharge.RechargeOrderMapper;
+import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.recharge.RechargeOrderConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.recharge.RechargeOrderMapper;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.RECHARGE_ORDER_NOT_EXISTS;
 
 /**
  * 充值订单 Service 实现类
  *
- * @author ZLWL
+ * @author ruanzh
  */
 @Service
 @Validated
+@Transactional
 public class RechargeOrderServiceImpl implements RechargeOrderService {
 
     @Resource
     private RechargeOrderMapper rechargeOrderMapper;
+
+    @Resource
+    private ShopMemberAccountService shopMemberAccountService;
 
     @Override
     public Long createRechargeOrder(RechargeOrderCreateReqVO createReqVO) {
         // 插入
         RechargeOrderDO rechargeOrder = RechargeOrderConvert.INSTANCE.convert(createReqVO);
         rechargeOrderMapper.insert(rechargeOrder);
+        shopMemberAccountService.recharge(rechargeOrder);
         // 返回
         return rechargeOrder.getId();
     }

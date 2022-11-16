@@ -3,30 +3,33 @@
 
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="订单编号" prop="orderNo">
-        <el-input v-model="queryParams.orderNo" placeholder="请输入订单编号" clearable @keyup.enter.native="handleQuery"/>
+      <el-form-item label="会员编号" prop="memberId">
+        <el-input v-model="queryParams.memberId" placeholder="请输入会员编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="订单流水号" prop="outTradeNo">
-        <el-input v-model="queryParams.outTradeNo" placeholder="请输入订单流水号" clearable @keyup.enter.native="handleQuery"/>
+      <el-form-item label="充值金额" prop="amount">
+        <el-input v-model="queryParams.amount" placeholder="请输入充值金额" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="充值金额" prop="rechargeAmount">
-        <el-input v-model="queryParams.rechargeAmount" placeholder="请输入充值金额" clearable @keyup.enter.native="handleQuery"/>
+      <el-form-item label="充值活动编号" prop="rechargeId">
+        <el-input v-model="queryParams.rechargeId" placeholder="请输入充值活动编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="支付状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择支付状态" clearable size="small">
+      <el-form-item label="充值活动名称" prop="rechargeName">
+        <el-input v-model="queryParams.rechargeName" placeholder="请输入充值活动名称" clearable @keyup.enter.native="handleQuery"/>
+      </el-form-item>
+      <el-form-item label="支付方式" prop="payType">
+        <el-select v-model="queryParams.payType" placeholder="请选择支付方式" clearable size="small">
+          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_RECHARGE_PAY_TYPE)"
+                       :key="dict.value" :label="dict.label" :value="dict.value"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="支付状态" prop="payStatus">
+        <el-select v-model="queryParams.payStatus" placeholder="请选择支付状态" clearable size="small">
           <el-option v-for="dict in this.getDictDatas(DICT_TYPE.PAY_ORDER_STATUS)"
-                     :key="dict.value" :label="dict.label" :value="dict.value"/>
+                       :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="支付时间" prop="payTime">
         <el-date-picker v-model="queryParams.payTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
                         range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
-      </el-form-item>
-      <el-form-item label="会员编号" prop="memberId">
-        <el-input v-model="queryParams.memberId" placeholder="请输入会员编号" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="订单来源" prop="orderFrom">
-        <el-input v-model="queryParams.orderFrom" placeholder="请输入订单来源" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
@@ -53,19 +56,25 @@
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="充值订单编号" align="center" prop="id" />
-      <el-table-column label="订单编号" align="center" prop="orderNo" />
-      <el-table-column label="订单流水号" align="center" prop="outTradeNo" />
-      <el-table-column label="充值金额" align="center" prop="rechargeAmount" />
-      <el-table-column label="套餐编号" align="center" prop="rechargeId" />
-      <el-table-column label="支付状态" align="center" prop="status">
+      <el-table-column label="订单编号" align="center" prop="id" />
+      <el-table-column label="会员编号" align="center" prop="memberId" />
+      <el-table-column label="充值金额" align="center" prop="amount" />
+      <el-table-column label="充值活动" align="center" prop="rechargeName" />
+      <el-table-column label="支付方式" align="center" prop="payType">
         <template slot-scope="scope">
-          <dict-tag :type="DICT_TYPE.PAY_ORDER_STATUS" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.SHOP_RECHARGE_PAY_TYPE" :value="scope.row.payType" />
         </template>
       </el-table-column>
-      <el-table-column label="支付时间" align="center" prop="payTime" />
-      <el-table-column label="会员编号" align="center" prop="memberId" />
-      <el-table-column label="订单来源" align="center" prop="orderFrom" />
+      <el-table-column label="支付状态" align="center" prop="payStatus">
+        <template slot-scope="scope">
+          <dict-tag :type="DICT_TYPE.PAY_ORDER_STATUS" :value="scope.row.payStatus" />
+        </template>
+      </el-table-column>
+      <el-table-column label="支付时间" align="center" prop="payTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.payTime) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -87,38 +96,33 @@
     <!-- 对话框(添加 / 修改) -->
     <el-dialog :title="title" :visible.sync="open" width="500px" v-dialogDrag append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="订单编号" prop="orderNo">
-          <el-input v-model="form.orderNo" placeholder="请输入订单编号" />
+        <el-form-item label="会员" prop="memberId">
+          <el-select v-model="form.memberId" placeholder="请输入会员编号" clearable style="width: 100%">
+            <el-option v-for="item in memberList" :key="parseInt(item.id)" :label="item.nickname + ' ' + item.mobile" :value="parseInt(item.id)" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="订单流水号" prop="outTradeNo">
-          <el-input v-model="form.outTradeNo" placeholder="请输入订单流水号" />
+        <el-form-item label="充值金额" prop="amount">
+          <el-input v-model="form.amount" placeholder="请输入充值金额" />
         </el-form-item>
-        <el-form-item label="充值金额" prop="rechargeAmount">
-          <el-input v-model="form.rechargeAmount" placeholder="请输入充值金额" />
-        </el-form-item>
-        <el-form-item label="套餐编号" prop="rechargeId">
-          <el-input v-model="form.rechargeId" placeholder="请输入套餐编号" />
+        <el-form-item label="充值活动" prop="rechargeId">
+          <el-select v-model="form.rechargeId" placeholder="请输入充值活动编号" clearable style="width: 100%">
+            <el-option v-for="item in rechargeList" :key="parseInt(item.id)" :label="item.name" :value="parseInt(item.id)" />
+          </el-select>
         </el-form-item>
         <el-form-item label="支付方式" prop="payType">
           <el-select v-model="form.payType" placeholder="请选择支付方式">
-            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)"
+            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_RECHARGE_PAY_TYPE)"
                        :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="支付状态" prop="status">
-          <el-radio-group v-model="form.status">
+        <el-form-item label="支付状态" prop="payStatus">
+          <el-radio-group v-model="form.payStatus">
             <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.PAY_ORDER_STATUS)"
                       :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="支付时间" prop="payTime">
           <el-date-picker clearable v-model="form.payTime" type="date" value-format="timestamp" placeholder="选择支付时间" />
-        </el-form-item>
-        <el-form-item label="会员编号" prop="memberId">
-          <el-input v-model="form.memberId" placeholder="请输入会员编号" />
-        </el-form-item>
-        <el-form-item label="订单来源" prop="orderFrom">
-          <el-input v-model="form.orderFrom" placeholder="请输入订单来源" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -131,6 +135,8 @@
 
 <script>
 import { createRechargeOrder, updateRechargeOrder, deleteRechargeOrder, getRechargeOrder, getRechargeOrderPage, exportRechargeOrderExcel } from "@/api/shop/rechargeOrder";
+import { getAllRecharge } from '@/api/shop/recharge'
+import { getMemberByUser } from '@/api/shop/member'
 
 export default {
   name: "RechargeOrder",
@@ -156,33 +162,32 @@ export default {
       queryParams: {
         pageNo: 1,
         pageSize: 10,
-        orderNo: null,
-        outTradeNo: null,
-        rechargeAmount: null,
-        status: null,
-        payTime: [],
         memberId: null,
-        orderFrom: null,
+        amount: null,
+        rechargeId: null,
+        rechargeName: null,
+        payType: null,
+        payStatus: null,
+        payTime: [],
         createTime: [],
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        orderNo: [{ required: true, message: "订单编号不能为空", trigger: "blur" }],
-        outTradeNo: [{ required: true, message: "订单流水号不能为空", trigger: "blur" }],
-        rechargeAmount: [{ required: true, message: "充值金额不能为空", trigger: "blur" }],
-        rechargeId: [{ required: true, message: "套餐编号不能为空", trigger: "blur" }],
-        payType: [{ required: true, message: "支付方式不能为空", trigger: "change" }],
-        status: [{ required: true, message: "支付状态不能为空", trigger: "blur" }],
-        payTime: [{ required: true, message: "支付时间不能为空", trigger: "blur" }],
         memberId: [{ required: true, message: "会员编号不能为空", trigger: "blur" }],
-        orderFrom: [{ required: true, message: "订单来源不能为空", trigger: "blur" }],
-      }
+        amount: [{ required: true, message: "充值金额不能为空", trigger: "blur" }],
+        payType: [{ required: true, message: "支付方式不能为空", trigger: "change" }],
+        payStatus: [{ required: true, message: "支付状态不能为空", trigger: "blur" }],
+      },
+      rechargeList: [],
+      memberList: [],
     };
   },
   created() {
     this.getList();
+    this.getRechargeList();
+    this.getMemberList()
   },
   methods: {
     /** 查询列表 */
@@ -204,15 +209,13 @@ export default {
     reset() {
       this.form = {
         id: undefined,
-        orderNo: undefined,
-        outTradeNo: undefined,
-        rechargeAmount: undefined,
-        rechargeId: undefined,
-        payType: undefined,
-        status: undefined,
-        payTime: undefined,
         memberId: undefined,
-        orderFrom: undefined,
+        amount: undefined,
+        rechargeId: undefined,
+        rechargeName: undefined,
+        payType: undefined,
+        payStatus: undefined,
+        payTime: undefined,
       };
       this.resetForm("form");
     },
@@ -269,11 +272,11 @@ export default {
     handleDelete(row) {
       const id = row.id;
       this.$modal.confirm('是否确认删除充值订单编号为"' + id + '"的数据项?').then(function() {
-        return deleteRechargeOrder(id);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+          return deleteRechargeOrder(id);
+        }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        }).catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -282,12 +285,22 @@ export default {
       params.pageNo = undefined;
       params.pageSize = undefined;
       this.$modal.confirm('是否确认导出所有充值订单数据项?').then(() => {
-        this.exportLoading = true;
-        return exportRechargeOrderExcel(params);
-      }).then(response => {
-        this.$download.excel(response, '充值订单.xls');
-        this.exportLoading = false;
-      }).catch(() => {});
+          this.exportLoading = true;
+          return exportRechargeOrderExcel(params);
+        }).then(response => {
+          this.$download.excel(response, '充值订单.xls');
+          this.exportLoading = false;
+        }).catch(() => {});
+    },
+    getRechargeList(){
+      getAllRecharge().then(response => {
+        this.rechargeList = response.data
+      })
+    },
+    getMemberList(){
+      getMemberByUser().then(response => {
+        this.memberList = response.data
+      })
     }
   }
 };

@@ -1,10 +1,16 @@
 package cn.iocoder.yudao.module.shop.service.member;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.member.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 会员 Service 接口
@@ -67,4 +73,7 @@ public interface ShopMemberService {
      */
     List<ShopMemberDO> getMemberList(ShopMemberExportReqVO exportReqVO);
 
+    List<ShopMemberDO> getMemberListByUser();
+
+    int updateMemberAccount(BigDecimal balance, BigDecimal gift, BigDecimal point, BigDecimal growth, Long memberId);
 }

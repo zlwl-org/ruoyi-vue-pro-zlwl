@@ -1,15 +1,19 @@
 package cn.iocoder.yudao.module.shop.dal.dataobject.recharge;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.*;
 import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import com.baomidou.mybatisplus.annotation.KeySequence;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.sun.xml.bind.v2.TODO;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 充值订单 DO
  *
- * @author ZLWL
+ * @author ruanzh
  */
 @TableName("shop_recharge_order")
 @KeySequence("shop_recharge_order_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
@@ -22,73 +26,41 @@ import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 public class RechargeOrderDO extends BaseDO {
 
     /**
-     * 充值订单编号
+     * 订单编号
      */
     @TableId
     private Long id;
     /**
-     * 订单编号
+     * 会员编号
      */
-    private String orderNo;
-    /**
-     * 订单流水号
-     */
-    private String outTradeNo;
+    private Long memberId;
     /**
      * 充值金额
      */
-    private BigDecimal rechargeAmount;
+    private BigDecimal amount;
     /**
-     * 套餐编号
+     * 充值活动编号
      */
     private Integer rechargeId;
     /**
-     * 套餐名称
+     * 充值活动名称
      */
     private String rechargeName;
     /**
-     * 套餐面值
-     */
-    private BigDecimal rechargeFaceValue;
-    /**
-     * 套餐售价
-     */
-    private BigDecimal rechargePrice;
-    /**
-     * 套餐赠送积分
-     */
-    private BigDecimal rechargePoint;
-    /**
-     * 套餐赠送成长值
-     */
-    private BigDecimal rechargeGrowth;
-    /**
-     * 套餐赠送优惠券
-     */
-    private String rechargeCoupon;
-    /**
      * 支付方式
+     *
+     * 枚举 {@link TODO shop_recharge_pay_type 对应的类}
      */
     private String payType;
     /**
      * 支付状态
+     *
+     * 枚举 {@link TODO pay_order_status 对应的类}
      */
-    private Integer status;
+    private Integer payStatus;
     /**
      * 支付时间
      */
-    private Integer payTime;
-    /**
-     * 会员编号
-     */
-    private Integer memberId;
-    /**
-     * 订单来源
-     */
-    private String orderFrom;
-    /**
-     * 订单来源名称
-     */
-    private String orderFromName;
+    private Date payTime;
 
 }

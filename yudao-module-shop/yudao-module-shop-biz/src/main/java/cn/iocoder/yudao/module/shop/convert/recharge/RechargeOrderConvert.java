@@ -12,7 +12,7 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
 /**
  * 充值订单 Convert
  *
- * @author ZLWL
+ * @author ruanzh
  */
 @Mapper
 public interface RechargeOrderConvert {

@@ -18,6 +18,7 @@ public interface ErrorCodeConstants {
 
     // ========== 会员 TODO 补充编号 ==========
     ErrorCode MEMBER_NOT_EXISTS = new ErrorCode(1022003001, "会员不存在");
+    ErrorCode MEMBER_BALANCE_NOT_ENOUGH = new ErrorCode(1022003002, "会员余额不足");
 
     // ========== 商品分类 TODO 补充编号 ==========
     ErrorCode CATEGORY_NOT_EXISTS = new ErrorCode(1022004001, "商品分类不存在");

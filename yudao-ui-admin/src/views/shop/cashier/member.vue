@@ -130,6 +130,7 @@ export default {
       users: [],
       // 表单校验
       rules: {
+        nickname: [{ required: true, message: "昵称不能为空", trigger: "blur" }],
         mobile: [{ required: true, message: "手机号不能为空", trigger: "blur" }],
         salesman: [{ required: true, message: "销售员不能为空", trigger: "blur" }],
       }

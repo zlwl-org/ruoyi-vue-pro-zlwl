@@ -1,19 +1,24 @@
 package cn.iocoder.yudao.module.shop.service.recharge;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargePageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.recharge.RechargeConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.recharge.RechargeMapper;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.recharge.RechargeConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.recharge.RechargeMapper;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.RECHARGE_NOT_EXISTS;
 
 /**
  * 充值活动 Service 实现类
@@ -77,6 +82,21 @@ public class RechargeServiceImpl implements RechargeService {
     @Override
     public List<RechargeDO> getRechargeList(RechargeExportReqVO exportReqVO) {
         return rechargeMapper.selectList(exportReqVO);
+    }
+
+    @Override
+    public List<RechargeDO> getAll() {
+        return rechargeMapper.selectList();
+    }
+
+    @Override
+    public RechargeDO getBestRecharge(BigDecimal amount) {
+        List<RechargeDO> list = rechargeMapper.selectList();
+        List<RechargeDO> collected = list.stream().filter(item -> item.getPrice().compareTo(amount) <= 0).toList();
+        if (collected.size() == 0){
+            return null;
+        }
+        return collected.stream().max(Comparator.comparing(RechargeDO::getGift)).get();
     }
 
 }

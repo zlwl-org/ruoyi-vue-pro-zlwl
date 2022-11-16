@@ -1,13 +1,17 @@
 package cn.iocoder.yudao.module.shop.dal.mysql.member;
 
-import java.util.*;
-
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.member.vo.ShopMemberPageReqVO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import org.apache.ibatis.annotations.Mapper;
-import cn.iocoder.yudao.module.shop.controller.admin.member.vo.*;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 会员 Mapper
@@ -42,5 +46,13 @@ public interface ShopMemberMapper extends BaseMapperX<ShopMemberDO> {
                 .betweenIfPresent(ShopMemberDO::getCreateTime, reqVO.getCreateTime())
                 .orderByDesc(ShopMemberDO::getId));
     }
+
+    default List<ShopMemberDO> selectListBySalesman(Long userId){
+        return selectList(new LambdaQueryWrapperX<ShopMemberDO>().eq(ShopMemberDO::getSalesman, userId));
+    }
+
+    @Update("update shop_member set balance = balance + #{balance},gift = gift + #{gift},point = point + #{point},growth = growth + " +
+            "#{growth} where id = #{id} and balance + #{balance} >= 0 and gift + #{gift} >= 0 and point + #{point} >= 0 and growth + #{growth} >= 0 ")
+    int updateAccount(@Param("balance")BigDecimal balance, @Param("gift")BigDecimal gift, @Param("point")BigDecimal point, @Param("growth")BigDecimal growth, @Param("id")Long id);
 
 }
