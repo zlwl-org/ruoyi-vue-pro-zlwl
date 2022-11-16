@@ -15,13 +15,13 @@ public class RechargeOrderRespVO extends RechargeOrderBaseVO {
     private Long id;
 
     @ApiModelProperty(value = "会员编号", required = true)
-    private Integer memberId;
+    private Long memberId;
 
     @ApiModelProperty(value = "充值金额", required = true)
     private BigDecimal amount;
 
     @ApiModelProperty(value = "充值活动编号")
-    private Integer rechargeId;
+    private Long rechargeId;
 
     @ApiModelProperty(value = "充值活动名称")
     private String rechargeName;

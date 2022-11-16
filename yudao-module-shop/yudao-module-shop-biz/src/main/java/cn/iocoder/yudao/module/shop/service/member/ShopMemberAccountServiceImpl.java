@@ -15,22 +15,18 @@ import java.math.BigDecimal;
 @Transactional
 public class ShopMemberAccountServiceImpl implements ShopMemberAccountService {
     @Resource
-    private RechargeService rechargeService;
-    @Resource
     private MemberAccountLogService memberAccountLogService;
     @Resource
     private ShopMemberService memberService;
 
     @Override
-    public void recharge(RechargeOrderDO rechargeOrder) {
+    public void recharge(RechargeOrderDO rechargeOrder, RechargeDO bestRecharge) {
         // 生成流水
         MemberAccountLogCreateReqVO createReqVO= new MemberAccountLogCreateReqVO();
         createReqVO.setAction("recharge");
         createReqVO.setBalance(rechargeOrder.getAmount());
         createReqVO.setMemberId(rechargeOrder.getMemberId());
 
-        // 获取符合的充值规则
-        RechargeDO bestRecharge = rechargeService.getBestRecharge(rechargeOrder.getAmount());
         if (bestRecharge != null){
             createReqVO.setGift(bestRecharge.getGift());
             createReqVO.setPoint(bestRecharge.getPoint());
@@ -48,7 +44,6 @@ public class ShopMemberAccountServiceImpl implements ShopMemberAccountService {
         // 更新主表
         int i = memberService.updateMemberAccount(createReqVO.getBalance(), createReqVO.getGift(), createReqVO.getPoint(),
                 createReqVO.getGrowth(), createReqVO.getMemberId());
-        log.info("updateMemberAccount ===>　{}", i);
 
     }
 }

@@ -14,13 +14,13 @@ import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_
 public class RechargeOrderExportReqVO {
 
     @ApiModelProperty(value = "会员编号")
-    private Integer memberId;
+    private Long memberId;
 
     @ApiModelProperty(value = "充值金额")
     private BigDecimal amount;
 
     @ApiModelProperty(value = "充值活动编号")
-    private Integer rechargeId;
+    private Long rechargeId;
 
     @ApiModelProperty(value = "充值活动名称")
     private String rechargeName;

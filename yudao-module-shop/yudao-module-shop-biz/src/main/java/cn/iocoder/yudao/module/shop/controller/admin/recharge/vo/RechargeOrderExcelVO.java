@@ -22,13 +22,13 @@ public class RechargeOrderExcelVO {
     private Long id;
 
     @ExcelProperty("会员编号")
-    private Integer memberId;
+    private Long memberId;
 
     @ExcelProperty("充值金额")
     private BigDecimal amount;
 
     @ExcelProperty("充值活动编号")
-    private Integer rechargeId;
+    private Long rechargeId;
 
     @ExcelProperty("充值活动名称")
     private String rechargeName;

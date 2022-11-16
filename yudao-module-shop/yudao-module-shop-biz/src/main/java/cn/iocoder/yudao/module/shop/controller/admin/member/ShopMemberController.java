@@ -100,8 +100,8 @@ public class ShopMemberController {
     @ApiOperation("获得会员列表")
     @ApiImplicitParam(name = "ids", value = "编号列表", required = true, example = "1024,2048", dataTypeClass = List.class)
     @PreAuthorize("@ss.hasPermission('shop:member:query')")
-    public CommonResult<List<ShopMemberRespVO>> getMemberListByUser() {
+    public CommonResult<List<ShopMemberSimpleRespVO>> getMemberListByUser() {
         List<ShopMemberDO> list = memberService.getMemberListByUser();
-        return success(ShopMemberConvert.INSTANCE.convertList(list));
+        return success(ShopMemberConvert.INSTANCE.convertList03(list));
     }
 }

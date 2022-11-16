@@ -31,4 +31,5 @@ public interface ShopMemberConvert {
 
     List<ShopMemberExcelVO> convertList02(List<ShopMemberDO> list);
 
+    List<ShopMemberSimpleRespVO> convertList03(List<ShopMemberDO> list);
 }

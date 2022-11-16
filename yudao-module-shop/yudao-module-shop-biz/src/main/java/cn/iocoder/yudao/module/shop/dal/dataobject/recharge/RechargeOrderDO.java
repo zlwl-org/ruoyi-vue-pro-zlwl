@@ -41,7 +41,7 @@ public class RechargeOrderDO extends BaseDO {
     /**
      * 充值活动编号
      */
-    private Integer rechargeId;
+    private Long rechargeId;
     /**
      * 充值活动名称
      */
