@@ -31,5 +31,7 @@ public interface ErrorCodeConstants {
 
     ErrorCode MEMBER_ACCOUNT_LOG_NOT_EXISTS = new ErrorCode(1022007001, "会员账户流水不存在");
 
+    ErrorCode PRODUCT_NOT_EXISTS = new ErrorCode(1022008001, "产品不存在");
+
 
 }
