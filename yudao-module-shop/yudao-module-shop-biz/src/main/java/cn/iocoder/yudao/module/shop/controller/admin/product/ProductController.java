@@ -97,4 +97,13 @@ public class ProductController {
         ExcelUtils.write(response, "产品.xls", "数据", ProductExcelVO.class, datas);
     }
 
+    @GetMapping("/list-all")
+    @ApiOperation("获得产品列表")
+    @ApiImplicitParam(dataTypeClass = List.class)
+//    @PreAuthorize("@ss.hasPermission('shop:product:query')")
+    public CommonResult<List<ProductRespVO>> getProducts() {
+        List<ProductDO> list = productService.getProducts();
+        return success(ProductConvert.INSTANCE.convertList(list));
+    }
+
 }

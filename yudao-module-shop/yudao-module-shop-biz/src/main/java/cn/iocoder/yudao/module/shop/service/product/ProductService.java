@@ -66,5 +66,5 @@ public interface ProductService {
      * @return 产品列表
      */
     List<ProductDO> getProductList(ProductExportReqVO exportReqVO);
-
+    List<ProductDO> getProducts();
 }

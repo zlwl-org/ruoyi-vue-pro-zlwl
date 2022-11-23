@@ -63,6 +63,7 @@ export const DICT_TYPE = {
   SHOP_MEMBER_STATUS: 'shop_member_status', // 禁用状态
   SHOP_MEMBER_ACCOUNT_LOG_TYPE: 'shop_member_account_log_type', // 禁用状态
   SHOP_RECHARGE_PAY_TYPE: 'shop_recharge_pay_type', // 禁用状态
+  SHOP_STOCK_TYPE: 'shop_stock_type', // 禁用状态
 }
 
 /**

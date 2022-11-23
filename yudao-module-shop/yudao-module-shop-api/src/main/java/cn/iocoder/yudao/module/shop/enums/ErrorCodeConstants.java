@@ -33,5 +33,13 @@ public interface ErrorCodeConstants {
 
     ErrorCode PRODUCT_NOT_EXISTS = new ErrorCode(1022008001, "产品不存在");
 
+    ErrorCode BRANCH_GOODS_NOT_EXISTS = new ErrorCode(1022009001, "门店商品不存在");
+
+    ErrorCode BRANCH_STOCK_NOT_EXISTS = new ErrorCode(1022010001, "门店出入库不存在");
+
+    ErrorCode BRANCH_STOCK_ITEM_NOT_EXISTS = new ErrorCode(1022010002, "门店出入库明细不存在");
+
+
+
 
 }

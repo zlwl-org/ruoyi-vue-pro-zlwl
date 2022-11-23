@@ -52,3 +52,12 @@ export function exportProductExcel(query) {
     responseType: 'blob'
   })
 }
+
+
+// 获得产品分页
+export function getProducts() {
+  return request({
+    url: '/shop/product/list-all',
+    method: 'get',
+  })
+}

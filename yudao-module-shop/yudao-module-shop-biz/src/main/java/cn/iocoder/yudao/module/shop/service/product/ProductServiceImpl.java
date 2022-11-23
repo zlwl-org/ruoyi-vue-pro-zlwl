@@ -79,4 +79,9 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.selectList(exportReqVO);
     }
 
+    @Override
+    public List<ProductDO> getProducts() {
+        return productMapper.selectList();
+    }
+
 }
