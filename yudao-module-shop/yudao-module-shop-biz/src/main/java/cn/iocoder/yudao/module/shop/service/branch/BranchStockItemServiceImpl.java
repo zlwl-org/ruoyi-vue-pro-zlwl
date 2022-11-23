@@ -79,9 +79,4 @@ public class BranchStockItemServiceImpl implements BranchStockItemService {
         return branchStockItemMapper.selectList(exportReqVO);
     }
 
-    @Override
-    public void createBranchStockItems(List<BranchStockItemCreateReqVO> list) {
-
-    }
-
 }

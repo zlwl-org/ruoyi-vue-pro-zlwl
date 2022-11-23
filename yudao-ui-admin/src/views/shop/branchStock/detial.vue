@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <el-descriptions :column="2" border style="margin-bottom: 18px">
+      <el-descriptions-item label="表单编号" >{{ item.id }}</el-descriptions-item>
+      <el-descriptions-item label="店铺" >{{ item.branchName }}</el-descriptions-item>
+      <el-descriptions-item label="创建者" >{{ item.creator }}</el-descriptions-item>
+      <el-descriptions-item label="创建时间" >{{ parseTime(item.createTime) }}</el-descriptions-item>
+    </el-descriptions>
 
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
@@ -14,7 +20,6 @@
       <el-form-item label="商品编号" prop="productId">
         <el-input v-model="queryParams.productId" placeholder="请输入商品编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
@@ -28,7 +33,7 @@
           <dict-tag :type="DICT_TYPE.SHOP_STOCK_TYPE" :value="scope.row.type"/>
         </template>
       </el-table-column>
-      <el-table-column label="商品" align="center" prop="productId" />
+      <el-table-column label="商品" align="center" prop="productName" />
       <el-table-column label="数量" align="center" prop="amount" />
 
     </el-table>
@@ -42,9 +47,16 @@
 
 <script>
 import { createBranchStockItem, updateBranchStockItem, deleteBranchStockItem, getBranchStockItem, getBranchStockItemPage, exportBranchStockItemExcel } from "@/api/shop/branchStockItem";
+import item from '@/layout/components/Sidebar/Item'
 
 export default {
   name: "DetailBranchStock",
+  props: {
+    item: Object,
+    default () {
+      return {}
+    },
+  },
   components: {
   },
   data() {
@@ -83,10 +95,12 @@ export default {
         branchId: [{ required: true, message: "店铺编号不能为空", trigger: "blur" }],
         productId: [{ required: true, message: "商品编号不能为空", trigger: "blur" }],
         amount: [{ required: true, message: "数量不能为空", trigger: "blur" }],
-      }
+      },
+      data: {},
     };
   },
   created() {
+    console.log(this.item)
     this.getList();
   },
   methods: {
@@ -94,6 +108,7 @@ export default {
     getList() {
       this.loading = true;
       // 执行查询
+      this.queryParams.stockId = this.item.id;
       getBranchStockItemPage(this.queryParams).then(response => {
         this.list = response.data.list;
         this.total = response.data.total;

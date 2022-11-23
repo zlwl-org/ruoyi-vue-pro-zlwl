@@ -35,4 +35,7 @@ public class BranchStockItemExcelVO {
     @ExcelProperty("创建时间")
     private Date createTime;
 
+    @ExcelProperty("产品名称")
+    private String productName;
+
 }

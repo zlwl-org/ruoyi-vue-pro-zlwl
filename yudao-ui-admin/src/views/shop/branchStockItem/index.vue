@@ -24,6 +24,9 @@
         <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
                         range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
       </el-form-item>
+      <el-form-item label="产品名称" prop="productName">
+        <el-input v-model="queryParams.productName" placeholder="请输入产品名称" clearable @keyup.enter.native="handleQuery"/>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
@@ -56,6 +59,7 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="产品名称" align="center" prop="productName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
@@ -88,6 +92,9 @@
         </el-form-item>
         <el-form-item label="数量" prop="amount">
           <el-input v-model="form.amount" placeholder="请输入数量" />
+        </el-form-item>
+        <el-form-item label="产品名称" prop="productName">
+          <el-input v-model="form.productName" placeholder="请输入产品名称" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -131,6 +138,7 @@ export default {
         productId: null,
         amount: null,
         createTime: [],
+        productName: null,
       },
       // 表单参数
       form: {},
@@ -172,6 +180,7 @@ export default {
         branchId: undefined,
         productId: undefined,
         amount: undefined,
+        productName: undefined,
       };
       this.resetForm("form");
     },

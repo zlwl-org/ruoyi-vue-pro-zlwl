@@ -25,7 +25,7 @@
             </template>
           </el-table-column>
           <el-table-column label="商品编号" align="center" prop="productId"/>
-          <el-table-column label="商品名称" align="center" prop="name"/>
+          <el-table-column label="商品名称" align="center" prop="productName"/>
           <el-table-column label="数量" align="center" prop="amount">
             <template slot-scope="scope">
               <el-input v-if="scope.row.edit" v-model="scope.row.amount"></el-input>
@@ -281,7 +281,7 @@ export default {
       } else {
         let good = {
           productId: data.id,
-          name: data.name,
+          productName: data.name,
           amount: 1,
           type: 'in',
           edit: false

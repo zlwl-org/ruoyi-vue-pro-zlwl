@@ -25,6 +25,7 @@ public interface BranchStockItemMapper extends BaseMapperX<BranchStockItemDO> {
                 .eqIfPresent(BranchStockItemDO::getProductId, reqVO.getProductId())
                 .eqIfPresent(BranchStockItemDO::getAmount, reqVO.getAmount())
                 .betweenIfPresent(BranchStockItemDO::getCreateTime, reqVO.getCreateTime())
+                .likeIfPresent(BranchStockItemDO::getProductName, reqVO.getProductName())
                 .orderByDesc(BranchStockItemDO::getId));
     }
 
@@ -36,6 +37,7 @@ public interface BranchStockItemMapper extends BaseMapperX<BranchStockItemDO> {
                 .eqIfPresent(BranchStockItemDO::getProductId, reqVO.getProductId())
                 .eqIfPresent(BranchStockItemDO::getAmount, reqVO.getAmount())
                 .betweenIfPresent(BranchStockItemDO::getCreateTime, reqVO.getCreateTime())
+                .likeIfPresent(BranchStockItemDO::getProductName, reqVO.getProductName())
                 .orderByDesc(BranchStockItemDO::getId));
     }
 

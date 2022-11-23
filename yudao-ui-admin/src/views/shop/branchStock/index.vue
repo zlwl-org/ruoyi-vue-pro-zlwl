@@ -35,6 +35,7 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column label="表单编号" align="center" prop="id" />
       <el-table-column label="店铺" align="center" prop="branchId" :formatter="branchesFormat"/>
+      <el-table-column label="店铺" align="center" prop="branchName"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -66,8 +67,8 @@
     <el-dialog title="新增表单" :visible.sync="open"  v-dialogDrag append-to-body width="75%">
       <add-branch-stock @createdDone="createdDone" :branches="branches"></add-branch-stock>
     </el-dialog>
-    <el-dialog title="查看明细" :visible.sync="detail_open"  v-dialogDrag append-to-body width="80%">
-      <detail-branch-stock></detail-branch-stock>
+    <el-dialog title="表单明细" :visible.sync="detail_open"  v-dialogDrag append-to-body width="80%">
+      <detail-branch-stock :item="this.data"></detail-branch-stock>
     </el-dialog>
   </div>
 </template>
@@ -77,6 +78,7 @@ import { createBranchStock, updateBranchStock, deleteBranchStock, getBranchStock
 import AddBranchStock from '@/views/shop/branchStock/add'
 import DetailBranchStock from '@/views/shop/branchStock/detial'
 import { listSimpleBranches } from '@/api/shop/branch'
+import item from '@/layout/components/Sidebar/Item'
 
 export default {
   name: "BranchStock",
@@ -116,12 +118,13 @@ export default {
       },
       product_list: [],
       branches: [],
+      data: {},
     };
   },
   created() {
-    this.getList();
     listSimpleBranches().then(response =>{
       this.branches = response.data
+      this.getList();
     });
   },
   methods: {
@@ -130,9 +133,14 @@ export default {
       this.loading = true;
       // 执行查询
       getBranchStockPage(this.queryParams).then(response => {
-        this.list = response.data.list;
+        let data = response.data.list;
+        data.forEach( item => {
+          item.branchName = this.formatBranch(item.branchId)
+        })
+        this.list = data;
         this.total = response.data.total;
         this.loading = false;
+        console.log(this.list)
       });
     },
     /** 取消按钮 */
@@ -166,11 +174,13 @@ export default {
     /** 修改按钮操作 */
     handleDetail(row) {
       this.reset();
-      const id = row.id;
-      getBranchStock(id).then(response => {
-        this.form = response.data;
-        this.detail_open = true;
-      });
+      // const id = row.id;
+      // getBranchStock(id).then(response => {
+      //   this.form = response.data;
+      //   this.detail_open = true;
+      // });
+      this.data = row;
+      this.detail_open = true;
     },
     /** 提交按钮 */
     submitForm() {
@@ -233,6 +243,14 @@ export default {
         }
       }
       return '未知【' + row.branchId + '】';
+    },
+    formatBranch(branchId){
+      for (const branch of this.branches) {
+        if (branchId === branch.id) {
+          return branch.name;
+        }
+        return branchId;
+      }
     }
 
   }

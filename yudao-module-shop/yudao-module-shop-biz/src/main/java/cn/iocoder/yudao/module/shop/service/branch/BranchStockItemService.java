@@ -1,10 +1,15 @@
 package cn.iocoder.yudao.module.shop.service.branch;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockItemDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchStockItemCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchStockItemExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchStockItemPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchStockItemUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockItemDO;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 门店出入库明细 Service 接口
@@ -67,5 +72,4 @@ public interface BranchStockItemService {
      */
     List<BranchStockItemDO> getBranchStockItemList(BranchStockItemExportReqVO exportReqVO);
 
-    void createBranchStockItems(List<BranchStockItemCreateReqVO> list);
 }

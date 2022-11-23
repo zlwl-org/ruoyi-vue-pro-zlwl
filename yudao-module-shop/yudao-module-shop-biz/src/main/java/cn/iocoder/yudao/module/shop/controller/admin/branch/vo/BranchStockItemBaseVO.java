@@ -1,9 +1,9 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch.vo;
 
-import lombok.*;
-import java.util.*;
-import io.swagger.annotations.*;
-import javax.validation.constraints.*;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 /**
 * 门店出入库明细 Base VO，提供给添加、修改、详细的子 VO 使用
@@ -31,5 +31,8 @@ public class BranchStockItemBaseVO {
     @ApiModelProperty(value = "数量", required = true)
     @NotNull(message = "数量不能为空")
     private Integer amount;
+
+    @ApiModelProperty(value = "产品名称")
+    private String productName;
 
 }

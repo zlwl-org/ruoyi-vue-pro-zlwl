@@ -45,5 +45,9 @@ public class BranchStockItemDO extends BaseDO {
      * 数量
      */
     private Integer amount;
+    /**
+     * 产品名称
+     */
+    private String productName;
 
 }

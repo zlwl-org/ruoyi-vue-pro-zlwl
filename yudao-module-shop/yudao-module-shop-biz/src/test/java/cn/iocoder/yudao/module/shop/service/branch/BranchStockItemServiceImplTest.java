@@ -114,6 +114,7 @@ public class BranchStockItemServiceImplTest extends BaseDbUnitTest {
            o.setProductId(null);
            o.setAmount(null);
            o.setCreateTime(null);
+           o.setProductName(null);
        });
        branchStockItemMapper.insert(dbBranchStockItem);
        // 测试 stockId 不匹配
@@ -128,6 +129,8 @@ public class BranchStockItemServiceImplTest extends BaseDbUnitTest {
        branchStockItemMapper.insert(cloneIgnoreId(dbBranchStockItem, o -> o.setAmount(null)));
        // 测试 createTime 不匹配
        branchStockItemMapper.insert(cloneIgnoreId(dbBranchStockItem, o -> o.setCreateTime(null)));
+       // 测试 productName 不匹配
+       branchStockItemMapper.insert(cloneIgnoreId(dbBranchStockItem, o -> o.setProductName(null)));
        // 准备参数
        BranchStockItemPageReqVO reqVO = new BranchStockItemPageReqVO();
        reqVO.setStockId(null);
@@ -136,6 +139,7 @@ public class BranchStockItemServiceImplTest extends BaseDbUnitTest {
        reqVO.setProductId(null);
        reqVO.setAmount(null);
        reqVO.setCreateTime((new Date[]{}));
+       reqVO.setProductName(null);
 
        // 调用
        PageResult<BranchStockItemDO> pageResult = branchStockItemService.getBranchStockItemPage(reqVO);
@@ -156,6 +160,7 @@ public class BranchStockItemServiceImplTest extends BaseDbUnitTest {
            o.setProductId(null);
            o.setAmount(null);
            o.setCreateTime(null);
+           o.setProductName(null);
        });
        branchStockItemMapper.insert(dbBranchStockItem);
        // 测试 stockId 不匹配
@@ -170,6 +175,8 @@ public class BranchStockItemServiceImplTest extends BaseDbUnitTest {
        branchStockItemMapper.insert(cloneIgnoreId(dbBranchStockItem, o -> o.setAmount(null)));
        // 测试 createTime 不匹配
        branchStockItemMapper.insert(cloneIgnoreId(dbBranchStockItem, o -> o.setCreateTime(null)));
+       // 测试 productName 不匹配
+       branchStockItemMapper.insert(cloneIgnoreId(dbBranchStockItem, o -> o.setProductName(null)));
        // 准备参数
        BranchStockItemExportReqVO reqVO = new BranchStockItemExportReqVO();
        reqVO.setStockId(null);
@@ -178,6 +185,7 @@ public class BranchStockItemServiceImplTest extends BaseDbUnitTest {
        reqVO.setProductId(null);
        reqVO.setAmount(null);
        reqVO.setCreateTime((new Date[]{}));
+       reqVO.setProductName(null);
 
        // 调用
        List<BranchStockItemDO> list = branchStockItemService.getBranchStockItemList(reqVO);
