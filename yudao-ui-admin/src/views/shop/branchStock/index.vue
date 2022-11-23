@@ -3,8 +3,10 @@
 
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="店铺编号" prop="branchId">
-        <el-input v-model="queryParams.branchId" placeholder="请输入店铺编号" clearable @keyup.enter.native="handleQuery"/>
+      <el-form-item label="店铺" prop="branchId">
+        <el-select v-model="queryParams.branchId" placeholder="">
+          <el-option v-for="item in branches" :key="parseInt(item.id)" :label="item.name" :value="parseInt(item.id)" />
+        </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
@@ -31,8 +33,8 @@
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="库存编号" align="center" prop="id" />
-      <el-table-column label="店铺编号" align="center" prop="branchId" />
+      <el-table-column label="表单编号" align="center" prop="id" />
+      <el-table-column label="店铺" align="center" prop="branchId" :formatter="branchesFormat"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -61,10 +63,10 @@
 <!--        <el-button @click="cancel">取 消</el-button>-->
 <!--      </div>-->
 <!--    </el-dialog>-->
-    <el-dialog :title="title" :visible.sync="open"  v-dialogDrag >
-      <add-branch-stock></add-branch-stock>
+    <el-dialog title="新增表单" :visible.sync="open"  v-dialogDrag append-to-body width="75%">
+      <add-branch-stock @createdDone="createdDone" :branches="branches"></add-branch-stock>
     </el-dialog>
-    <el-dialog :title="title" :visible.sync="open"  v-dialogDrag >
+    <el-dialog title="查看明细" :visible.sync="detail_open"  v-dialogDrag append-to-body width="80%">
       <detail-branch-stock></detail-branch-stock>
     </el-dialog>
   </div>
@@ -74,6 +76,7 @@
 import { createBranchStock, updateBranchStock, deleteBranchStock, getBranchStock, getBranchStockPage, exportBranchStockExcel } from "@/api/shop/branchStock";
 import AddBranchStock from '@/views/shop/branchStock/add'
 import DetailBranchStock from '@/views/shop/branchStock/detial'
+import { listSimpleBranches } from '@/api/shop/branch'
 
 export default {
   name: "BranchStock",
@@ -112,10 +115,14 @@ export default {
         branchId: [{ required: true, message: "店铺编号不能为空", trigger: "blur" }],
       },
       product_list: [],
+      branches: [],
     };
   },
   created() {
     this.getList();
+    listSimpleBranches().then(response =>{
+      this.branches = response.data
+    });
   },
   methods: {
     /** 查询列表 */
@@ -155,7 +162,6 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加门店出入库";
     },
     /** 修改按钮操作 */
     handleDetail(row) {
@@ -163,8 +169,7 @@ export default {
       const id = row.id;
       getBranchStock(id).then(response => {
         this.form = response.data;
-        this.open = true;
-        this.title = "修改门店出入库";
+        this.detail_open = true;
       });
     },
     /** 提交按钮 */
@@ -214,6 +219,21 @@ export default {
           this.exportLoading = false;
         }).catch(() => {});
     },
+    createdDone(){
+      this.getList();
+      this.open = false;
+    },
+    branchesFormat(row, column) {
+      if (!row.branchId) {
+        return '未设置门店';
+      }
+      for (const branch of this.branches) {
+        if (row.branchId === branch.id) {
+          return branch.name;
+        }
+      }
+      return '未知【' + row.branchId + '】';
+    }
 
   }
 };

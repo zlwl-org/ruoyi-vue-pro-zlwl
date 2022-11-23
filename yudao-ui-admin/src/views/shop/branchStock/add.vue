@@ -2,18 +2,23 @@
   <div class="app-container">
 
     <!-- 操作工具栏 -->
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-        >新增
-        </el-button>
-      </el-col>
-    </el-row>
+    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form-item label="店铺" prop="branchId">
+        <el-select v-model="form.branchId" placeholder="">
+          <el-option v-for="item in branches" :key="parseInt(item.id)" :label="item.name" :value="parseInt(item.id)" />
+        </el-select>
+      </el-form-item>
+    </el-form>
+<!--      <el-col :span="1.5">-->
+<!--        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">-->
+<!--          打印日志-->
+<!--        </el-button>-->
+<!--      </el-col>-->
 
     <el-row :gutter="10">
       <el-col :span="16">
         <!-- 列表 -->
-        <el-table v-loading="loading" :data="list" @selection-change="selsChange">
+        <el-table v-loading="loading" :data="form_list" @selection-change="selsChange">
           <el-table-column label="出入库" align="center" prop="type">
             <template slot-scope="scope">
               <dict-tag :type="DICT_TYPE.SHOP_STOCK_TYPE" :value="scope.row.type"/>
@@ -113,10 +118,12 @@ import {
   exportBranchStockItemExcel
 } from '@/api/shop/branchStockItem'
 import { getProductPage, getProducts } from '@/api/shop/product'
-import { createBranchStock } from '@/api/shop/branchStock'
+import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
+import { listSimpleBranches } from '@/api/shop/branch'
 
 export default {
   name: 'AddBranchStock',
+  props:['branches'],
   components: {},
   data() {
     return {
@@ -129,7 +136,7 @@ export default {
       // 总条数
       total: 0,
       // 门店出入库明细列表
-      list: [],
+      form_list: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
@@ -155,24 +162,16 @@ export default {
         productId: [{ required: true, message: '商品编号不能为空', trigger: 'blur' }],
         amount: [{ required: true, message: '数量不能为空', trigger: 'blur' }]
       },
-      product_list: []
+      product_list: [],
+      // branches: [],
+
     }
   },
   created() {
-    // this.getList();
-    this.getProductList()
+    this.getProductList();
   },
   methods: {
-    /** 查询列表 */
-    getList() {
-      this.loading = true
-      // 执行查询
-      getBranchStockItemPage(this.queryParams).then(response => {
-        this.list = response.data.list
-        this.total = response.data.total
-        this.loading = false
-      })
-    },
+
     /** 取消按钮 */
     cancel() {
       this.open = false
@@ -190,11 +189,7 @@ export default {
       }
       this.resetForm('form')
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNo = 1
-      this.getList()
-    },
+
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm')
@@ -202,7 +197,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.list.forEach((item, index) => {
+      this.form_list.forEach((item, index) => {
         console.log(item)
       })
     },
@@ -221,19 +216,21 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      let data = {
-        branchId: 1,
-        list: this.list
-      }
-      createBranchStock(data).then(response => {
-        this.$modal.msgSuccess("新增成功");
-        this.open = false;
-        this.getList();
+      this.$refs["form"].validate(valid => {
+        if (!valid) {
+          return;
+        }
+        this.form.list = this.form_list
+        createBranchStock(this.form).then(response => {
+          this.$modal.msgSuccess("新增成功");
+          this.form_list = [];
+          this.$emit("createdDone")
+        });
       });
     },
     /** 删除按钮操作 */
     handleDelete(index) {
-      this.list.splice(index, 1)
+      this.form_list.splice(index, 1)
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -261,9 +258,9 @@ export default {
 
       //改变table
       let num = null
-      if (this.list.length !== 0) {
-        for (let index = 0; index < this.list.length; index++){
-          const item = this.list[index]
+      if (this.form_list.length !== 0) {
+        for (let index = 0; index < this.form_list.length; index++){
+          const item = this.form_list[index]
           if (item.productId === data.id) {
             num = index
             break
@@ -271,7 +268,7 @@ export default {
         }
       }
       if (num !== null) {
-        if (this.list[num].type !== 'in'){
+        if (this.form_list[num].type !== 'in'){
           this.$notify({
             title: "错误",
             message: "商品已添加出库",
@@ -280,7 +277,7 @@ export default {
           });
           return
         }
-        this.$set(this.list[num], 'amount', parseInt(this.list[num].amount) + 1)
+        this.$set(this.form_list[num], 'amount', parseInt(this.form_list[num].amount) + 1)
       } else {
         let good = {
           productId: data.id,
@@ -289,15 +286,15 @@ export default {
           type: 'in',
           edit: false
         }
-        this.list.push(good)
+        this.form_list.push(good)
       }
     },
     stock_out(data) {
       //改变table
       let num = null
-      if (this.list.length !== 0) {
-        for (let index = 0; index < this.list.length; index++){
-          const item = this.list[index]
+      if (this.form_list.length !== 0) {
+        for (let index = 0; index < this.form_list.length; index++){
+          const item = this.form_list[index]
           if (item.productId === data.id) {
             num = index
             break
@@ -305,7 +302,7 @@ export default {
         }
       }
       if (num !== null) {
-        if (this.list[num].type !== 'out'){
+        if (this.form_list[num].type !== 'out'){
           this.$notify({
             title: "错误",
             message: "商品已添加入库",
@@ -314,7 +311,7 @@ export default {
           });
           return
         }
-        this.$set(this.list[num], 'amount', parseInt(this.list[num].amount) + 1)
+        this.$set(this.form_list[num], 'amount', parseInt(this.form_list[num].amount) + 1)
       } else {
         let good = {
           productId: data.id,
@@ -323,7 +320,7 @@ export default {
           type: 'out',
           edit: false
         }
-        this.list.push(good)
+        this.form_list.push(good)
       }
     },
     getProductList() {

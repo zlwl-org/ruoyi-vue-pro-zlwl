@@ -1,30 +1,29 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch;
 
-import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.prepost.PreAuthorize;
-import io.swagger.annotations.*;
-
-import javax.validation.constraints.*;
-import javax.validation.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.IOException;
-
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
-import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
-
 import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockItemDO;
 import cn.iocoder.yudao.module.shop.convert.branch.BranchStockItemConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockItemDO;
 import cn.iocoder.yudao.module.shop.service.branch.BranchStockItemService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Api(tags = "管理后台 - 门店出入库明细")
 @RestController
@@ -62,7 +61,7 @@ public class BranchStockItemController {
     @GetMapping("/get")
     @ApiOperation("获得门店出入库明细")
     @ApiImplicitParam(name = "id", value = "编号", required = true, example = "1024", dataTypeClass = Long.class)
-    @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:query')")
+    @PreAuthorize("@ss.hasPermission('shop:branch-stock:query')")
     public CommonResult<BranchStockItemRespVO> getBranchStockItem(@RequestParam("id") Long id) {
         BranchStockItemDO branchStockItem = branchStockItemService.getBranchStockItem(id);
         return success(BranchStockItemConvert.INSTANCE.convert(branchStockItem));
@@ -71,7 +70,7 @@ public class BranchStockItemController {
     @GetMapping("/list")
     @ApiOperation("获得门店出入库明细列表")
     @ApiImplicitParam(name = "ids", value = "编号列表", required = true, example = "1024,2048", dataTypeClass = List.class)
-    @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:query')")
+    @PreAuthorize("@ss.hasPermission('shop:branch-stock:query')")
     public CommonResult<List<BranchStockItemRespVO>> getBranchStockItemList(@RequestParam("ids") Collection<Long> ids) {
         List<BranchStockItemDO> list = branchStockItemService.getBranchStockItemList(ids);
         return success(BranchStockItemConvert.INSTANCE.convertList(list));
@@ -79,7 +78,7 @@ public class BranchStockItemController {
 
     @GetMapping("/page")
     @ApiOperation("获得门店出入库明细分页")
-    @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:query')")
+    @PreAuthorize("@ss.hasPermission('shop:branch-stock:query')")
     public CommonResult<PageResult<BranchStockItemRespVO>> getBranchStockItemPage(@Valid BranchStockItemPageReqVO pageVO) {
         PageResult<BranchStockItemDO> pageResult = branchStockItemService.getBranchStockItemPage(pageVO);
         return success(BranchStockItemConvert.INSTANCE.convertPage(pageResult));
