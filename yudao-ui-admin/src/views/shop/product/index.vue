@@ -39,7 +39,7 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column label="产品编号" align="center" prop="id" />
       <el-table-column label="名称" align="center" prop="name" />
-      <el-table-column label="品牌名称" align="center" prop="brandName" />
+<!--      <el-table-column label="品牌名称" align="center" prop="brandName" />-->
       <el-table-column label="售价" align="center" prop="price" />
       <el-table-column label="市场价" align="center" prop="marketPrice" />
       <el-table-column label="成本价" align="center" prop="costPrice" />

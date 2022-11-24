@@ -9,12 +9,13 @@
         </el-select>
       </el-form-item>
     </el-form>
-<!--      <el-col :span="1.5">-->
-<!--        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">-->
-<!--          打印日志-->
-<!--        </el-button>-->
-<!--      </el-col>-->
-
+    <el-row :gutter="10">
+      <el-col :span="1.5">
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">
+          打印日志
+        </el-button>
+      </el-col>
+    </el-row>
     <el-row :gutter="10">
       <el-col :span="16">
         <!-- 列表 -->
@@ -315,7 +316,7 @@ export default {
       } else {
         let good = {
           productId: data.id,
-          name: data.name,
+          productName: data.name,
           amount: 1,
           type: 'out',
           edit: false

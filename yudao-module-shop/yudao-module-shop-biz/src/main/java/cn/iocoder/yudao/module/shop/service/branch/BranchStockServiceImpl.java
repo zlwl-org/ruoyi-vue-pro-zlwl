@@ -1,20 +1,20 @@
 package cn.iocoder.yudao.module.shop.service.branch;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
+import cn.iocoder.yudao.module.shop.convert.branch.BranchStockConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.product.ProductDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.branch.BranchStockMapper;
+import cn.iocoder.yudao.module.shop.service.product.ProductService;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-
-import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.branch.BranchStockConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.branch.BranchStockMapper;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
@@ -35,19 +35,58 @@ public class BranchStockServiceImpl implements BranchStockService {
     @Resource
     private BranchStockItemService itemService;
 
+    @Resource
+    private BranchGoodsService goodsService;
+
+    @Resource
+    private ProductService productService;
+
     @Override
     public Long createBranchStock(BranchStockCreateReqVO createReqVO) {
         // 插入
         BranchStockDO branchStock = BranchStockConvert.INSTANCE.convert(createReqVO);
         branchStockMapper.insert(branchStock);
         // 返回
+        // 插入item
         List<BranchStockItemCreateReqVO> list = createReqVO.getList();
         list.forEach(item -> {
             item.setBranchId(createReqVO.getBranchId());
             item.setStockId(branchStock.getId());
             itemService.createBranchStockItem(item);
+
+            BranchGoodsDO good = goodsService.getByBranchIdAndProductId(createReqVO.getBranchId(), item.getProductId());
+            // 出库
+            if (StockTypeEnum.OUT.getType().equals(item.getType())) {
+                if (good == null){
+                    throw exception(BRANCH_GOODS_NOT_EXISTS, item.getProductName());
+                }
+                if(good.getStock() - item.getAmount() < 0){
+                    throw exception(BRANCH_GOODS_NOT_ENOUGH, item.getProductName());
+                }
+                int result = goodsService.updateGoodStock(good.getId(), -item.getAmount());
+                if (result == 0){
+                    throw exception(BRANCH_GOODS_NOT_ENOUGH, item.getProductName());
+                }
+            } else { // 入库
+                if (good != null){
+                    goodsService.updateGoodStock(good.getId(), item.getAmount());
+                } else {
+                    ProductDO product = productService.getProduct(item.getProductId());
+                    if (product == null) {
+                        throw exception(PRODUCT_NOT_EXISTS);
+                    }
+
+                    BranchGoodsCreateReqVO goodVO = new BranchGoodsCreateReqVO();
+                    goodVO.setName(product.getName());
+                    goodVO.setPrice(product.getPrice());
+                    goodVO.setProductId(product.getId());
+                    goodVO.setBranchId(createReqVO.getBranchId());
+                    goodVO.setStock(item.getAmount());
+                    goodsService.createBranchGoods(goodVO);
+                }
+            }
+
         });
-//        itemService.createBranchStockItems(list);
         return branchStock.getId();
     }
 

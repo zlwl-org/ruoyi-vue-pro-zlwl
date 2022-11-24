@@ -45,22 +45,16 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column label="商品编号" align="center" prop="id" />
       <el-table-column label="商品名称" align="center" prop="name" />
-      <el-table-column label="售价" align="center" prop="price" />
-      <el-table-column label="产品编号" align="center" prop="productId" />
-      <el-table-column label="店铺编号" align="center" prop="branchId" />
       <el-table-column label="库存" align="center" prop="stock" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="售价(元)" align="center" prop="price" />
+      <el-table-column label="店铺" align="center" prop="branchId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['shop:branch-goods:update']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['shop:branch-goods:delete']">删除</el-button>
-        </template>
+<!--        <template slot-scope="scope">-->
+<!--          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"-->
+<!--                     v-hasPermi="['shop:branch-goods:update']">修改</el-button>-->
+<!--          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"-->
+<!--                     v-hasPermi="['shop:branch-goods:delete']">删除</el-button>-->
+<!--        </template>-->
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->

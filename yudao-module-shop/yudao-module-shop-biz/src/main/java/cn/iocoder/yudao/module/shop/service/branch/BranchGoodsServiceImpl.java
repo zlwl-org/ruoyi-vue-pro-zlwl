@@ -1,19 +1,22 @@
 package cn.iocoder.yudao.module.shop.service.branch;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.branch.BranchGoodsConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.branch.BranchGoodsMapper;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.branch.BranchGoodsConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.branch.BranchGoodsMapper;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.BRANCH_GOODS_NOT_EXISTS;
 
 /**
  * 门店商品 Service 实现类
@@ -77,6 +80,16 @@ public class BranchGoodsServiceImpl implements BranchGoodsService {
     @Override
     public List<BranchGoodsDO> getBranchGoodsList(BranchGoodsExportReqVO exportReqVO) {
         return branchGoodsMapper.selectList(exportReqVO);
+    }
+
+    @Override
+    public BranchGoodsDO getByBranchIdAndProductId(Long branchId, Long productId) {
+        return branchGoodsMapper.selectByBranchIdAndProductId(branchId, productId);
+    }
+
+    @Override
+    public int updateGoodStock(Long id, int i) {
+        return branchGoodsMapper.updateGoodStock(id, i);
     }
 
 }

@@ -1,10 +1,15 @@
 package cn.iocoder.yudao.module.shop.service.branch;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.BranchGoodsUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 门店商品 Service 接口
@@ -67,4 +72,7 @@ public interface BranchGoodsService {
      */
     List<BranchGoodsDO> getBranchGoodsList(BranchGoodsExportReqVO exportReqVO);
 
+    BranchGoodsDO getByBranchIdAndProductId(Long branchId, Long productId);
+
+    int updateGoodStock(Long id, int i);
 }
