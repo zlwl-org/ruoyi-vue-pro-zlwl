@@ -40,6 +40,9 @@ public interface ErrorCodeConstants {
 
     ErrorCode BRANCH_STOCK_ITEM_NOT_EXISTS = new ErrorCode(1022010002, "出入库明细不存在");
 
+    // ========== 门店订单 TODO 补充编号 ==========
+    ErrorCode ORDER_NOT_EXISTS = new ErrorCode(1022011001, "门店订单不存在");
+    ErrorCode ORDER_ITEM_NOT_EXISTS = new ErrorCode(1022011002, "门店订单明细不存在");
 
 
 

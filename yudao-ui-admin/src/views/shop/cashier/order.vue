@@ -77,7 +77,7 @@
         <!--   购物车     -->
         <el-row style="border: 1px solid #ebebeb;padding: 10px">
           <div style="float: right;">
-            <el-button type="primary" @click="openSettlement">收款<span>{{ handleTotal() }}</span></el-button>
+            <el-button type="primary" @click="openSettlement">下单<span>{{ handleTotal() }}</span></el-button>
           </div>
         </el-row>
       </el-col>
@@ -390,7 +390,7 @@ export default {
       this.settle_dialog = true
     },
     submitSettle(){
-      
+
     }
 
   }
