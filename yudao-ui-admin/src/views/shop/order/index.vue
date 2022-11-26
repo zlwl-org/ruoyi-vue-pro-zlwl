@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <!-- 搜索工作栏 -->
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" v-if="mode" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="会员编号" prop="memberId">
         <el-input v-model="queryParams.memberId" placeholder="请输入会员编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -54,12 +54,15 @@
     </el-form>
 
     <!-- 操作工具栏 -->
-    <el-row :gutter="10" class="mb8">
+    <el-row  :gutter="10" class="mb8">
       <el-col :span="1.5">
+        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
+      </el-col>
+      <el-col  v-if="mode" :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
                    v-hasPermi="['shop:order:create']">新增</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <el-col  v-if="mode" :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" :loading="exportLoading"
                    v-hasPermi="['shop:order:export']">导出</el-button>
       </el-col>
@@ -69,13 +72,14 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
       <el-table-column label="订单编号" align="center" prop="id" />
-      <el-table-column label="会员编号" align="center" prop="memberId" />
+      <el-table-column label="会员" align="center" prop="memberId" />
       <el-table-column label="订单类型" align="center" prop="orderType">
         <template slot-scope="scope">
           <dict-tag :type="DICT_TYPE.SHOP_ORDER_TYPE" :value="scope.row.orderType" />
         </template>
       </el-table-column>
-      <el-table-column label="订单交易号" align="center" prop="orderNo" />
+      <el-table-column label="订单总价" align="center" prop="price" />
+      <!--      <el-table-column label="订单交易号" align="center" prop="orderNo" />-->
       <el-table-column label="订单状态" align="center" prop="orderStatus">
         <template slot-scope="scope">
           <dict-tag :type="DICT_TYPE.SHOP_ORDER_STATUS" :value="scope.row.orderStatus" />
@@ -97,10 +101,9 @@
         </template>
       </el-table-column>
       <el-table-column label="收银员" align="center" prop="cashier" />
-      <el-table-column label="商品总价" align="center" prop="price" />
-      <el-table-column label="余额实付金额" align="center" prop="balancePay" />
-      <el-table-column label="现金实付金额" align="center" prop="cashPay" />
-      <el-table-column label="店铺编号" align="center" prop="branchId" />
+<!--      <el-table-column label="余额实付金额" align="center" prop="balancePay" />-->
+<!--      <el-table-column label="现金实付金额" align="center" prop="cashPay" />-->
+      <el-table-column label="店铺" align="center" prop="branchId" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -108,9 +111,11 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+          <el-button  v-if="!mode" size="mini" type="text" icon="el-icon-edit" @click="handleSettle(scope.row)"
+                     v-hasPermi="['shop:order:update']">结算</el-button>
+          <el-button  v-if="mode" size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
                      v-hasPermi="['shop:order:update']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+          <el-button  v-if="mode" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                      v-hasPermi="['shop:order:delete']">删除</el-button>
         </template>
       </el-table-column>
@@ -195,7 +200,10 @@
 import { createOrder, updateOrder, deleteOrder, getOrder, getOrderPage, exportOrderExcel } from "@/api/shop/order";
 
 export default {
-  name: "Order",
+  name: "ShopOrder",
+  props: {
+    mode: true,
+  },
   components: {
   },
   data() {
@@ -351,6 +359,9 @@ export default {
           this.$download.excel(response, '门店订单.xls');
           this.exportLoading = false;
         }).catch(() => {});
+    },
+    handleSettle(row){
+      this.$emit("settle", row.id);
     }
   }
 };

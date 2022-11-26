@@ -54,11 +54,11 @@
           <el-row v-for="item in cart" :key="item.id">
             <el-col style="flex-grow: inherit;">
               <div style="margin-bottom: 3px">
-                <el-link :underline="false">{{ item.name }}</el-link>
+                <el-link :underline="false">{{ item.goodName }}</el-link>
                 <el-link type="primary" style="float: right;">删除</el-link>
               </div>
               <div>
-                <el-link :underline="false">{{ '¥  ' + item.price }}</el-link>
+                <el-link :underline="false">{{ '¥  ' + item.goodPrice }}</el-link>
                 <div style="float: right;">
                   <el-button icon="el-icon-minus" size="mini" style="margin-right: 5px"
                              :disabled.sync="item.amount === 1" @click="minusAmount(item)"
@@ -77,7 +77,7 @@
         <!--   购物车     -->
         <el-row style="border: 1px solid #ebebeb;padding: 10px">
           <div style="float: right;">
-            <el-button type="primary" @click="openSettlement">下单<span>{{ handleTotal() }}</span></el-button>
+            <el-button type="primary" @click="submitOrder">下单<span>{{ handleTotal() }}</span></el-button>
           </div>
         </el-row>
       </el-col>
@@ -124,58 +124,16 @@
         />
       </el-col>
     </el-row>
+    <el-row style="border: 1px solid #ebebeb">
+      <shop-order :mode="false" @settle="handleSettle"/>
+    </el-row>
 
     <el-dialog title="会员列表" :visible.sync="member_dialog" width="70%" v-dialogDrag append-to-body>
       <cashier-member @memberSelected="memberSelected"/>
     </el-dialog>
 
     <el-dialog title="结算" :visible.sync="settle_dialog" width="70%" append-to-body>
-      <span>{{'费用总额：' + this.handleTotal()}}</span>
-      <el-divider/>
-      <el-descriptions class="margin-top" title="会员信息" :column="2" size="mini" border>
-        <template slot="extra">
-          <el-button type="primary" size="small" @click="open_member_dialog">查询会员</el-button>
-        </template>
-        <el-descriptions-item v-if="!member">
-          <template slot="label">
-            昵称
-          </template>
-          散客
-        </el-descriptions-item>
-        <el-descriptions-item v-if="member">
-          <template slot="label">
-            昵称
-          </template>
-          {{ member.nickname || '无' }}
-        </el-descriptions-item>
-
-        <el-descriptions-item v-if="member">
-          <template slot="label">
-            <a style="color: #20a5f9" @click="open_recharge_dialog">充值</a>余额
-          </template>
-          {{ member.balance }}
-        </el-descriptions-item>
-        <el-descriptions-item v-if="member">
-          <template slot="label">
-            手机
-          </template>
-          {{ member.mobile }}
-        </el-descriptions-item>
-        <el-descriptions-item v-if="member">
-          <template slot="label">
-            赠送余额
-          </template>
-          {{ member.gift }}
-        </el-descriptions-item>
-      </el-descriptions>
-      <el-divider/>
-      <h3>支付方式</h3>
-      <span>余额支付</span>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitSettle">确 定</el-button>
-        <el-button @click="settle_dialog=false">取 消</el-button>
-      </div>
-
+      <cashier-settle :order-id.sync="orderId"></cashier-settle>
     </el-dialog>
 
     <el-dialog title="会员充值" :visible.sync="recharge_dialog" width="500px" v-dialogDrag append-to-body>
@@ -222,10 +180,15 @@ import CashierMember from '@/views/shop/cashier/member'
 import { listSimpleBranches } from '@/api/shop/branch'
 import { getBranchGoodsPage } from '@/api/shop/branchGoods'
 import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
+import { createOrder } from '@/api/shop/order'
+import CashierSettle from '@/views/shop/cashier/settle'
+import ShopOrder from '@/views/shop/order'
 
 export default {
   name: 'CashierMemberAccountLog',
   components: {
+    ShopOrder,
+    CashierSettle,
     CashierMember
   },
   data() {
@@ -248,8 +211,7 @@ export default {
       queryParams: {
         pageNo: 1,
         pageSize: 10,
-        memberId: null,
-        action: null,
+        branchId: null,
         createTime: []
       },
       // 表单参数
@@ -276,7 +238,8 @@ export default {
       settle_dialog: false,
       recharge_dialog: false,
       cart: [],
-      branches: []
+      branches: [],
+      orderId: null,
     }
   },
   created() {
@@ -338,13 +301,13 @@ export default {
       this.member = data
       this.member_dialog = false
     },
-    handleTotal() {
+    handleTotal(prefix=false) {
       if (this.cart.length > 0) {
         let sum = 0
-        this.cart.map(item => sum = sum + item.amount * item.price)
-        return ' ¥  ' + sum
+        this.cart.map(item => sum = sum + item.amount * item.goodPrice)
+        return prefix? sum : ' ¥  ' + sum
       } else {
-        return ''
+        return null
       }
     },
     clearCart() {
@@ -373,9 +336,9 @@ export default {
       } else {
         let good = {
           goodId: row.id,
-          name: row.name,
+          goodName: row.name,
           amount: 1,
-          price: row.price
+          goodPrice: row.price
         }
         this.cart.push(good)
       }
@@ -390,6 +353,29 @@ export default {
       this.settle_dialog = true
     },
     submitSettle(){
+
+    },
+    submitOrder(){
+      let data = {
+        memberId: this.member.id,
+        orderType: 'cashier',
+        cashier: '',
+        price: this.handleTotal(true),
+        branchId: this.queryParams.branchId,
+        items: this.cart
+      }
+      createOrder(data).then(response => {
+        this.$modal.msgSuccess("下单成功");
+        this.orderId = response.data;
+        this.settle_dialog = true;
+        // this.getList();
+      });
+    },
+    handleSettle(orderId){
+      this.orderId = orderId;
+      this.settle_dialog = true;
+    },
+    submitRecharge(){
 
     }
 

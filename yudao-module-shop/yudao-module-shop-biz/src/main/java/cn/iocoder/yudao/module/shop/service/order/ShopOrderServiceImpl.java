@@ -1,24 +1,25 @@
 package cn.iocoder.yudao.module.shop.service.order;
 
-import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.ORDER_NOT_EXISTS;
 
 /**
  * 门店订单 Service 实现类
@@ -59,24 +60,24 @@ public class ShopOrderServiceImpl implements ShopOrderService {
 
         // 结算
         // 是否会员购买，会员购买判断余额
-        if (createReqVO.getMemberId() != null) {
-            // 获取当前余额
-            ShopMemberDO member = memberService.getMember(createReqVO.getMemberId());
-            if (member == null) {
-                throw exception(MEMBER_NOT_EXISTS);
-            }
-            if (member.getBalance().add(member.getGift()).compareTo(createReqVO.getBalancePay()) == -1) {
-                throw exception(MEMBER_BALANCE_NOT_ENOUGH);
-            }
-
-            memberAccountService.shopping(order, member);
-        }
-
-        order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
-        order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
-        order.setPayTime(new Date());
-
-        orderMapper.updateById(order);
+//        if (createReqVO.getMemberId() != null) {
+//            // 获取当前余额
+//            ShopMemberDO member = memberService.getMember(createReqVO.getMemberId());
+//            if (member == null) {
+//                throw exception(MEMBER_NOT_EXISTS);
+//            }
+//            if (member.getBalance().add(member.getGift()).compareTo(createReqVO.getBalancePay()) == -1) {
+//                throw exception(MEMBER_BALANCE_NOT_ENOUGH);
+//            }
+//
+//            memberAccountService.shopping(order, member);
+//        }
+//
+//        order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
+//        order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
+//        order.setPayTime(new Date());
+//
+//        orderMapper.updateById(order);
 
         // 返回
         return order.getId();

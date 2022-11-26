@@ -1,30 +1,32 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order;
 
-import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.prepost.PreAuthorize;
-import io.swagger.annotations.*;
-
-import javax.validation.constraints.*;
-import javax.validation.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.IOException;
-
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
-import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
-
 import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
+import cn.iocoder.yudao.module.shop.convert.member.ShopMemberConvert;
 import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
+import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
 import cn.iocoder.yudao.module.shop.service.order.ShopOrderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Api(tags = "管理后台 - 门店订单")
 @RestController
@@ -34,6 +36,9 @@ public class ShopOrderController {
 
     @Resource
     private ShopOrderService orderService;
+
+    @Resource
+    private ShopMemberService memberService;
 
     @PostMapping("/create")
     @ApiOperation("创建门店订单")
@@ -65,7 +70,12 @@ public class ShopOrderController {
     @PreAuthorize("@ss.hasPermission('shop:order:query')")
     public CommonResult<ShopOrderRespVO> getOrder(@RequestParam("id") Long id) {
         ShopOrderDO order = orderService.getOrder(id);
-        return success(ShopOrderConvert.INSTANCE.convert(order));
+        ShopOrderRespVO vo = ShopOrderConvert.INSTANCE.convert(order);
+        if (order.getMemberId()!= null) {
+            ShopMemberDO member = memberService.getMember(order.getMemberId());
+            vo.setMember(ShopMemberConvert.INSTANCE.convert(member));
+        }
+        return success(vo);
     }
 
     @GetMapping("/list")
