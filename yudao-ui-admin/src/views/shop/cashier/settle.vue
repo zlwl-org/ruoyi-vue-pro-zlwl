@@ -45,7 +45,7 @@
     </el-row>
     <div slot="footer" class="dialog-footer" v-if="order.orderStatus !== 'done'">
       <el-button type="primary" @click="submitSettle">确 定</el-button>
-      <el-button @click="settle_dialog=false">取 消</el-button>
+      <el-button @click="cancel">取 消</el-button>
     </div>
 
   </div>
@@ -151,8 +151,7 @@ export default {
     },
     /** 取消按钮 */
     cancel() {
-      this.open = false
-      this.reset()
+      this.$emit("cancel")
     },
     /** 表单重置 */
     reset() {

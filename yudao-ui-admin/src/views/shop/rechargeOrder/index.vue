@@ -295,7 +295,7 @@ export default {
           return member.nickname || member.mobile;
         }
       }
-      return '未知【' + row.salesman + '】';
+      return '未知【' + row.memberId + '】';
     },
   }
 };

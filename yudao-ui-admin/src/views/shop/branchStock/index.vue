@@ -140,7 +140,6 @@ export default {
         this.list = data;
         this.total = response.data.total;
         this.loading = false;
-        console.log(this.list)
       });
     },
     /** 取消按钮 */

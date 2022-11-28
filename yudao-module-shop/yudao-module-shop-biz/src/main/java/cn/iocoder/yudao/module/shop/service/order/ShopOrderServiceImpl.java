@@ -7,6 +7,7 @@ import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
 import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
+import cn.iocoder.yudao.module.shop.service.branch.BranchGoodsService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public class ShopOrderServiceImpl implements ShopOrderService {
 
     @Resource
     private ShopMemberAccountService memberAccountService;
+    @Resource
+    private BranchGoodsService goodsService;
 
     @Override
     public Long createOrder(ShopOrderCreateReqVO createReqVO) {
@@ -57,29 +60,12 @@ public class ShopOrderServiceImpl implements ShopOrderService {
             item.setOrderId(order.getId());
             item.setMemberId(order.getMemberId());
             itemService.createOrderItem(item);
+            // 扣减库存
+            int result = goodsService.updateGoodStock(item.getGoodId(), -item.getAmount());
+            if (result == 0){
+                throw exception(BRANCH_GOODS_NOT_ENOUGH, item.getGoodName());
+            }
         });
-
-        // 结算
-        // 是否会员购买，会员购买判断余额
-//        if (createReqVO.getMemberId() != null) {
-//            // 获取当前余额
-//            ShopMemberDO member = memberService.getMember(createReqVO.getMemberId());
-//            if (member == null) {
-//                throw exception(MEMBER_NOT_EXISTS);
-//            }
-//            if (member.getBalance().add(member.getGift()).compareTo(createReqVO.getBalancePay()) == -1) {
-//                throw exception(MEMBER_BALANCE_NOT_ENOUGH);
-//            }
-//
-//            memberAccountService.shopping(order, member);
-//        }
-//
-//        order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
-//        order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
-//        order.setPayTime(new Date());
-//
-//        orderMapper.updateById(order);
-
         // 返回
         return order.getId();
     }

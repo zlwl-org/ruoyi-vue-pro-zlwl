@@ -4,19 +4,21 @@
     <el-row style="display: flex; height: 100%">
       <el-col style="width: 400px;border: 1px solid #ebebeb">
         <el-row style="border: 1px solid #ebebeb;padding: 10px">
-          <!--    会员信息    -->
-          <el-descriptions class="margin-top" title="会员信息" :column="2" size="mini" border>
+          <el-descriptions class="margin-top" title="会员信息" :column="1" size="mini" border
+          :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center', 'font-weight': 'bold'}">
             <template slot="extra">
-              <el-button type="warning" size="small" @click="open_member_dialog" v-if="member">充值</el-button>
-              <el-button type="success" size="small" @click="open_member_dialog">查询</el-button>
+<!--              <el-button type="danger" size="mini" @click="resetMember" v-if="!member">新建</el-button>-->
+              <el-button type="danger" size="mini" @click="resetMember" v-if="member">散客</el-button>
+              <el-button type="success" size="mini" @click="openMemberDialog">查询</el-button>
             </template>
             <el-descriptions-item v-if="!member" label="昵称">散客</el-descriptions-item>
-            <el-descriptions-item v-if="member" label="昵称">{{ member.nickname || '无' }}</el-descriptions-item>
+            <el-descriptions-item v-if="member" label="昵称">{{  member.name || member.nickname || '无昵称' }}</el-descriptions-item>
             <el-descriptions-item v-if="member" label="储值余额">{{ member.balance + '  元' }}</el-descriptions-item>
             <el-descriptions-item v-if="member" label="手机">{{ member.mobile }}</el-descriptions-item>
           </el-descriptions>
-
-
+          <el-row style="margin-top: 10px">
+            <el-button type="primary" size="mini" @click="openRechargeDialog" v-if="member">充值</el-button>
+          </el-row>
         </el-row>
         <!--   购物车     -->
         <el-row style="border: 1px solid #ebebeb;padding: 10px; height: 500px">
@@ -98,36 +100,34 @@
       </el-col>
     </el-row>
     <el-row style="border: 1px solid #ebebeb">
-      <shop-order :mode="false" @settle="handleSettle"/>
+      <shop-order ref="orderList" :mode="false" @settle="handleSettle"/>
     </el-row>
 
     <el-dialog title="会员列表" :visible.sync="member_dialog" width="70%" v-dialogDrag append-to-body>
       <cashier-member @memberSelected="memberSelected"/>
     </el-dialog>
 
-    <el-dialog title="结算" :visible.sync="settle_dialog" width="70%" append-to-body>
-      <cashier-settle :order-id.sync="orderId"></cashier-settle>
+    <el-dialog title="订单结算" :visible.sync="settle_dialog" width="70%" append-to-body @close="cancelSettle">
+      <cashier-settle :order-id.sync="orderId" @cancel="cancelSettle"></cashier-settle>
     </el-dialog>
 
     <el-dialog title="会员充值" :visible.sync="recharge_dialog" width="500px" v-dialogDrag append-to-body>
-      <el-form ref="form" :model="recharge_form" :rules="recharge_rules" label-width="80px">
-        <el-form-item label="充值金额" prop="rechargeAmount">
-          <el-input v-model="recharge_form.rechargeAmount" placeholder="请输入充值金额"/>
+      <el-form ref="recharge_form" :model="recharge_form" :rules="recharge_rules" label-width="80px">
+        <el-form-item label="会员编号" prop="memberId">
+          <el-input v-model="recharge_form.memberId" placeholder="请输入会员编号" readonly/>
+        </el-form-item>
+        <el-form-item label="会员" prop="member">
+          <el-input v-model="recharge_form.member" placeholder="请输入会员" readonly/>
+        </el-form-item>
+        <el-form-item label="充值金额" prop="amount">
+          <el-input v-model="recharge_form.amount" placeholder="请输入充值金额"/>
         </el-form-item>
         <el-form-item label="支付方式" prop="payType">
           <el-select v-model="recharge_form.payType" placeholder="请选择支付方式">
-            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.PAY_CHANNEL_CODE_TYPE)"
+            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_RECHARGE_PAY_TYPE)"
                        :key="dict.value" :label="dict.label" :value="dict.value"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="支付状态" prop="status">
-          <el-radio-group v-model="recharge_form.status">
-            <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.PAY_ORDER_STATUS)"
-                      :key="dict.value" :label="parseInt(dict.value)"
-            >{{ dict.label }}
-            </el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -141,25 +141,20 @@
 
 </style>
 <script>
-import {
-  createMemberAccountLog,
-  updateMemberAccountLog,
-  deleteMemberAccountLog,
-  getMemberAccountLog,
-  getMemberAccountLogPage,
-  exportMemberAccountLogExcel
-} from '@/api/shop/memberAccountLog'
 import CashierMember from '@/views/shop/cashier/member'
 import { listSimpleBranches } from '@/api/shop/branch'
 import { getBranchGoodsPage } from '@/api/shop/branchGoods'
-import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
 import { createOrder } from '@/api/shop/order'
 import CashierSettle from '@/views/shop/cashier/settle'
 import ShopOrder from '@/views/shop/order'
+import CashierMemberInfo from '@/views/shop/cashier/memberInfo'
+import { createRechargeOrder } from '@/api/shop/rechargeOrder'
+import { getMember } from '@/api/shop/member'
 
 export default {
   name: 'CashierMemberAccountLog',
   components: {
+    CashierMemberInfo,
     ShopOrder,
     CashierSettle,
     CashierMember
@@ -240,16 +235,10 @@ export default {
     },
     /** 表单重置 */
     reset() {
-      this.form = {
-        id: undefined,
-        action: undefined,
-        balance: undefined,
-        gift: undefined,
-        point: undefined,
-        growth: undefined,
-        info: undefined
-      }
-      this.resetForm('form')
+      this.cart = [];
+      this.member = null;
+      this.getList();
+      this.$refs.orderList.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -266,11 +255,10 @@ export default {
       this.resetForm('queryForm')
       this.handleQuery()
     },
-    open_member_dialog() {
+    openMemberDialog() {
       this.member_dialog = true
     },
     memberSelected(data) {
-      console.log(data)
       this.member = data
       this.member_dialog = false
     },
@@ -286,11 +274,11 @@ export default {
     clearCart() {
       this.cart = []
     },
-    open_recharge_dialog() {
+    openRechargeDialog() {
+      this.resetRechargeForm()
+      this.recharge_form.memberId = this.member.id;
+      this.recharge_form.member = this.member.name || this.member.nickname || '无昵称';
       this.recharge_dialog = true
-    },
-    recharge() {
-
     },
     selectGood(row) {
       let num = null
@@ -325,12 +313,13 @@ export default {
     openSettlement(){
       this.settle_dialog = true
     },
-    submitSettle(){
-
+    cancelSettle(){
+      this.settle_dialog = false;
+      this.reset();
     },
     submitOrder(){
       let data = {
-        memberId: this.member.id,
+        memberId: this.member ? this.member.id : null,
         orderType: 'cashier',
         cashier: '',
         price: this.handleTotal(true),
@@ -340,8 +329,8 @@ export default {
       createOrder(data).then(response => {
         this.$modal.msgSuccess("下单成功");
         this.orderId = response.data;
+        // 进入订单结算
         this.settle_dialog = true;
-        // this.getList();
       });
     },
     handleSettle(orderId){
@@ -349,8 +338,35 @@ export default {
       this.settle_dialog = true;
     },
     submitRecharge(){
-
-    }
+      this.$refs["recharge_form"].validate(valid => {
+        if (!valid) {
+          return;
+        }
+        // 添加的提交
+        createRechargeOrder(this.recharge_form).then(response => {
+          this.$modal.msgSuccess("充值成功");
+          this.recharge_dialog = false
+          getMember(this.member.id).then( response => {
+            this.member = response.data
+          })
+        });
+      });
+    },
+    resetMember(){
+      this.member = null
+    },
+    resetRechargeForm() {
+      this.recharge_form = {
+        id: undefined,
+        memberId: undefined,
+        amount: undefined,
+        rechargeId: undefined,
+        rechargeName: undefined,
+        payType: 'wx_pay',
+        payStatus: 10,
+      };
+      this.resetForm("recharge_form");
+    },
 
   }
 }

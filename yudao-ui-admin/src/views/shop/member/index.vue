@@ -124,15 +124,15 @@
                        :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
           </el-select>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
-                      :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="店铺编号" prop="branchId">
-          <el-input v-model="form.branchId" placeholder="请输入店铺编号" />
-        </el-form-item>
+<!--        <el-form-item label="状态" prop="status">-->
+<!--          <el-radio-group v-model="form.status">-->
+<!--            <el-radio v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"-->
+<!--                      :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>-->
+<!--          </el-radio-group>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="店铺编号" prop="branchId">-->
+<!--          <el-input v-model="form.branchId" placeholder="请输入店铺编号" />-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>

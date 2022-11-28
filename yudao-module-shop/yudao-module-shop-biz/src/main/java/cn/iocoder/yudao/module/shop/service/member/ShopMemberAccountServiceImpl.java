@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 
-import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-
 @Slf4j
 @Service
 @Transactional
@@ -34,28 +32,33 @@ public class ShopMemberAccountServiceImpl implements ShopMemberAccountService {
         recharge.setBalance(rechargeOrder.getAmount());
         recharge.setGift(BigDecimal.ZERO);
 
+        BigDecimal change;
         if (bestRecharge != null){
             recharge.setPoint(bestRecharge.getPoint());
             recharge.setGrowth(bestRecharge.getGrowth());
-        } else {
-            recharge.setPoint(BigDecimal.ZERO);
-            recharge.setGrowth(BigDecimal.ZERO);
-        }
-        memberAccountLogService.createMemberAccountLog(recharge);
 
-        MemberAccountLogCreateReqVO gift= new MemberAccountLogCreateReqVO();
-        gift.setAction("recharge_gift");
-        gift.setRelatedId(rechargeOrder.getId());
-        gift.setMemberId(rechargeOrder.getMemberId());
-        gift.setBalance(bestRecharge.getGift());
-        gift.setGift(BigDecimal.ZERO);
-
+            // 符合充值活动，生成赠送流水
+            MemberAccountLogCreateReqVO gift= new MemberAccountLogCreateReqVO();
+            gift.setAction("recharge_gift");
+            gift.setRelatedId(rechargeOrder.getId());
+            gift.setMemberId(rechargeOrder.getMemberId());
+            gift.setBalance(bestRecharge.getGift());
+            gift.setGift(BigDecimal.ZERO);
             gift.setPoint(BigDecimal.ZERO);
             gift.setGrowth(BigDecimal.ZERO);
 
-        memberAccountLogService.createMemberAccountLog(gift);
+            memberAccountLogService.createMemberAccountLog(gift);
 
-        BigDecimal change = NumberUtil.add(recharge.getBalance(), gift.getBalance());
+            change = NumberUtil.add(recharge.getBalance(), gift.getBalance());
+        } else {
+            recharge.setPoint(BigDecimal.ZERO);
+            recharge.setGrowth(BigDecimal.ZERO);
+
+            change = recharge.getBalance();
+        }
+        memberAccountLogService.createMemberAccountLog(recharge);
+
+
 
         // 更新主表
         int i = memberService.updateMemberBalance(rechargeOrder.getMemberId(),change);

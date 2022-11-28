@@ -17,10 +17,16 @@
         <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <!-- 操作工具栏 -->
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
+                   v-hasPermi="['shop:member:create']">新增</el-button>
+      </el-col>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="list">
-      <el-table-column label="会员编号" align="center" prop="id" />
+    <el-table v-loading="loading" :data="list"  @row-dblclick="handleSelect">
       <el-table-column label="姓名" align="center" prop="name" />
       <el-table-column label="昵称" align="center" prop="nickname" />
       <el-table-column label="手机号" align="center" prop="mobile" >
@@ -30,10 +36,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="充值余额" align="center" prop="balance" />
-      <el-table-column label="赠送余额" align="center" prop="gift" />
-      <el-table-column label="积分" align="center" prop="point" />
-
+      <el-table-column label="储值余额" align="center" prop="balance" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text"  @click="handleSelect(scope.row)">选择</el-button>
@@ -67,15 +70,15 @@
                        :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
           </el-select>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"
-                      :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="店铺编号" prop="branchId">
-          <el-input v-model="form.branchId" placeholder="请输入店铺编号" />
-        </el-form-item>
+<!--        <el-form-item label="状态" prop="status">-->
+<!--          <el-radio-group v-model="form.status">-->
+<!--            <el-radio v-for="dict in getDictDatas(DICT_TYPE.SHOP_MEMBER_STATUS)"-->
+<!--                      :key="dict.value" :label="parseInt(dict.value)">{{dict.label}}</el-radio>-->
+<!--          </el-radio-group>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="店铺编号" prop="branchId">-->
+<!--          <el-input v-model="form.branchId" placeholder="请输入店铺编号" />-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>

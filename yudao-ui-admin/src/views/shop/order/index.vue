@@ -4,7 +4,7 @@
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="会员" prop="memberId">
-        <el-input v-model="queryParams.memberId" placeholder="请输入会员编号" clearable @keyup.enter.native="handleQuery"/>
+        <el-input v-model="queryParams.memberId" placeholder="请输入会员" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType">
         <el-select v-model="queryParams.orderType" placeholder="请选择订单类型" clearable size="small">
@@ -72,7 +72,7 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
       <el-table-column label="订单编号" align="center" prop="id" />
-      <el-table-column label="会员" align="center" prop="memberId" />
+      <el-table-column label="会员" align="center" prop="member"/>
       <el-table-column label="订单类型" align="center" prop="orderType">
         <template slot-scope="scope">
           <dict-tag :type="DICT_TYPE.SHOP_ORDER_TYPE" :value="scope.row.orderType" />
@@ -198,6 +198,7 @@
 
 <script>
 import { createOrder, updateOrder, deleteOrder, getOrder, getOrderPage, exportOrderExcel } from "@/api/shop/order";
+import { getMemberByUser } from '@/api/shop/member'
 
 export default {
   name: "ShopOrder",
@@ -245,12 +246,16 @@ export default {
       // 表单校验
       rules: {
         branchId: [{ required: true, message: "店铺编号不能为空", trigger: "blur" }],
-      }
+      },
+      memberList: [],
     };
   },
   created() {
-    this.getList();
-    console.log(this.mode)
+    getMemberByUser().then(response => {
+      this.memberList = response.data
+      this.getList();
+    })
+
     if (!this.mode){
       this.showSearch = false
     }
@@ -258,10 +263,24 @@ export default {
   methods: {
     /** 查询列表 */
     getList() {
+      console.log(this.memberList)
       this.loading = true;
       // 执行查询
       getOrderPage(this.queryParams).then(response => {
-        this.list = response.data.list;
+        let data = response.data.list;
+        data.forEach(item => {
+          if (!item.memberId) {
+            item.member = '散客';
+          } else {
+            for (let member of this.memberList){
+              if (member.id === item.memberId) {
+                item.member = member.name || member.nickname || member.mobile || member.id;
+                break
+              }
+            }
+          }
+        });
+        this.list = data;
         this.total = response.data.total;
         this.loading = false;
       });
@@ -369,7 +388,12 @@ export default {
     },
     handleSettle(row){
       this.$emit("settle", row.id);
-    }
+    },
+    getMemberList(){
+      getMemberByUser().then(response => {
+        this.memberList = response.data
+      })
+    },
   }
 };
 </script>
