@@ -54,6 +54,13 @@ public class ShopOrderController {
         orderService.updateOrder(updateReqVO);
         return success(true);
     }
+    @PutMapping("/pay")
+    @ApiOperation("更新门店订单")
+    @PreAuthorize("@ss.hasPermission('shop:order:update')")
+    public CommonResult<Boolean> payOrder(@Valid @RequestBody ShopOrderPayVO payVO) {
+        orderService.payOrder(payVO);
+        return success(true);
+    }
 
     @DeleteMapping("/delete")
     @ApiOperation("删除门店订单")

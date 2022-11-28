@@ -44,8 +44,8 @@
           <dict-tag :type="DICT_TYPE.SHOP_MEMBER_ACCOUNT_LOG_TYPE" :value="scope.row.action" />
         </template>
       </el-table-column>
-      <el-table-column label="充值余额变动" align="center" prop="balance" />
-      <el-table-column label="赠送余额变动" align="center" prop="gift" />
+      <el-table-column label="储值变动" align="center" prop="balance" />
+<!--      <el-table-column label="赠送余额变动" align="center" prop="gift" />-->
       <el-table-column label="积分变动" align="center" prop="point" />
       <el-table-column label="成长值变动" align="center" prop="growth" />
       <el-table-column label="信息" align="center" prop="info" />

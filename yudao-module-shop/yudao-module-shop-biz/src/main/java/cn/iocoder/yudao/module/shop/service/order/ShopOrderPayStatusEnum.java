@@ -9,6 +9,7 @@ public enum ShopOrderPayStatusEnum {
 
     UNPAID("unpaid", "未支付"),
     PAID("paid", "已支付"),
+    PART_PAID("part_paid", "部分支付"),
     FAILED("failed", "支付失败");
 
     private String status;

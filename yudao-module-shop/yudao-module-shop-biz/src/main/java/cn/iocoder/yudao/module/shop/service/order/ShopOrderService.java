@@ -67,4 +67,5 @@ public interface ShopOrderService {
      */
     List<ShopOrderDO> getOrderList(ShopOrderExportReqVO exportReqVO);
 
+    void payOrder(ShopOrderPayVO payVO);
 }

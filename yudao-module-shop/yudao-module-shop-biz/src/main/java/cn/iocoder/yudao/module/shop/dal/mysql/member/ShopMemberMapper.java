@@ -55,4 +55,6 @@ public interface ShopMemberMapper extends BaseMapperX<ShopMemberDO> {
             "#{growth} where id = #{id} and balance + #{balance} >= 0 and gift + #{gift} >= 0 and point + #{point} >= 0 and growth + #{growth} >= 0 ")
     int updateAccount(@Param("balance")BigDecimal balance, @Param("gift")BigDecimal gift, @Param("point")BigDecimal point, @Param("growth")BigDecimal growth, @Param("id")Long id);
 
+    @Update("update shop_member set balance = balance + #{balanceChange} where id = #{id} and balance + #{balanceChange} >= 0 ")
+    int updateBalance(@Param("id")Long memberId, @Param("balanceChange")BigDecimal balanceChange);
 }

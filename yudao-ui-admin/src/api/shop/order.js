@@ -52,3 +52,12 @@ export function exportOrderExcel(query) {
     responseType: 'blob'
   })
 }
+
+// 更新门店订单
+export function payOrder(data) {
+  return request({
+    url: '/shop/order/pay',
+    method: 'put',
+    data: data
+  })
+}

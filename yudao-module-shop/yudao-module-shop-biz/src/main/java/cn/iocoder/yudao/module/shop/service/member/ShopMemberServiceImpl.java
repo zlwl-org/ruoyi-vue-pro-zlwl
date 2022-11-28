@@ -66,7 +66,11 @@ public class ShopMemberServiceImpl implements ShopMemberService {
 
     @Override
     public ShopMemberDO getMember(Long id) {
-        return memberMapper.selectById(id);
+        ShopMemberDO member = memberMapper.selectById(id);
+        if (member == null){
+            throw exception(MEMBER_NOT_EXISTS);
+        }
+        return member;
     }
 
     @Override
@@ -93,6 +97,15 @@ public class ShopMemberServiceImpl implements ShopMemberService {
     @Override
     public int updateMemberAccount(BigDecimal balance, BigDecimal gift, BigDecimal point, BigDecimal growth, Long memberId) {
         int result = memberMapper.updateAccount(balance, gift, point, growth, memberId);
+        if (result == 0){
+            throw exception(MEMBER_BALANCE_NOT_ENOUGH);
+        }
+        return result;
+    }
+
+    @Override
+    public int updateMemberBalance(Long memberId, BigDecimal balanceChange) {
+        int result = memberMapper.updateBalance(memberId, balanceChange);
         if (result == 0){
             throw exception(MEMBER_BALANCE_NOT_ENOUGH);
         }

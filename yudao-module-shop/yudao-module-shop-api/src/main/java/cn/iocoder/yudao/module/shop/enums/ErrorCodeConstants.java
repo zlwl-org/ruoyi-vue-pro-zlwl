@@ -43,6 +43,8 @@ public interface ErrorCodeConstants {
     // ========== 门店订单 TODO 补充编号 ==========
     ErrorCode ORDER_NOT_EXISTS = new ErrorCode(1022011001, "门店订单不存在");
     ErrorCode ORDER_ITEM_NOT_EXISTS = new ErrorCode(1022011002, "门店订单明细不存在");
+    ErrorCode ORDER_IS_DONE = new ErrorCode(1022011003, "订单已完成，请查询后再试！");
+    ErrorCode ORDER_PAID_LG_PRICE = new ErrorCode(1022011004, "订单支付金额大于订单金额！");
 
 
 

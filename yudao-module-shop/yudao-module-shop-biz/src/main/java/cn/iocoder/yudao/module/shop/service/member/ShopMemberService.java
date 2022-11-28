@@ -76,4 +76,6 @@ public interface ShopMemberService {
     List<ShopMemberDO> getMemberListByUser();
 
     int updateMemberAccount(BigDecimal balance, BigDecimal gift, BigDecimal point, BigDecimal growth, Long memberId);
+
+    int updateMemberBalance(Long memberId, BigDecimal balanceChange);
 }

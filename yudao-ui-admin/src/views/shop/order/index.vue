@@ -2,8 +2,8 @@
   <div class="app-container">
 
     <!-- 搜索工作栏 -->
-    <el-form :model="queryParams" v-if="mode" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="会员编号" prop="memberId">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="会员" prop="memberId">
         <el-input v-model="queryParams.memberId" placeholder="请输入会员编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType">
@@ -12,9 +12,9 @@
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="订单交易号" prop="orderNo">
-        <el-input v-model="queryParams.orderNo" placeholder="请输入订单交易号" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
+<!--      <el-form-item label="订单交易号" prop="orderNo">-->
+<!--        <el-input v-model="queryParams.orderNo" placeholder="请输入订单交易号" clearable @keyup.enter.native="handleQuery"/>-->
+<!--      </el-form-item>-->
       <el-form-item label="订单状态" prop="orderStatus">
         <el-select v-model="queryParams.orderStatus" placeholder="请选择订单状态" clearable size="small">
           <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_ORDER_STATUS)"
@@ -33,14 +33,14 @@
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="付款时间" prop="payTime">
-        <el-date-picker v-model="queryParams.payTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
-                        range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
-      </el-form-item>
+<!--      <el-form-item label="付款时间" prop="payTime">-->
+<!--        <el-date-picker v-model="queryParams.payTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"-->
+<!--                        range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />-->
+<!--      </el-form-item>-->
       <el-form-item label="收银员" prop="cashier">
         <el-input v-model="queryParams.cashier" placeholder="请输入收银员" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="店铺编号" prop="branchId">
+      <el-form-item label="店铺" prop="branchId">
         <el-input v-model="queryParams.branchId" placeholder="请输入店铺编号" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
@@ -55,8 +55,8 @@
 
     <!-- 操作工具栏 -->
     <el-row  :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
+      <el-col v-if="!mode" :span="1.5">
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
       </el-col>
       <el-col  v-if="mode" :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
@@ -202,7 +202,10 @@ import { createOrder, updateOrder, deleteOrder, getOrder, getOrderPage, exportOr
 export default {
   name: "ShopOrder",
   props: {
-    mode: true,
+    mode: {
+      type: Boolean,
+      default: true
+    },
   },
   components: {
   },
@@ -247,6 +250,10 @@ export default {
   },
   created() {
     this.getList();
+    console.log(this.mode)
+    if (!this.mode){
+      this.showSearch = false
+    }
   },
   methods: {
     /** 查询列表 */

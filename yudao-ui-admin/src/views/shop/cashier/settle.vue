@@ -1,36 +1,56 @@
 <template>
   <div class="app-container">
-    <el-descriptions title="订单信息" :column="2"  border :content-style="contentStyle" :label-style="labelStyle">
+    <el-descriptions title="订单信息" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
       <el-descriptions-item label="订单编号">{{ order.id }}</el-descriptions-item>
-      <el-descriptions-item label="订单金额">{{ order.price }}</el-descriptions-item>
+      <el-descriptions-item label="订单金额">{{ order.price + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="支付状态">{{ this.getDictDataLabel(DICT_TYPE.SHOP_ORDER_PAY_STATUS, order.payStatus) }}</el-descriptions-item>
+      <el-descriptions-item label="已付金额">{{ (order.balancePay + order.cashPay) + '  元' }}</el-descriptions-item>
 
     </el-descriptions>
     <el-divider/>
-    <el-descriptions title="会员信息" :column="2"  border :content-style="contentStyle" :label-style="labelStyle">
+    <el-descriptions title="会员信息" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
       <el-descriptions-item v-if="!order.memberId" label="昵称">散客</el-descriptions-item>
       <el-descriptions-item v-if="order.member" label="昵称">{{ order.member.nickname || '无' }}</el-descriptions-item>
-      <el-descriptions-item v-if="order.member">
-        <template slot="label">
-          <a style="color: #20a5f9" @click="open_recharge_dialog">充值</a>余额
-        </template>
-        {{ order.member.balance }}
-      </el-descriptions-item>
+      <el-descriptions-item v-if="order.member" label="储值余额">{{ order.member.balance + '  元' }}</el-descriptions-item>
       <el-descriptions-item v-if="order.member" label="手机">{{ order.member.mobile }}</el-descriptions-item>
-      <el-descriptions-item v-if="order.member" label="赠送余额">{{ order.member.gift }}</el-descriptions-item>
     </el-descriptions>
     <el-divider/>
-    <h3 style="font-size: 16px;font-weight: bold;color: #303133">支付方式</h3>
-    <span>余额支付</span>
-    <div slot="footer" class="dialog-footer">
+    <h2 v-if="order.orderStatus === 'done'" style="font-weight: bold;color: #303133; text-align: center">订单已完成</h2>
+
+
+<!--    <el-row  :gutter="12">-->
+<!--      <el-col :span="4" v-for="(dict, index) in this.getDictDatas(DICT_TYPE.SHOP_PAY_TYPE)">-->
+<!--        <div class="box">-->
+<!--          <el-card shadow="always" :class="{selected:selectedPayType===dict.value}" :key="dict.value" @click.native="selectPayType(dict.value)">-->
+<!--            {{ dict.label }}-->
+<!--          </el-card>-->
+<!--        </div>-->
+<!--      </el-col>-->
+<!--    </el-row>-->
+    <el-row :gutter="12" style="margin-top: 15px" v-if="order.orderStatus !== 'done'">
+      <h3  style="font-size: 16px;font-weight: bold;color: #303133">需支付 <span style="color: red">{{ order.price - order.balancePay - order.cashPay }}</span> 元，请选择支付方式</h3>
+      <el-col :span="8">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="付款方式" prop="payType">
+            <el-select v-model="form.payType" placeholder="请选择付款方式" clearable size="small">
+              <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_PAY_TYPE)"
+                         :key="dict.value" :label="dict.label" :value="dict.value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="支付金额" prop="amount">
+            <el-input v-model="form.amount" placeholder="" />
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+    <div slot="footer" class="dialog-footer" v-if="order.orderStatus !== 'done'">
       <el-button type="primary" @click="submitSettle">确 定</el-button>
       <el-button @click="settle_dialog=false">取 消</el-button>
     </div>
 
   </div>
 </template>
-<style>
 
-</style>
 <script>
 import {
   createMemberAccountLog,
@@ -44,7 +64,8 @@ import CashierMember from '@/views/shop/cashier/member'
 import { listSimpleBranches } from '@/api/shop/branch'
 import { getBranchGoodsPage } from '@/api/shop/branchGoods'
 import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
-import { createOrder, getOrder } from '@/api/shop/order'
+import { createOrder, getOrder, payOrder } from '@/api/shop/order'
+import { createProduct, updateProduct } from '@/api/shop/product'
 
 export default {
   name: 'CashierSettle',
@@ -59,9 +80,7 @@ export default {
     orderId: {
       immediate: true, // 首次创建组件时立即执行
       handler: function setOrder(val, oldVal) {
-        getOrder(val).then(response => {
-          this.order = response.data
-        })
+        this.getOrderData(val)
       }
     }
   },
@@ -94,14 +113,12 @@ export default {
       recharge_form: {},
       // 表单校验
       rules: {
-        action: [{ required: true, message: '发生方式不能为空', trigger: 'change' }],
-        balance: [{ required: true, message: '充值余额变动不能为空', trigger: 'blur' }],
-        gift: [{ required: true, message: '赠送余额变动不能为空', trigger: 'blur' }],
-        point: [{ required: true, message: '积分变动不能为空', trigger: 'blur' }],
-        growth: [{ required: true, message: '成长值变动不能为空', trigger: 'blur' }]
+        payType: [{ required: true, message: '支付方式不能为空', trigger: 'change' }],
+        amount: [{ required: true, message: '支付金额不能为空', trigger: 'blur' }],
       },
 
       member: null,
+      selectedPayType: null,
       recharge_dialog: false,
       order: {},
       orderItems: [],
@@ -119,21 +136,19 @@ export default {
         'text-align': 'center',  //文本居中
         'min-width': '250px',   //最小宽度
         'word-break': 'break-all'  //过长时自动换行
-      },
+      }
 
     }
   },
   created() {
 
   },
-  mounted() {
-    // console.log('....' + this.orderId)
-    // const id = this.orderId;
-    // getOrder(id).then(response => {
-    //   this.order = response.data;
-    // });
-  },
   methods: {
+    getOrderData(orderId) {
+      getOrder(orderId).then(response => {
+        this.order = response.data
+      })
+    },
     /** 取消按钮 */
     cancel() {
       this.open = false
@@ -160,7 +175,16 @@ export default {
 
     },
     submitSettle() {
-
+      this.$refs["form"].validate(valid => {
+        if (!valid) {
+          return;
+        }
+        this.form.id = this.orderId;
+        payOrder(this.form).then(response => {
+          this.$modal.msgSuccess("支付成功");
+          this.getOrderData(this.orderId);
+        });
+      });
     },
     submitOrder() {
       let data = {
@@ -176,8 +200,75 @@ export default {
         this.settle_dialog = false
         // this.getList();
       })
+    },
+    selectPayType(val){
+      this.selectedPayType = val
+      this.form.payType = val
     }
 
   }
 }
 </script>
+<style>
+.activeCls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.activeCls::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border: 12px solid #f90;
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+
+.activeCls::after {
+  content: "";
+  width: 5px;
+  height: 10px;
+  position: absolute;
+  right: 4px;
+  bottom: 5px;
+  border: 1px solid #fff;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(45deg);
+}
+.box {
+  /*width: 100px;*/
+  /*height: 100px;*/
+  position: relative;
+}
+.selected {
+  color: #4ABE84;
+  box-shadow:0 2px 7px 0 rgba(85,110,97,0.35);
+  border-radius:7px;
+  border:1px solid rgba(74,190,132,1);
+}
+.selected:before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border: 17px solid #4ABE84;
+  border-radius:7px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.selected:after {
+  content: '';
+  width: 5px;
+  height: 12px;
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(45deg);
+}
+</style>

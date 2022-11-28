@@ -7,40 +7,13 @@
           <!--    会员信息    -->
           <el-descriptions class="margin-top" title="会员信息" :column="2" size="mini" border>
             <template slot="extra">
-              <el-button type="primary" size="small" @click="open_member_dialog">查询会员</el-button>
+              <el-button type="warning" size="small" @click="open_member_dialog" v-if="member">充值</el-button>
+              <el-button type="success" size="small" @click="open_member_dialog">查询</el-button>
             </template>
-            <el-descriptions-item v-if="!member">
-              <template slot="label">
-                昵称
-              </template>
-              散客
-            </el-descriptions-item>
-            <el-descriptions-item v-if="member">
-              <template slot="label">
-                昵称
-              </template>
-              {{ member.nickname || '无' }}
-            </el-descriptions-item>
-
-            <el-descriptions-item v-if="member">
-              <template slot="label">
-                <a style="color: #20a5f9" @click="open_recharge_dialog">充值</a>余额
-              </template>
-              {{ member.balance }}
-              <!--              <el-button type="text" size="small" v-if="member" @click="open_recharge_dialog">充</el-button>-->
-            </el-descriptions-item>
-            <el-descriptions-item v-if="member">
-              <template slot="label">
-                手机
-              </template>
-              {{ member.mobile }}
-            </el-descriptions-item>
-            <el-descriptions-item v-if="member">
-              <template slot="label">
-                赠送余额
-              </template>
-              {{ member.gift }}
-            </el-descriptions-item>
+            <el-descriptions-item v-if="!member" label="昵称">散客</el-descriptions-item>
+            <el-descriptions-item v-if="member" label="昵称">{{ member.nickname || '无' }}</el-descriptions-item>
+            <el-descriptions-item v-if="member" label="储值余额">{{ member.balance + '  元' }}</el-descriptions-item>
+            <el-descriptions-item v-if="member" label="手机">{{ member.mobile }}</el-descriptions-item>
           </el-descriptions>
 
 
@@ -49,7 +22,7 @@
         <el-row style="border: 1px solid #ebebeb;padding: 10px; height: 500px">
           <div class="block" style="margin-bottom: 10px">
             <el-link type="primary" :underline="false">{{ '结算清单( ' + cart.length + ' )' }}</el-link>
-            <el-link type="primary" style="float: right;">清空</el-link>
+            <el-link type="primary" style="float: right;" @click="clearCart">清空</el-link>
           </div>
           <el-row v-for="item in cart" :key="item.id">
             <el-col style="flex-grow: inherit;">
@@ -77,7 +50,7 @@
         <!--   购物车     -->
         <el-row style="border: 1px solid #ebebeb;padding: 10px">
           <div style="float: right;">
-            <el-button type="primary" @click="submitOrder">下单<span>{{ handleTotal() }}</span></el-button>
+            <el-button type="primary" @click="submitOrder" :disabled="cart.length===0">下单<span>{{ handleTotal() }}</span></el-button>
           </div>
         </el-row>
       </el-col>

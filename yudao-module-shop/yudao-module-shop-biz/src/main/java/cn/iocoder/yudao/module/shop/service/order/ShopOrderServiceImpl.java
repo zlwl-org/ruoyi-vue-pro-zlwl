@@ -1,11 +1,10 @@
 package cn.iocoder.yudao.module.shop.service.order;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderCreateReqVO;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderExportReqVO;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderPageReqVO;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderUpdateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
 import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
@@ -15,11 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.ORDER_NOT_EXISTS;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
 
 /**
  * 门店订单 Service 实现类
@@ -108,7 +109,11 @@ public class ShopOrderServiceImpl implements ShopOrderService {
 
     @Override
     public ShopOrderDO getOrder(Long id) {
-        return orderMapper.selectById(id);
+        ShopOrderDO order = orderMapper.selectById(id);
+        if (order == null){
+            throw exception(ORDER_NOT_EXISTS);
+        }
+        return order;
     }
 
     @Override
@@ -124,6 +129,45 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Override
     public List<ShopOrderDO> getOrderList(ShopOrderExportReqVO exportReqVO) {
         return orderMapper.selectList(exportReqVO);
+    }
+
+    @Override
+    public void payOrder(ShopOrderPayVO payVO) {
+        ShopOrderDO order = getOrder(payVO.getId());
+        if (ShopOrderStatusEnum.DONE.getStatus().equals(order.getOrderStatus())) {
+            throw exception(ORDER_IS_DONE);
+        }
+        // 判断订单是否结清
+        BigDecimal paid = NumberUtil.add(order.getBalancePay(), order.getCashPay(), payVO.getAmount());
+        int compare = paid.compareTo(order.getPrice());
+        if (compare > 0){
+            throw exception(ORDER_PAID_LG_PRICE);
+        } else if(compare == 0){
+            order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
+            order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
+        } else {
+            order.setPayStatus(ShopOrderPayStatusEnum.PART_PAID.getStatus());
+            order.setOrderStatus(ShopOrderStatusEnum.UNPAID.getStatus());
+
+        }
+
+        if ("balance_pay".equals(payVO.getPayType())){
+            // 余额支付金额更新
+            order.setBalancePay(NumberUtil.add(order.getBalancePay(), payVO.getAmount()));
+
+            ShopMemberDO member = memberService.getMember(order.getMemberId());
+            if (member.getBalance().compareTo(payVO.getAmount()) == -1) {
+                throw exception(MEMBER_BALANCE_NOT_ENOUGH);
+            }
+            memberAccountService.shopping(payVO, member);
+        } else {
+            // 现金支付金额更新
+            order.setCashPay(NumberUtil.add(order.getCashPay(), payVO.getAmount()));
+        }
+        order.setPayTime(new Date());
+        order.setPayType(payVO.getPayType());
+
+        orderMapper.updateById(order);
     }
 
 }
