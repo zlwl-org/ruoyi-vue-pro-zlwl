@@ -1,19 +1,22 @@
 package cn.iocoder.yudao.module.shop.service.order;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.order.ShopOrderItemConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderItemMapper;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.order.ShopOrderItemConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderItemMapper;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.ORDER_ITEM_NOT_EXISTS;
 
 /**
  * 门店订单明细 Service 实现类
@@ -77,6 +80,11 @@ public class ShopOrderItemServiceImpl implements ShopOrderItemService {
     @Override
     public List<ShopOrderItemDO> getOrderItemList(ShopOrderItemExportReqVO exportReqVO) {
         return orderItemMapper.selectList(exportReqVO);
+    }
+
+    @Override
+    public List<ShopOrderItemDO> getOrderItemList(Long id) {
+        return orderItemMapper.selectListByOrderId(id);
     }
 
 }

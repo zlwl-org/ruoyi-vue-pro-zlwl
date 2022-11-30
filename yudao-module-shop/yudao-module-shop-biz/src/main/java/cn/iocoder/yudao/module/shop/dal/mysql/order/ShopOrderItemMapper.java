@@ -1,13 +1,14 @@
 package cn.iocoder.yudao.module.shop.dal.mysql.order;
 
-import java.util.*;
-
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemPageReqVO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import org.apache.ibatis.annotations.Mapper;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
+
+import java.util.List;
 
 /**
  * 门店订单明细 Mapper
@@ -41,4 +42,8 @@ public interface ShopOrderItemMapper extends BaseMapperX<ShopOrderItemDO> {
                 .orderByDesc(ShopOrderItemDO::getId));
     }
 
+    default List<ShopOrderItemDO> selectListByOrderId(Long id) {
+        return selectList(new LambdaQueryWrapperX<ShopOrderItemDO>()
+                .eq(ShopOrderItemDO::getOrderId, id));
+    }
 }

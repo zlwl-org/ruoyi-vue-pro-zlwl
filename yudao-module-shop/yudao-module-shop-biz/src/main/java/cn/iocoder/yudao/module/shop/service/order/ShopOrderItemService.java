@@ -1,10 +1,15 @@
 package cn.iocoder.yudao.module.shop.service.order;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 门店订单明细 Service 接口
@@ -67,4 +72,5 @@ public interface ShopOrderItemService {
      */
     List<ShopOrderItemDO> getOrderItemList(ShopOrderItemExportReqVO exportReqVO);
 
+    List<ShopOrderItemDO> getOrderItemList(Long id);
 }

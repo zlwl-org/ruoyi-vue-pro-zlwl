@@ -6,6 +6,7 @@ import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
 import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
 import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
 import cn.iocoder.yudao.module.shop.service.branch.BranchGoodsService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
@@ -142,7 +143,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
             order.setBalancePay(NumberUtil.add(order.getBalancePay(), payVO.getAmount()));
 
             ShopMemberDO member = memberService.getMember(order.getMemberId());
-            if (member.getBalance().compareTo(payVO.getAmount()) == -1) {
+            if (member.getBalance().compareTo(payVO.getAmount()) < 0) {
                 throw exception(MEMBER_BALANCE_NOT_ENOUGH);
             }
             memberAccountService.shopping(payVO, member);
@@ -154,6 +155,48 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         order.setPayType(payVO.getPayType());
 
         orderMapper.updateById(order);
+    }
+
+    @Override
+    public void cancelOrder(Long id) {
+        ShopOrderDO order = getOrder(id);
+        if (ShopOrderStatusEnum.DONE.getStatus().equals(order.getOrderStatus())) {
+            throw exception(ORDER_IS_DONE);
+        }
+
+        // 判断订单的支付情况
+        if (ShopOrderPayStatusEnum.FAILED.getStatus().equals(order.getPayStatus())) {
+            // 订单支付状态为失败时，需要人工介入，先更正支付状态，为在线支付预留
+            throw exception(ORDER_PAID_FAILED, id);
+        }
+        if (!ShopOrderPayStatusEnum.UNPAID.getStatus().equals(order.getPayStatus())) {
+            if (order.getMemberId() != null){
+                // 退回余额支付
+                if (order.getBalancePay().compareTo(BigDecimal.ZERO) >0) {
+                    memberAccountService.refund(order);
+                } else {
+
+                }
+
+                // 如果有现金支付，将支付状态改为部分退款
+                if (order.getBalancePay().compareTo(BigDecimal.ZERO) >0 && order.getCashPay().compareTo(BigDecimal.ZERO)>0){
+                    order.setPayStatus(ShopOrderPayStatusEnum.PART_REFUND.getStatus());
+                } else {
+                    order.setPayStatus(ShopOrderPayStatusEnum.REFUND.getStatus());
+                }
+                order.setBalancePay(BigDecimal.ZERO);
+            }
+        }
+
+        // 退库存
+        List<ShopOrderItemDO> items = itemService.getOrderItemList(id);
+        for (ShopOrderItemDO item : items) {
+            int result = goodsService.updateGoodStock(item.getGoodId(), item.getAmount());
+            if (result == 0){
+                throw exception(BRANCH_GOODS_UPDATE_FAILED, item.getGoodName());
+            }
+        }
+
     }
 
 }

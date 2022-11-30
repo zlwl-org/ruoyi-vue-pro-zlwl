@@ -61,6 +61,13 @@ public class ShopOrderController {
         orderService.payOrder(payVO);
         return success(true);
     }
+    @PutMapping("/cancel")
+    @ApiOperation("取消订单")
+    @PreAuthorize("@ss.hasPermission('shop:order:update')")
+    public CommonResult<Boolean> cancelOrder(@RequestParam("id") Long id) {
+        orderService.cancelOrder(id);
+        return success(true);
+    }
 
     @DeleteMapping("/delete")
     @ApiOperation("删除门店订单")

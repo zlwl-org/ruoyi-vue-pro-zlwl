@@ -4,6 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.iocoder.yudao.module.shop.controller.admin.member.vo.MemberAccountLogCreateReqVO;
 import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderPayVO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
 import lombok.extern.slf4j.Slf4j;
@@ -82,5 +83,22 @@ public class ShopMemberAccountServiceImpl implements ShopMemberAccountService {
         // 更新主表
         int i = memberService.updateMemberBalance(member.getId(),payVO.getAmount().negate());
 
+    }
+
+    @Override
+    public void refund(ShopOrderDO order) {
+        // 生成流水
+        MemberAccountLogCreateReqVO accountLog= new MemberAccountLogCreateReqVO();
+        accountLog.setAction("refund");
+        accountLog.setRelatedId(order.getId());
+        accountLog.setMemberId(order.getMemberId());
+        accountLog.setPoint(BigDecimal.ZERO);
+        accountLog.setGrowth(BigDecimal.ZERO);
+        accountLog.setGift(BigDecimal.ZERO);
+        accountLog.setBalance(order.getBalancePay());
+        memberAccountLogService.createMemberAccountLog(accountLog);
+
+        // 更新主表
+        int i = memberService.updateMemberBalance(order.getMemberId(), order.getBalancePay());
     }
 }

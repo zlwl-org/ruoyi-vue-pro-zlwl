@@ -35,6 +35,7 @@ public interface ErrorCodeConstants {
 
     ErrorCode BRANCH_GOODS_NOT_EXISTS = new ErrorCode(1022009001, "商品不存在:{}");
     ErrorCode BRANCH_GOODS_NOT_ENOUGH = new ErrorCode(1022009002, "商品库存不足:{}");
+    ErrorCode BRANCH_GOODS_UPDATE_FAILED = new ErrorCode(1022009003, "商品库存更新失败:{}");
 
     ErrorCode BRANCH_STOCK_NOT_EXISTS = new ErrorCode(1022010001, "出入库表单不存在");
 
@@ -45,6 +46,7 @@ public interface ErrorCodeConstants {
     ErrorCode ORDER_ITEM_NOT_EXISTS = new ErrorCode(1022011002, "门店订单明细不存在");
     ErrorCode ORDER_IS_DONE = new ErrorCode(1022011003, "订单已完成，请查询后再试！");
     ErrorCode ORDER_PAID_LG_PRICE = new ErrorCode(1022011004, "订单支付金额大于订单金额！");
+    ErrorCode ORDER_PAID_FAILED = new ErrorCode(1022011005, "订单[{}]支付状态异常，请联系管理员！");
 
 
 
