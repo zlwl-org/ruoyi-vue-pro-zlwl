@@ -37,6 +37,8 @@ public class SecurityConfiguration {
                 // Spring Boot Admin Server 的安全配置
                 registry.antMatchers(adminSeverContextPath).anonymous()
                         .antMatchers(adminSeverContextPath + "/**").anonymous();
+                // Websocket
+                registry.antMatchers("/ws/**").anonymous();
             }
 
         };
