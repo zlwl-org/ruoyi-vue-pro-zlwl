@@ -91,7 +91,7 @@ public class RechargeServiceImpl implements RechargeService {
 
     @Override
     public RechargeDO getBestRecharge(BigDecimal amount) {
-        List<RechargeDO> list = rechargeMapper.selectList();
+        List<RechargeDO> list = rechargeMapper.selectActiveList();
         List<RechargeDO> collected = list.stream().filter(item -> item.getPrice().compareTo(amount) <= 0).toList();
         if (collected.size() == 0){
             return null;

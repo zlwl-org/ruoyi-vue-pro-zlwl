@@ -45,6 +45,12 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/tenant/:tenant',
+    component: (resolve) => require(['@/views/tenant'], resolve),
+    hidden: true,
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/sso',
     component: (resolve) => require(['@/views/sso'], resolve),
     hidden: true

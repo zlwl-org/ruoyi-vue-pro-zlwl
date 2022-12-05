@@ -174,19 +174,17 @@ public class ShopOrderServiceImpl implements ShopOrderService {
                 // 退回余额支付
                 if (order.getBalancePay().compareTo(BigDecimal.ZERO) >0) {
                     memberAccountService.refund(order);
-                } else {
-
+                    order.setBalancePay(BigDecimal.ZERO);
+                }
+                if (order.getCashPay().compareTo(BigDecimal.ZERO)>0){
+                    order.setCashPay(BigDecimal.ZERO);
                 }
 
-                // 如果有现金支付，将支付状态改为部分退款
-                if (order.getBalancePay().compareTo(BigDecimal.ZERO) >0 && order.getCashPay().compareTo(BigDecimal.ZERO)>0){
-                    order.setPayStatus(ShopOrderPayStatusEnum.PART_REFUND.getStatus());
-                } else {
-                    order.setPayStatus(ShopOrderPayStatusEnum.REFUND.getStatus());
-                }
-                order.setBalancePay(BigDecimal.ZERO);
+                order.setPayStatus(ShopOrderPayStatusEnum.REFUND.getStatus());
             }
         }
+        order.setOrderStatus(ShopOrderStatusEnum.CANCELED.getStatus());
+        orderMapper.updateById(order);
 
         // 退库存
         List<ShopOrderItemDO> items = itemService.getOrderItemList(id);

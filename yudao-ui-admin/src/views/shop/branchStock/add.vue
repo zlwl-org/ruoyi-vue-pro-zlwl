@@ -9,13 +9,13 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <el-row :gutter="10">
-      <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">
-          打印日志
-        </el-button>
-      </el-col>
-    </el-row>
+<!--    <el-row :gutter="10">-->
+<!--      <el-col :span="1.5">-->
+<!--        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd">-->
+<!--          打印日志-->
+<!--        </el-button>-->
+<!--      </el-col>-->
+<!--    </el-row>-->
     <el-row :gutter="10">
       <el-col :span="16">
         <!-- 列表 -->
@@ -219,6 +219,10 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (!valid) {
+          return;
+        }
+        if (this.form_list.length === 0){
+          this.$modal.msgError("表单明细为空！");
           return;
         }
         this.form.list = this.form_list

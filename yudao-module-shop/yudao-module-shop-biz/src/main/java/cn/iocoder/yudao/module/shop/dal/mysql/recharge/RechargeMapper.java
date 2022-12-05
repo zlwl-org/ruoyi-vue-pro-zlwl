@@ -17,6 +17,7 @@ import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
 @Mapper
 public interface RechargeMapper extends BaseMapperX<RechargeDO> {
 
+
     default PageResult<RechargeDO> selectPage(RechargePageReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<RechargeDO>()
                 .likeIfPresent(RechargeDO::getName, reqVO.getName())
@@ -35,4 +36,8 @@ public interface RechargeMapper extends BaseMapperX<RechargeDO> {
                 .orderByDesc(RechargeDO::getId));
     }
 
+    default List<RechargeDO> selectActiveList(){
+        return selectList(new LambdaQueryWrapperX<RechargeDO>()
+                .eq(RechargeDO::getStatus, 0));
+    }
 }

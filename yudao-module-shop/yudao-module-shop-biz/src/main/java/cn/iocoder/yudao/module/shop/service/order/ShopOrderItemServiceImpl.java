@@ -83,8 +83,8 @@ public class ShopOrderItemServiceImpl implements ShopOrderItemService {
     }
 
     @Override
-    public List<ShopOrderItemDO> getOrderItemList(Long id) {
-        return orderItemMapper.selectListByOrderId(id);
+    public List<ShopOrderItemDO> getOrderItemList(Long orderId) {
+        return orderItemMapper.selectListByOrderId(orderId);
     }
 
 }

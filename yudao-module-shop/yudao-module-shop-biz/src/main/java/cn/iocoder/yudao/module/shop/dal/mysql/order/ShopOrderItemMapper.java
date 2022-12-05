@@ -42,8 +42,8 @@ public interface ShopOrderItemMapper extends BaseMapperX<ShopOrderItemDO> {
                 .orderByDesc(ShopOrderItemDO::getId));
     }
 
-    default List<ShopOrderItemDO> selectListByOrderId(Long id) {
+    default List<ShopOrderItemDO> selectListByOrderId(Long orderId) {
         return selectList(new LambdaQueryWrapperX<ShopOrderItemDO>()
-                .eq(ShopOrderItemDO::getOrderId, id));
+                .eq(ShopOrderItemDO::getOrderId, orderId));
     }
 }

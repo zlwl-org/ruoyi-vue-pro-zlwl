@@ -7,10 +7,14 @@ import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
 import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
 import cn.iocoder.yudao.module.shop.convert.member.ShopMemberConvert;
 import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
+import cn.iocoder.yudao.module.shop.convert.order.ShopOrderItemConvert;
 import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
+import cn.iocoder.yudao.module.shop.service.order.ShopOrderItemService;
 import cn.iocoder.yudao.module.shop.service.order.ShopOrderService;
+import com.google.common.collect.ImmutableList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,6 +44,9 @@ public class ShopOrderController {
 
     @Resource
     private ShopMemberService memberService;
+
+    @Resource
+    private ShopOrderItemService itemService;
 
     @PostMapping("/create")
     @ApiOperation("创建门店订单")
@@ -89,6 +97,12 @@ public class ShopOrderController {
             ShopMemberDO member = memberService.getMember(order.getMemberId());
             vo.setMember(ShopMemberConvert.INSTANCE.convert(member));
         }
+        List<ShopOrderItemDO> orderItemList = itemService.getOrderItemList(id);
+        List<ShopOrderItemRespVO> items = new ArrayList<>(orderItemList.size());
+        for (ShopOrderItemDO item : orderItemList) {
+            items.add(ShopOrderItemConvert.INSTANCE.convert(item));
+        }
+        vo.setItems(items);
         return success(vo);
     }
 

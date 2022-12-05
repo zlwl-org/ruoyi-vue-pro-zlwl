@@ -78,11 +78,11 @@
           <dict-tag :type="DICT_TYPE.SHOP_MEMBER_STATUS" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="充值余额" align="center" prop="balance" />
-      <el-table-column label="赠送余额" align="center" prop="gift" />
-      <el-table-column label="积分" align="center" prop="point" />
-      <el-table-column label="成长值" align="center" prop="growth" />
-      <el-table-column label="店铺编号" align="center" prop="branchId" />
+      <el-table-column label="储值余额" align="center" prop="balance" />
+<!--      <el-table-column label="赠送余额" align="center" prop="gift" />-->
+<!--      <el-table-column label="积分" align="center" prop="point" />-->
+<!--      <el-table-column label="成长值" align="center" prop="growth" />-->
+<!--      <el-table-column label="店铺编号" align="center" prop="branchId" />-->
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>

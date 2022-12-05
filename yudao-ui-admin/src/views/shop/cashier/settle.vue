@@ -8,13 +8,28 @@
 
     </el-descriptions>
     <el-divider/>
-    <el-descriptions title="会员信息" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
-      <el-descriptions-item v-if="!order.memberId" label="昵称">散客</el-descriptions-item>
-      <el-descriptions-item v-if="order.member" label="昵称">{{ order.member.nickname || '无' }}</el-descriptions-item>
-      <el-descriptions-item v-if="order.member" label="储值余额">{{ order.member.balance + '  元' }}</el-descriptions-item>
-      <el-descriptions-item v-if="order.member" label="手机">{{ order.member.mobile }}</el-descriptions-item>
+    <h3 v-if="!order.memberId" style="font-size: 16px;font-weight: bold;color: #303133">顾客信息 <span style="color: red"> 散客</span></h3>
+
+    <el-descriptions v-if="order.member" title="会员信息" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
+      <el-descriptions-item label="昵称">{{ order.member.nickname || '无' }}</el-descriptions-item>
+      <el-descriptions-item label="储值余额">{{ order.member.balance + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="手机">{{ order.member.mobile }}</el-descriptions-item>
     </el-descriptions>
     <el-divider/>
+    <!-- 列表 -->
+    <h3 v-if="!order.memberId" style="font-size: 16px;font-weight: bold;color: #303133">订单明细</h3>
+
+    <el-table :data="order.items">
+      <el-table-column label="商品编号" align="center" prop="goodId" />
+      <el-table-column label="商品名称" align="center" prop="goodName" />
+      <el-table-column label="售价（元）" align="center" prop="goodPrice" />
+      <el-table-column label="数量" align="center" prop="amount" />
+    </el-table>
+
+    <!-- 分页组件 -->
+<!--    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNo" :limit.sync="queryParams.pageSize"-->
+<!--                @pagination="getList"/>-->
+
     <h2 v-if="order.orderStatus === 'done'" style="font-weight: bold;color: #303133; text-align: center">订单已完成</h2>
 
 
@@ -116,10 +131,7 @@ export default {
         payType: [{ required: true, message: '支付方式不能为空', trigger: 'change' }],
         amount: [{ required: true, message: '支付金额不能为空', trigger: 'blur' }],
       },
-
       member: null,
-      selectedPayType: null,
-      recharge_dialog: false,
       order: {},
       orderItems: [],
       labelStyle: {

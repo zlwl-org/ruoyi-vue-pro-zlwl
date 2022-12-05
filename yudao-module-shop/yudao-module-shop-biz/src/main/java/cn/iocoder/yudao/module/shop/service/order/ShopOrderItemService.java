@@ -72,5 +72,10 @@ public interface ShopOrderItemService {
      */
     List<ShopOrderItemDO> getOrderItemList(ShopOrderItemExportReqVO exportReqVO);
 
+    /**
+     * 获得订单商品明细
+     * @param id 订单编号
+     * @return
+     */
     List<ShopOrderItemDO> getOrderItemList(Long id);
 }

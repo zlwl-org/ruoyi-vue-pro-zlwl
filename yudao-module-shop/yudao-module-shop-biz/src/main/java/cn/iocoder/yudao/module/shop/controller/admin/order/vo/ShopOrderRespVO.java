@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel("管理后台 - 门店订单 Response VO")
 @Data
@@ -22,5 +23,7 @@ public class ShopOrderRespVO extends ShopOrderBaseVO {
     private Date createTime;
 
     private ShopMemberRespVO member;
+
+    private List<ShopOrderItemRespVO> items;
 
 }
