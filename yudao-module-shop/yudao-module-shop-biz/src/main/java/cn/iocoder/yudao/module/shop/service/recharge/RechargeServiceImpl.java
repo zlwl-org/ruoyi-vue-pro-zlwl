@@ -99,4 +99,9 @@ public class RechargeServiceImpl implements RechargeService {
         return collected.stream().max(Comparator.comparing(RechargeDO::getGift)).get();
     }
 
+    @Override
+    public List<RechargeDO> todayOrder() {
+        return rechargeMapper.selectTodayOrder();
+    }
+
 }

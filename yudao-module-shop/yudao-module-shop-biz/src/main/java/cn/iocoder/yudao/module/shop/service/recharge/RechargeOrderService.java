@@ -1,10 +1,15 @@
 package cn.iocoder.yudao.module.shop.service.recharge;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 充值订单 Service 接口
@@ -67,4 +72,7 @@ public interface RechargeOrderService {
      */
     List<RechargeOrderDO> getRechargeOrderList(RechargeOrderExportReqVO exportReqVO);
 
+    List<RechargeOrderDO> todayOrder();
+
+    List<RechargeOrderDO> shopOrders();
 }

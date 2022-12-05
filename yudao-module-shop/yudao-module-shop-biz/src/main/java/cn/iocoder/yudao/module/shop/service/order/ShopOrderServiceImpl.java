@@ -160,9 +160,9 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Override
     public void cancelOrder(Long id) {
         ShopOrderDO order = getOrder(id);
-        if (ShopOrderStatusEnum.DONE.getStatus().equals(order.getOrderStatus())) {
-            throw exception(ORDER_IS_DONE);
-        }
+//        if (ShopOrderStatusEnum.DONE.getStatus().equals(order.getOrderStatus())) {
+//            throw exception(ORDER_IS_DONE);
+//        }
 
         // 判断订单的支付情况
         if (ShopOrderPayStatusEnum.FAILED.getStatus().equals(order.getPayStatus())) {
@@ -195,6 +195,16 @@ public class ShopOrderServiceImpl implements ShopOrderService {
             }
         }
 
+    }
+
+    @Override
+    public List<ShopOrderDO> todayOrder() {
+        return orderMapper.todayOrder();
+    }
+
+    @Override
+    public List<ShopOrderDO> shopOrders() {
+        return orderMapper.selectList();
     }
 
 }

@@ -61,3 +61,11 @@ export function payOrder(data) {
     data: data
   })
 }
+
+// 更新门店订单
+export function cancelOrder(id) {
+  return request({
+    url: '/shop/order/cancel?id=' + id,
+    method: 'put',
+  })
+}

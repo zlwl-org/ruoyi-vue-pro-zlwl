@@ -99,4 +99,14 @@ public class RechargeOrderServiceImpl implements RechargeOrderService {
         return rechargeOrderMapper.selectList(exportReqVO);
     }
 
+    @Override
+    public List<RechargeOrderDO> todayOrder() {
+        return rechargeOrderMapper.selectTodayOrder();
+    }
+
+    @Override
+    public List<RechargeOrderDO> shopOrders() {
+        return rechargeOrderMapper.selectList();
+    }
+
 }

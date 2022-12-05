@@ -73,15 +73,21 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: 'index',
+    // redirect: 'index', //注释该行，则不默认打开index
+    hidden: true,
     children: [{
         path: 'index',
         component: (resolve) => require(['@/views/index'], resolve),
-        name: '首页',
-        meta: {title: '首页', icon: 'dashboard', affix: true}
+        // name: '首页',
+        meta: {
+          // title: '首页',
+          icon: 'dashboard',
+          affix: false, //固定tab选项卡
+        }
       }
     ]
-  }, {
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,

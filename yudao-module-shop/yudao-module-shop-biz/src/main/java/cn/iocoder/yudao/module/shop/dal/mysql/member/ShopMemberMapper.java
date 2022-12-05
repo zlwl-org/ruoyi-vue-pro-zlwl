@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.shop.dal.mysql.member;
 
+import cn.hutool.core.date.DateUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
@@ -57,4 +58,9 @@ public interface ShopMemberMapper extends BaseMapperX<ShopMemberDO> {
 
     @Update("update shop_member set balance = balance + #{balanceChange} where id = #{id} and balance + #{balanceChange} >= 0 ")
     int updateBalance(@Param("id")Long memberId, @Param("balanceChange")BigDecimal balanceChange);
+
+    default List<ShopMemberDO> selectTodayNewMember() {
+        return selectList(new LambdaQueryWrapperX<ShopMemberDO>().between(ShopMemberDO::getCreateTime, DateUtil.today(),
+                DateUtil.today() + (" 23:59:59")));
+    }
 }

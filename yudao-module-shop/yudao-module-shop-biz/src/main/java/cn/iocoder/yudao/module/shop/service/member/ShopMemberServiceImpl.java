@@ -112,4 +112,15 @@ public class ShopMemberServiceImpl implements ShopMemberService {
         return result;
     }
 
+    @Override
+    public List<ShopMemberDO> todayNewMember() {
+        List<ShopMemberDO> members = memberMapper.selectTodayNewMember();
+        return members;
+    }
+
+    @Override
+    public List<ShopMemberDO> shopMembers() {
+        return memberMapper.selectList();
+    }
+
 }

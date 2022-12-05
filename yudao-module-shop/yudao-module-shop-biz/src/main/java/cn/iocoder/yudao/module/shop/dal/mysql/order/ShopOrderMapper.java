@@ -1,13 +1,16 @@
 package cn.iocoder.yudao.module.shop.dal.mysql.order;
 
-import java.util.*;
-
+import cn.hutool.core.date.DateUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderPageReqVO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import org.apache.ibatis.annotations.Mapper;
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
+
+import java.util.List;
 
 /**
  * 门店订单 Mapper
@@ -47,4 +50,8 @@ public interface ShopOrderMapper extends BaseMapperX<ShopOrderDO> {
                 .orderByDesc(ShopOrderDO::getId));
     }
 
+    default List<ShopOrderDO> todayOrder(){
+        return selectList(new LambdaQueryWrapperX<ShopOrderDO>().between(BaseDO::getCreateTime, DateUtil.today(), DateUtil.today() +
+                " 23:59:59"));
+    }
 }

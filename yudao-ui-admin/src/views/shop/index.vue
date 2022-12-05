@@ -1,157 +1,98 @@
 <template>
-  <div class="dashboard-editor-container">
-
-    <el-row :gutter="40" class="panel-group">
-      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
-          <div class="card-panel-icon-wrapper icon-people">
-            <svg-icon icon-class="peoples" class-name="card-panel-icon" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              访客
-            </div>
-            <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData('messages')">
-          <div class="card-panel-icon-wrapper icon-message">
-            <svg-icon icon-class="message" class-name="card-panel-icon" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              消息
-            </div>
-            <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData('purchases')">
-          <div class="card-panel-icon-wrapper icon-money">
-            <svg-icon icon-class="money" class-name="card-panel-icon" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              金额
-            </div>
-            <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-          <div class="card-panel-icon-wrapper icon-shopping">
-            <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              订单
-            </div>
-            <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
-          </div>
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
-    </el-row>
-
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <raddar-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <pie-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
-    </el-row>
-
+  <div class="app-container">
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span style="font-size: 20px; font-weight: bold">实时概况</span>
+        <span style="font-size: 14px;margin-left: 20px">更新时间: {{parseTime(this.time)}}</span>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="getShopData">刷新</el-button>
+      </div>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="0" :value="data.todayOrder" title="今日订单数"></el-statistic>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="2" :value="data.todaySale" title="今日销售额"></el-statistic>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="0" :value="data.todayMember" title="今日新增会员"
+            ></el-statistic>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="2" :value="data.todayRecharge" title="今日充值"
+            ></el-statistic>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20" style="margin-top: 15px">
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="0" :value="data.totalOrder" title="总订单数"></el-statistic>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="2" :value="data.totalSale" title="总销售额"></el-statistic>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="0" :value="data.totalMember" title="总会员"></el-statistic>
+          </el-card>
+        </el-col>
+        <el-col :span="4">
+          <el-card shadow="hover">
+            <el-statistic group-separator="," :precision="2" :value="data.totalRecharge" title="总充值"></el-statistic>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-card>
 
   </div>
 </template>
 
 <script>
-// import PanelGroup from './dashboard/PanelGroup'
-// import LineChart from './dashboard/LineChart'
-// import RaddarChart from './dashboard/RaddarChart'
-// import PieChart from './dashboard/PieChart'
-// import BarChart from './dashboard/BarChart'
 
-import PanelGroup from '@/views/dashboard/PanelGroup'
-import LineChart from '@/views/dashboard/LineChart'
-import RaddarChart from '@/views/dashboard/RaddarChart'
-import PieChart from '@/views/dashboard/PieChart'
-import BarChart from '@/views/dashboard/BarChart'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
+import { getShopData } from '@/api/shop/data'
 
 export default {
   name: 'ShopIndex',
-  components: {
-    PanelGroup,
-    LineChart,
-    RaddarChart,
-    PieChart,
-    BarChart
-  },
+  components: {},
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
+      data: {
+        todayOrder: 0,
+        todaySale: 0,
+        todayMember: 0,
+        todayRecharge: 0,
+        totalOrder: 0,
+        totalSale: 0,
+        totalMember: 0,
+        totalRecharge: 0
+      },
+      time: Date,
     }
   },
+  created() {
+    this.getShopData()
+  },
   methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+    getShopData() {
+      this.time = new Date();
+      getShopData().then(response => {
+        this.data = response.data
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.dashboard-editor-container {
-  padding: 32px;
-  background-color: rgb(240, 242, 245);
-  position: relative;
 
-  .chart-wrapper {
-    background: #fff;
-    padding: 16px 16px 0;
-    margin-bottom: 32px;
-  }
-}
-
-@media (max-width:1024px) {
-  .chart-wrapper {
-    padding: 8px;
-  }
-}
 </style>

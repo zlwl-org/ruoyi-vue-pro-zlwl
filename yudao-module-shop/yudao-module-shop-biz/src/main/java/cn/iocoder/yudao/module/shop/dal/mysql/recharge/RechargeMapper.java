@@ -1,13 +1,16 @@
 package cn.iocoder.yudao.module.shop.dal.mysql.recharge;
 
-import java.util.*;
-
+import cn.hutool.core.date.DateUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargePageReqVO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeDO;
 import org.apache.ibatis.annotations.Mapper;
-import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.*;
+
+import java.util.List;
 
 /**
  * 充值活动 Mapper
@@ -40,4 +43,10 @@ public interface RechargeMapper extends BaseMapperX<RechargeDO> {
         return selectList(new LambdaQueryWrapperX<RechargeDO>()
                 .eq(RechargeDO::getStatus, 0));
     }
+
+    default List<RechargeDO> selectTodayOrder() {
+        return selectList(new LambdaQueryWrapperX<RechargeDO>().between(BaseDO::getCreateTime, DateUtil.today(), DateUtil.today() + " " +
+                "23:59:59"));
+    }
+
 }

@@ -72,4 +72,9 @@ public interface ShopOrderService {
     void payOrder(ShopOrderPayVO payVO);
 
     void cancelOrder(Long id);
+
+    List<ShopOrderDO> todayOrder();
+
+    List<ShopOrderDO> shopOrders();
+
 }

@@ -88,4 +88,5 @@ public interface RechargeService {
      */
     RechargeDO getBestRecharge(BigDecimal amount);
 
+    List<RechargeDO> todayOrder();
 }

@@ -1,11 +1,13 @@
 <template>
   <div class="app-container">
+    <el-button type="danger" v-if="order.orderStatus !== 'canceled'" style="float:right;" @click="cancelOrder">取消订单</el-button>
     <el-descriptions title="订单信息" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
       <el-descriptions-item label="订单编号">{{ order.id }}</el-descriptions-item>
+      <el-descriptions-item label="创建时间">{{ parseTime(order.createTime) }}</el-descriptions-item>
       <el-descriptions-item label="订单金额">{{ order.price + '  元' }}</el-descriptions-item>
       <el-descriptions-item label="支付状态">{{ this.getDictDataLabel(DICT_TYPE.SHOP_ORDER_PAY_STATUS, order.payStatus) }}</el-descriptions-item>
       <el-descriptions-item label="已付金额">{{ (order.balancePay + order.cashPay) + '  元' }}</el-descriptions-item>
-
+      <el-descriptions-item label="订单状态">{{ this.getDictDataLabel(DICT_TYPE.SHOP_ORDER_STATUS, order.orderStatus) }}</el-descriptions-item>
     </el-descriptions>
     <el-divider/>
     <h3 v-if="!order.memberId" style="font-size: 16px;font-weight: bold;color: #303133">顾客信息 <span style="color: red"> 散客</span></h3>
@@ -30,7 +32,7 @@
 <!--    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNo" :limit.sync="queryParams.pageSize"-->
 <!--                @pagination="getList"/>-->
 
-    <h2 v-if="order.orderStatus === 'done'" style="font-weight: bold;color: #303133; text-align: center">订单已完成</h2>
+    <h2 v-if="order.orderStatus === 'done' || order.orderStatus === 'canceled' " style="font-weight: bold;color: #303133; text-align: center">订单已完成</h2>
 
 
 <!--    <el-row  :gutter="12">-->
@@ -42,7 +44,7 @@
 <!--        </div>-->
 <!--      </el-col>-->
 <!--    </el-row>-->
-    <el-row :gutter="12" style="margin-top: 15px" v-if="order.orderStatus !== 'done'">
+    <el-row :gutter="12" style="margin-top: 15px" v-if="order.orderStatus !== 'done' & order.orderStatus !== 'canceled'">
       <h3  style="font-size: 16px;font-weight: bold;color: #303133">需支付 <span style="color: red">{{ order.price - order.balancePay - order.cashPay }}</span> 元，请选择支付方式</h3>
       <el-col :span="8">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -58,7 +60,7 @@
         </el-form>
       </el-col>
     </el-row>
-    <div slot="footer" class="dialog-footer" v-if="order.orderStatus !== 'done'">
+    <div slot="footer" class="dialog-footer" v-if="order.orderStatus !== 'done' & order.orderStatus !== 'canceled'">
       <el-button type="primary" @click="submitSettle">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -79,7 +81,7 @@ import CashierMember from '@/views/shop/cashier/member'
 import { listSimpleBranches } from '@/api/shop/branch'
 import { getBranchGoodsPage } from '@/api/shop/branchGoods'
 import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
-import { createOrder, getOrder, payOrder } from '@/api/shop/order'
+import { cancelOrder, createOrder, getOrder, payOrder } from '@/api/shop/order'
 import { createProduct, updateProduct } from '@/api/shop/product'
 
 export default {
@@ -215,7 +217,14 @@ export default {
     selectPayType(val){
       this.selectedPayType = val
       this.form.payType = val
-    }
+    },
+    cancelOrder(){
+      cancelOrder(this.orderId).then(response => {
+        this.$modal.msgSuccess("取消成功");
+        this.getOrderData(this.orderId);
+      });
+    },
+
 
   }
 }

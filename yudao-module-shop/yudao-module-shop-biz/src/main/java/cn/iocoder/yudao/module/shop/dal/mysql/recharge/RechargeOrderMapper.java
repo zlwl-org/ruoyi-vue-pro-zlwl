@@ -1,6 +1,8 @@
 package cn.iocoder.yudao.module.shop.dal.mysql.recharge;
 
+import cn.hutool.core.date.DateUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.shop.controller.admin.recharge.vo.RechargeOrderExportReqVO;
@@ -44,4 +46,8 @@ public interface RechargeOrderMapper extends BaseMapperX<RechargeOrderDO> {
                 .orderByDesc(RechargeOrderDO::getId));
     }
 
+    default List<RechargeOrderDO> selectTodayOrder(){
+        return selectList(new LambdaQueryWrapperX<RechargeOrderDO>().between(BaseDO::getCreateTime, DateUtil.today(), DateUtil.today() +
+                " 23:59:59"));
+    }
 }
