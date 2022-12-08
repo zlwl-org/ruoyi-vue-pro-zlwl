@@ -1,7 +1,11 @@
 <template>
   <div class="app-container">
-    <el-button type="danger" v-if="order.orderStatus !== 'canceled'" style="float:right;" @click="cancelOrder">取消订单</el-button>
+
     <el-descriptions title="订单信息" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
+      <template slot="extra">
+        <el-button type="danger" v-if="order.orderStatus !== 'canceled'"  @click="cancelOrder">取消订单</el-button>
+        <el-button type="warning" v-if="order.orderStatus !== 'canceled'"  @click="consumeOrder">门店消耗</el-button>
+      </template>
       <el-descriptions-item label="订单编号">{{ order.id }}</el-descriptions-item>
       <el-descriptions-item label="创建时间">{{ parseTime(order.createTime) }}</el-descriptions-item>
       <el-descriptions-item label="订单金额">{{ order.price + '  元' }}</el-descriptions-item>
@@ -81,8 +85,9 @@ import CashierMember from '@/views/shop/cashier/member'
 import { listSimpleBranches } from '@/api/shop/branch'
 import { getBranchGoodsPage } from '@/api/shop/branchGoods'
 import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
-import { cancelOrder, createOrder, getOrder, payOrder } from '@/api/shop/order'
+import { cancelOrder, changeOrder, createOrder, getOrder, payOrder } from '@/api/shop/order'
 import { createProduct, updateProduct } from '@/api/shop/product'
+import { deleteRecharge } from '@/api/shop/recharge'
 
 export default {
   name: 'CashierSettle',
@@ -219,11 +224,21 @@ export default {
       this.form.payType = val
     },
     cancelOrder(){
-      cancelOrder(this.orderId).then(response => {
-        this.$modal.msgSuccess("取消成功");
+      this.$modal.confirm('确认取消订单?').then(() => {
+        return cancelOrder(this.orderId);
+      }).then(() => {
+        this.$modal.msgSuccess("操作成功");
         this.getOrderData(this.orderId);
-      });
+      }).catch(() => {});
     },
+    consumeOrder(){
+      this.$modal.confirm('确认更改订单?').then(() => {
+        return changeOrder(this.orderId);
+      }).then(() => {
+        this.$modal.msgSuccess("操作成功");
+        this.getOrderData(this.orderId);
+      }).catch(() => {});
+    }
 
 
   }

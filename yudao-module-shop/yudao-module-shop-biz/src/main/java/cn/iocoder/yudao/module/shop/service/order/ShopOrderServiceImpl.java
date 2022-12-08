@@ -207,4 +207,12 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         return orderMapper.selectList();
     }
 
+    @Override
+    public void changeOrder(Long id) {
+        ShopOrderDO order = getOrder(id);
+        order.setOrderType("consume");
+        order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
+        orderMapper.updateById(order);
+    }
+
 }

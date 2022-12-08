@@ -14,7 +14,6 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
 import cn.iocoder.yudao.module.shop.service.order.ShopOrderItemService;
 import cn.iocoder.yudao.module.shop.service.order.ShopOrderService;
-import com.google.common.collect.ImmutableList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -74,6 +73,14 @@ public class ShopOrderController {
     @PreAuthorize("@ss.hasPermission('shop:order:update')")
     public CommonResult<Boolean> cancelOrder(@RequestParam("id") Long id) {
         orderService.cancelOrder(id);
+        return success(true);
+    }
+
+    @PutMapping("/change")
+    @ApiOperation("取消订单")
+    @PreAuthorize("@ss.hasPermission('shop:order:update')")
+    public CommonResult<Boolean> changeOrder(@RequestParam("id") Long id) {
+        orderService.changeOrder(id);
         return success(true);
     }
 

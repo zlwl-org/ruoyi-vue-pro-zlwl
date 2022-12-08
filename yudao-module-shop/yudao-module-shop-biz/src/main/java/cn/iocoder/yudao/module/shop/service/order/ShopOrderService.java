@@ -77,4 +77,5 @@ public interface ShopOrderService {
 
     List<ShopOrderDO> shopOrders();
 
+    void changeOrder(Long id);
 }

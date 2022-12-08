@@ -53,7 +53,7 @@ export function exportOrderExcel(query) {
   })
 }
 
-// 更新门店订单
+// 支付订单
 export function payOrder(data) {
   return request({
     url: '/shop/order/pay',
@@ -62,10 +62,18 @@ export function payOrder(data) {
   })
 }
 
-// 更新门店订单
+// 取消订单
 export function cancelOrder(id) {
   return request({
     url: '/shop/order/cancel?id=' + id,
+    method: 'put',
+  })
+}
+
+// 更换订单类型
+export function changeOrder(id) {
+  return request({
+    url: '/shop/order/change?id=' + id,
     method: 'put',
   })
 }
