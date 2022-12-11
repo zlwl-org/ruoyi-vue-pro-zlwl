@@ -1,22 +1,18 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
-import javax.validation.constraints.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.util.List;
 
 @ApiModel("管理后台 - 门店订单创建 Request VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ShopOrderCreateReqVO extends ShopOrderBaseVO {
-
-    @ApiModelProperty(value = "店铺优惠")
-    private BigDecimal branchDiscount;
-
-    @ApiModelProperty(value = "订单减免")
-    private BigDecimal orderDiscount;
 
     @ApiModelProperty(value = "优惠券")
     private String coupon;

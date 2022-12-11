@@ -32,22 +32,18 @@
       <el-table-column label="数量" align="center" prop="amount" />
     </el-table>
 
-    <!-- 分页组件 -->
-<!--    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNo" :limit.sync="queryParams.pageSize"-->
-<!--                @pagination="getList"/>-->
+    <el-divider/>
+    <el-descriptions title="订单结算" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
+      <el-descriptions-item label="订单金额">{{ order.orderPrice + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="已付金额">{{ (order.balancePay + order.cashPay) + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="订单优惠">{{ order.orderDiscount + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="减免金额">{{ order.branchDiscount + '  元' }}</el-descriptions-item>
+    </el-descriptions>
 
     <h2 v-if="order.orderStatus === 'done' || order.orderStatus === 'canceled' " style="font-weight: bold;color: #303133; text-align: center">订单已完成</h2>
 
 
-<!--    <el-row  :gutter="12">-->
-<!--      <el-col :span="4" v-for="(dict, index) in this.getDictDatas(DICT_TYPE.SHOP_PAY_TYPE)">-->
-<!--        <div class="box">-->
-<!--          <el-card shadow="always" :class="{selected:selectedPayType===dict.value}" :key="dict.value" @click.native="selectPayType(dict.value)">-->
-<!--            {{ dict.label }}-->
-<!--          </el-card>-->
-<!--        </div>-->
-<!--      </el-col>-->
-<!--    </el-row>-->
+
     <el-row :gutter="12" style="margin-top: 15px" v-if="order.orderStatus !== 'done' & order.orderStatus !== 'canceled'">
       <h3  style="font-size: 16px;font-weight: bold;color: #303133">需支付 <span style="color: red">{{ order.price - order.balancePay - order.cashPay }}</span> 元，请选择支付方式</h3>
       <el-col :span="8">
@@ -58,7 +54,7 @@
                          :key="dict.value" :label="dict.label" :value="dict.value"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="支付金额" prop="amount">
+          <el-form-item label="金额" prop="amount">
             <el-input v-model="form.amount" placeholder="" />
           </el-form-item>
         </el-form>
@@ -73,21 +69,8 @@
 </template>
 
 <script>
-import {
-  createMemberAccountLog,
-  updateMemberAccountLog,
-  deleteMemberAccountLog,
-  getMemberAccountLog,
-  getMemberAccountLogPage,
-  exportMemberAccountLogExcel
-} from '@/api/shop/memberAccountLog'
-import CashierMember from '@/views/shop/cashier/member'
-import { listSimpleBranches } from '@/api/shop/branch'
-import { getBranchGoodsPage } from '@/api/shop/branchGoods'
-import { createBranchStock, updateBranchStock } from '@/api/shop/branchStock'
+
 import { cancelOrder, changeOrder, createOrder, getOrder, payOrder } from '@/api/shop/order'
-import { createProduct, updateProduct } from '@/api/shop/product'
-import { deleteRecharge } from '@/api/shop/recharge'
 
 export default {
   name: 'CashierSettle',
@@ -133,10 +116,13 @@ export default {
       // 表单参数
       form: {},
       recharge_form: {},
-      // 表单校验
+      // 表单校验 ruanzh: 输入数字校验代码示例
       rules: {
         payType: [{ required: true, message: '支付方式不能为空', trigger: 'change' }],
-        amount: [{ required: true, message: '支付金额不能为空', trigger: 'blur' }],
+        amount: [
+          { required: true, message: '金额不能为空', trigger: 'blur' },
+          { pattern: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, message: '请输入正确的格式,可保留两位小数' }
+        ],
       },
       member: null,
       order: {},
@@ -166,6 +152,7 @@ export default {
     getOrderData(orderId) {
       getOrder(orderId).then(response => {
         this.order = response.data
+        this.reset()
       })
     },
     /** 取消按钮 */
@@ -175,13 +162,8 @@ export default {
     /** 表单重置 */
     reset() {
       this.form = {
-        id: undefined,
-        action: undefined,
-        balance: undefined,
-        gift: undefined,
-        point: undefined,
-        growth: undefined,
-        info: undefined
+        id: this.orderId,
+        discountAmount: 0,
       }
       this.resetForm('form')
     },
@@ -195,6 +177,10 @@ export default {
     submitSettle() {
       this.$refs["form"].validate(valid => {
         if (!valid) {
+          return;
+        }
+        if (!this.member && this.form.payType === 'balance_pay'){
+          this.$modal.msgError('散客不支持余额支付！');
           return;
         }
         this.form.id = this.orderId;

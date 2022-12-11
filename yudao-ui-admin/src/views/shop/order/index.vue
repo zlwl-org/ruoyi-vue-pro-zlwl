@@ -78,7 +78,8 @@
           <dict-tag :type="DICT_TYPE.SHOP_ORDER_TYPE" :value="scope.row.orderType" />
         </template>
       </el-table-column>
-      <el-table-column label="订单总价" align="center" prop="price" />
+      <el-table-column label="订单金额" align="center" prop="orderPrice" />
+      <el-table-column label="实付金额" align="center" prop="price" />
       <!--      <el-table-column label="订单交易号" align="center" prop="orderNo" />-->
       <el-table-column label="订单状态" align="center" prop="orderStatus">
         <template slot-scope="scope">

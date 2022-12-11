@@ -48,6 +48,12 @@ public class ShopOrderBaseVO {
     @ApiModelProperty(value = "实付金额")
     private BigDecimal price;
 
+    @ApiModelProperty(value = "订单优惠")
+    private BigDecimal orderDiscount;
+
+    @ApiModelProperty(value = "减免金额")
+    private BigDecimal branchDiscount;
+
     @ApiModelProperty(value = "余额实付金额")
     private BigDecimal balancePay;
 

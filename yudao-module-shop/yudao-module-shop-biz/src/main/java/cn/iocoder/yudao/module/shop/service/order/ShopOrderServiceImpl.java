@@ -129,30 +129,44 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         int compare = paid.compareTo(order.getPrice());
         if (compare > 0){
             throw exception(ORDER_PAID_LG_PRICE);
-        } else if(compare == 0){
-            order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
-            order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
-        } else {
-            order.setPayStatus(ShopOrderPayStatusEnum.PART_PAID.getStatus());
-            order.setOrderStatus(ShopOrderStatusEnum.UNPAID.getStatus());
-
         }
+        // 减免金额
+        if ("discount".equals(payVO.getPayType())){
+            order.setBranchDiscount(payVO.getAmount());
+            order.setPrice(order.getPrice().subtract(payVO.getAmount()));
 
-        if ("balance_pay".equals(payVO.getPayType())){
-            // 余额支付金额更新
-            order.setBalancePay(NumberUtil.add(order.getBalancePay(), payVO.getAmount()));
-
-            ShopMemberDO member = memberService.getMember(order.getMemberId());
-            if (member.getBalance().compareTo(payVO.getAmount()) < 0) {
-                throw exception(MEMBER_BALANCE_NOT_ENOUGH);
+            // 若减免后，未付金额为0，则更新订单状态，
+            // 若不为0，订单状态不变
+            if (paid.compareTo(order.getPrice()) == 0) {
+                order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
+                order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
             }
-            memberAccountService.shopping(payVO, member);
         } else {
-            // 现金支付金额更新
-            order.setCashPay(NumberUtil.add(order.getCashPay(), payVO.getAmount()));
+            // 支付
+            if(compare == 0){
+                order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
+                order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
+            } else {
+                order.setPayStatus(ShopOrderPayStatusEnum.PART_PAID.getStatus());
+                order.setOrderStatus(ShopOrderStatusEnum.UNPAID.getStatus());
+
+            }
+            if ("balance_pay".equals(payVO.getPayType())){
+                // 余额支付金额更新
+                order.setBalancePay(NumberUtil.add(order.getBalancePay(), payVO.getAmount()));
+
+                ShopMemberDO member = memberService.getMember(order.getMemberId());
+                if (member.getBalance().compareTo(payVO.getAmount()) < 0) {
+                    throw exception(MEMBER_BALANCE_NOT_ENOUGH);
+                }
+                memberAccountService.shopping(payVO, member);
+            } else {
+                // 现金支付金额更新
+                order.setCashPay(NumberUtil.add(order.getCashPay(), payVO.getAmount()));
+            }
+            order.setPayTime(new Date());
+            order.setPayType(payVO.getPayType());
         }
-        order.setPayTime(new Date());
-        order.setPayType(payVO.getPayType());
 
         orderMapper.updateById(order);
     }

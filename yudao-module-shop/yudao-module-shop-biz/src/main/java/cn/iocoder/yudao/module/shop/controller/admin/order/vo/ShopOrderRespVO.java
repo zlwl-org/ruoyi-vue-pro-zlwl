@@ -22,6 +22,7 @@ public class ShopOrderRespVO extends ShopOrderBaseVO {
     @ApiModelProperty(value = "创建时间", required = true)
     private Date createTime;
 
+
     private ShopMemberRespVO member;
 
     private List<ShopOrderItemRespVO> items;
