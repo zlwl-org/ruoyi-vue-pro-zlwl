@@ -1,10 +1,14 @@
 package cn.iocoder.yudao.module.shop.dal.dataobject.order;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.*;
 import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import com.baomidou.mybatisplus.annotation.KeySequence;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.sun.xml.bind.v2.TODO;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 门店订单 DO
@@ -67,7 +71,11 @@ public class ShopOrderDO extends BaseDO {
      */
     private Long cashier;
     /**
-     * 商品总价
+     * 订单金额
+     */
+    private BigDecimal orderPrice;
+    /**
+     * 实付金额
      */
     private BigDecimal price;
     /**

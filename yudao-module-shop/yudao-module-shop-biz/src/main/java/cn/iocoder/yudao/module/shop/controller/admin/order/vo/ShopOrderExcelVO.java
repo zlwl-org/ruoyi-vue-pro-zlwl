@@ -1,13 +1,12 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
-
-import com.alibaba.excel.annotation.ExcelProperty;
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
 import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
+import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
@@ -49,7 +48,11 @@ public class ShopOrderExcelVO {
     @ExcelProperty("收银员")
     private Long cashier;
 
-    @ExcelProperty("商品总价")
+
+    @ExcelProperty("订单金额")
+    private BigDecimal orderPrice;
+
+    @ExcelProperty("实付金额")
     private BigDecimal price;
 
     @ExcelProperty("余额实付金额")
@@ -63,5 +66,6 @@ public class ShopOrderExcelVO {
 
     @ExcelProperty("创建时间")
     private Date createTime;
+
 
 }

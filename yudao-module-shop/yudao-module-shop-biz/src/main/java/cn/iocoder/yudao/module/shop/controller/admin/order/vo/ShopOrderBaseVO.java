@@ -1,11 +1,12 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
-import javax.validation.constraints.*;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Date;
 
 import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
@@ -41,7 +42,10 @@ public class ShopOrderBaseVO {
     @ApiModelProperty(value = "收银员")
     private Long cashier;
 
-    @ApiModelProperty(value = "商品总价")
+    @ApiModelProperty(value = "订单金额")
+    private BigDecimal orderPrice;
+
+    @ApiModelProperty(value = "实付金额")
     private BigDecimal price;
 
     @ApiModelProperty(value = "余额实付金额")
