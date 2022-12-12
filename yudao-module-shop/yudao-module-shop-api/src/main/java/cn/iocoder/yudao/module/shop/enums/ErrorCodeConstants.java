@@ -41,12 +41,15 @@ public interface ErrorCodeConstants {
 
     ErrorCode BRANCH_STOCK_ITEM_NOT_EXISTS = new ErrorCode(1022010002, "出入库明细不存在");
 
-    // ========== 门店订单 TODO 补充编号 ==========
+    // ========== 门店订单 1022011001 ==========
     ErrorCode ORDER_NOT_EXISTS = new ErrorCode(1022011001, "门店订单不存在");
     ErrorCode ORDER_ITEM_NOT_EXISTS = new ErrorCode(1022011002, "门店订单明细不存在");
     ErrorCode ORDER_IS_DONE = new ErrorCode(1022011003, "订单已完成，请查询后再试！");
     ErrorCode ORDER_PAID_LG_PRICE = new ErrorCode(1022011004, "订单支付金额大于订单金额！");
     ErrorCode ORDER_PAID_FAILED = new ErrorCode(1022011005, "订单[{}]支付状态异常，请联系管理员！");
+
+    // ========== 促销活动 1022012001 ==========
+    ErrorCode PROMOTION_NOT_EXISTS = new ErrorCode(1022012001, "促销活动不存在");
 
 
 

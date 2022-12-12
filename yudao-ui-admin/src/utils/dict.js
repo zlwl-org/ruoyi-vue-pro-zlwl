@@ -68,6 +68,7 @@ export const DICT_TYPE = {
   SHOP_ORDER_STATUS: 'shop_order_status', // 禁用状态
   SHOP_PAY_TYPE: 'shop_pay_type', // 禁用状态
   SHOP_ORDER_PAY_STATUS: 'shop_order_pay_status', // 禁用状态
+  SHOP_PROMOTION_TYPE: 'shop_promotion_type', // 禁用状态
 }
 
 /**
