@@ -1,4 +1,4 @@
-package cn.iocoder.yudao.module.shop.service.branch;
+package cn.iocoder.yudao.module.shop.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

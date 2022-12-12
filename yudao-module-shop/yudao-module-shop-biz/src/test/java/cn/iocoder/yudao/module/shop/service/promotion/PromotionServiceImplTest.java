@@ -110,8 +110,6 @@ public class PromotionServiceImplTest extends BaseDbUnitTest {
        PromotionDO dbPromotion = randomPojo(PromotionDO.class, o -> { // 等会查询到
            o.setName(null);
            o.setPromotionType(null);
-           o.setCondition(null);
-           o.setTarget(null);
            o.setStatus(null);
        });
        promotionMapper.insert(dbPromotion);
@@ -119,18 +117,12 @@ public class PromotionServiceImplTest extends BaseDbUnitTest {
        promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setName(null)));
        // 测试 promotionType 不匹配
        promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setPromotionType(null)));
-       // 测试 condition 不匹配
-       promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setCondition(null)));
-       // 测试 target 不匹配
-       promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setTarget(null)));
        // 测试 status 不匹配
        promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setStatus(null)));
        // 准备参数
        PromotionPageReqVO reqVO = new PromotionPageReqVO();
        reqVO.setName(null);
        reqVO.setPromotionType(null);
-       reqVO.setCondition(null);
-       reqVO.setTarget(null);
        reqVO.setStatus(null);
 
        // 调用
@@ -148,8 +140,6 @@ public class PromotionServiceImplTest extends BaseDbUnitTest {
        PromotionDO dbPromotion = randomPojo(PromotionDO.class, o -> { // 等会查询到
            o.setName(null);
            o.setPromotionType(null);
-           o.setCondition(null);
-           o.setTarget(null);
            o.setStatus(null);
        });
        promotionMapper.insert(dbPromotion);
@@ -157,18 +147,12 @@ public class PromotionServiceImplTest extends BaseDbUnitTest {
        promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setName(null)));
        // 测试 promotionType 不匹配
        promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setPromotionType(null)));
-       // 测试 condition 不匹配
-       promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setCondition(null)));
-       // 测试 target 不匹配
-       promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setTarget(null)));
        // 测试 status 不匹配
        promotionMapper.insert(cloneIgnoreId(dbPromotion, o -> o.setStatus(null)));
        // 准备参数
        PromotionExportReqVO reqVO = new PromotionExportReqVO();
        reqVO.setName(null);
        reqVO.setPromotionType(null);
-       reqVO.setCondition(null);
-       reqVO.setTarget(null);
        reqVO.setStatus(null);
 
        // 调用

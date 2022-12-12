@@ -1,10 +1,9 @@
 package cn.iocoder.yudao.module.shop.controller.admin.promotion.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
-import javax.validation.constraints.*;
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @ApiModel("管理后台 - 促销活动创建 Request VO")
 @Data

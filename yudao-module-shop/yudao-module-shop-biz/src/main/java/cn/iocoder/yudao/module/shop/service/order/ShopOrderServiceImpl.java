@@ -8,6 +8,8 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
+import cn.iocoder.yudao.module.shop.enums.ShopOrderPayStatusEnum;
+import cn.iocoder.yudao.module.shop.enums.ShopOrderStatusEnum;
 import cn.iocoder.yudao.module.shop.service.branch.BranchGoodsService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;

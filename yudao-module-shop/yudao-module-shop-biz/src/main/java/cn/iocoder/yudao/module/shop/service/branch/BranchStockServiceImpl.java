@@ -7,6 +7,7 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.product.ProductDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.branch.BranchStockMapper;
+import cn.iocoder.yudao.module.shop.enums.StockTypeEnum;
 import cn.iocoder.yudao.module.shop.service.product.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

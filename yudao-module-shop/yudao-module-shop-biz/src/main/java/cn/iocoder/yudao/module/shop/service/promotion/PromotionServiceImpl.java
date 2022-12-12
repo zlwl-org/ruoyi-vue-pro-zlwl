@@ -1,19 +1,24 @@
 package cn.iocoder.yudao.module.shop.service.promotion;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionUpdateReqVO;
+import cn.iocoder.yudao.module.shop.convert.promotion.PromotionConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
+import cn.iocoder.yudao.module.shop.dal.mysql.promotion.PromotionMapper;
+import cn.iocoder.yudao.module.shop.enums.PromotionTypeEnum;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
-import cn.iocoder.yudao.module.shop.convert.promotion.PromotionConvert;
-import cn.iocoder.yudao.module.shop.dal.mysql.promotion.PromotionMapper;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.PROMOTION_NOT_EXISTS;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.PROMOTION_PRODUCT_EXISTED;
 
 /**
  * 促销活动 Service 实现类
@@ -29,6 +34,13 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Long createPromotion(PromotionCreateReqVO createReqVO) {
+        if (PromotionTypeEnum.AMOUNT.getType().equals(createReqVO.getPromotionType())) {
+            // 同一产品仅支持一个买送活动
+            PromotionDO one = promotionMapper.selectOne(PromotionDO::getProductId, createReqVO.getProductId());
+            if (one != null){
+                throw exception(PROMOTION_PRODUCT_EXISTED);
+            }
+        }
         // 插入
         PromotionDO promotion = PromotionConvert.INSTANCE.convert(createReqVO);
         promotionMapper.insert(promotion);

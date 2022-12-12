@@ -1,10 +1,10 @@
 package cn.iocoder.yudao.module.shop.controller.admin.promotion.vo;
 
-import lombok.*;
-import java.util.*;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import io.swagger.annotations.*;
-import javax.validation.constraints.*;
 
 /**
 * 促销活动 Base VO，提供给添加、修改、详细的子 VO 使用
@@ -18,12 +18,6 @@ public class PromotionBaseVO {
 
     @ApiModelProperty(value = "促销类型")
     private String promotionType;
-
-    @ApiModelProperty(value = "条件")
-    private BigDecimal condition;
-
-    @ApiModelProperty(value = "促销值")
-    private BigDecimal target;
 
     @ApiModelProperty(value = "产品编号")
     private Long productId;
@@ -40,5 +34,17 @@ public class PromotionBaseVO {
     @ApiModelProperty(value = "状态", required = true)
     @NotNull(message = "状态不能为空")
     private Integer status;
+
+    @ApiModelProperty(value = "金额门槛")
+    private BigDecimal priceCondition;
+
+    @ApiModelProperty(value = "金额促销")
+    private BigDecimal priceTarget;
+
+    @ApiModelProperty(value = "数量门槛")
+    private Integer amountCondition;
+
+    @ApiModelProperty(value = "数量促销")
+    private Integer amountTarget;
 
 }

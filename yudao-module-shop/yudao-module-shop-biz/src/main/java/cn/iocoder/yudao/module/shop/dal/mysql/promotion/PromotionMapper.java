@@ -21,8 +21,6 @@ public interface PromotionMapper extends BaseMapperX<PromotionDO> {
         return selectPage(reqVO, new LambdaQueryWrapperX<PromotionDO>()
                 .likeIfPresent(PromotionDO::getName, reqVO.getName())
                 .eqIfPresent(PromotionDO::getPromotionType, reqVO.getPromotionType())
-                .eqIfPresent(PromotionDO::getCondition, reqVO.getCondition())
-                .eqIfPresent(PromotionDO::getTarget, reqVO.getTarget())
                 .eqIfPresent(PromotionDO::getStatus, reqVO.getStatus())
                 .orderByDesc(PromotionDO::getId));
     }
@@ -31,8 +29,6 @@ public interface PromotionMapper extends BaseMapperX<PromotionDO> {
         return selectList(new LambdaQueryWrapperX<PromotionDO>()
                 .likeIfPresent(PromotionDO::getName, reqVO.getName())
                 .eqIfPresent(PromotionDO::getPromotionType, reqVO.getPromotionType())
-                .eqIfPresent(PromotionDO::getCondition, reqVO.getCondition())
-                .eqIfPresent(PromotionDO::getTarget, reqVO.getTarget())
                 .eqIfPresent(PromotionDO::getStatus, reqVO.getStatus())
                 .orderByDesc(PromotionDO::getId));
     }

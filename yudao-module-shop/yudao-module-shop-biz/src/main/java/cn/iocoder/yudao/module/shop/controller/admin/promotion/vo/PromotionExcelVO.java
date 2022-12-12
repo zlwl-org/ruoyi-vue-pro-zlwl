@@ -28,12 +28,6 @@ public class PromotionExcelVO {
     @DictFormat("shop_promotion_type") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
     private String promotionType;
 
-    @ExcelProperty("条件")
-    private BigDecimal condition;
-
-    @ExcelProperty("促销值")
-    private BigDecimal target;
-
     @ExcelProperty("产品编号")
     private Long productId;
 
@@ -52,5 +46,17 @@ public class PromotionExcelVO {
 
     @ExcelProperty("创建时间")
     private Date createTime;
+
+    @ExcelProperty("金额门槛")
+    private BigDecimal priceCondition;
+
+    @ExcelProperty("金额促销")
+    private BigDecimal priceTarget;
+
+    @ExcelProperty("数量门槛")
+    private Integer amountCondition;
+
+    @ExcelProperty("数量促销")
+    private Integer amountTarget;
 
 }

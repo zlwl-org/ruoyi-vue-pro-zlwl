@@ -18,12 +18,6 @@ public class PromotionPageReqVO extends PageParam {
     @ApiModelProperty(value = "促销类型")
     private String promotionType;
 
-    @ApiModelProperty(value = "条件")
-    private BigDecimal condition;
-
-    @ApiModelProperty(value = "促销值")
-    private BigDecimal target;
-
     @ApiModelProperty(value = "状态")
     private Integer status;
 

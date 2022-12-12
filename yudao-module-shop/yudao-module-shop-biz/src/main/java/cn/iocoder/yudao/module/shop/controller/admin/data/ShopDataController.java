@@ -7,7 +7,7 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.recharge.RechargeOrderDO;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
 import cn.iocoder.yudao.module.shop.service.order.ShopOrderService;
-import cn.iocoder.yudao.module.shop.service.order.ShopOrderStatusEnum;
+import cn.iocoder.yudao.module.shop.enums.ShopOrderStatusEnum;
 import cn.iocoder.yudao.module.shop.service.recharge.RechargeOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

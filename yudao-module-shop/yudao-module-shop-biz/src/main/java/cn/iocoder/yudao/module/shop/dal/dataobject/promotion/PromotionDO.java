@@ -37,14 +37,6 @@ public class PromotionDO extends BaseDO {
      */
     private String promotionType;
     /**
-     * 条件
-     */
-    private BigDecimal condition;
-    /**
-     * 促销值
-     */
-    private BigDecimal target;
-    /**
      * 产品编号
      */
     private Long productId;
@@ -66,5 +58,21 @@ public class PromotionDO extends BaseDO {
      * 枚举 {@link TODO disable_status 对应的类}
      */
     private Integer status;
+    /**
+     * 金额门槛
+     */
+    private BigDecimal priceCondition;
+    /**
+     * 金额促销
+     */
+    private BigDecimal priceTarget;
+    /**
+     * 数量门槛
+     */
+    private Integer amountCondition;
+    /**
+     * 数量促销
+     */
+    private Integer amountTarget;
 
 }

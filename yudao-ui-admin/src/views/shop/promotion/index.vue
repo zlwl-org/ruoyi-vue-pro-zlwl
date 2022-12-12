@@ -12,12 +12,6 @@
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="条件" prop="condition">
-        <el-input v-model="queryParams.condition" placeholder="请输入条件" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="促销值" prop="target">
-        <el-input v-model="queryParams.target" placeholder="请输入促销值" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
           <el-option v-for="dict in this.getDictDatas(DICT_TYPE.DISABLE_STATUS)"
@@ -52,11 +46,19 @@
           <dict-tag :type="DICT_TYPE.SHOP_PROMOTION_TYPE" :value="scope.row.promotionType" />
         </template>
       </el-table-column>
-      <el-table-column label="条件" align="center" prop="condition" />
-      <el-table-column label="促销值" align="center" prop="target" />
-      <el-table-column label="产品编号" align="center" prop="productId" />
-      <el-table-column label="门店编号" align="center" prop="branchId" />
-      <el-table-column label="商品编号" align="center" prop="goodId" />
+      <el-table-column label="门槛" align="center" prop="priceCondition" >
+        <template slot-scope="scope">
+          <span>{{ scope.row.priceCondition || scope.row.amountCondition }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="促销" align="center" prop="priceTarget" >
+        <template slot-scope="scope">
+          <span>{{ scope.row.priceTarget || scope.row.amountTarget }}</span>
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="产品编号" align="center" prop="productId" />-->
+<!--      <el-table-column label="门店编号" align="center" prop="branchId" />-->
+<!--      <el-table-column label="商品编号" align="center" prop="goodId" />-->
       <el-table-column label="信息" align="center" prop="info" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
@@ -68,6 +70,9 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
+
+<!--      <el-table-column label="数量门槛" align="center" prop="amountCondition" />-->
+<!--      <el-table-column label="数量促销" align="center" prop="amountTarget" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
@@ -93,29 +98,29 @@
                        :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="条件" prop="condition">
-          <el-input v-model="form.condition" placeholder="请输入条件" @change="handleFormChanges"/>
+        <el-form-item label="门槛" prop="priceCondition" :rules="[{required: !this.itemControl, message: '不能为空', trigger: 'blur'}]" :hidden="itemControl">
+          <el-input v-model="form.priceCondition" placeholder="请输入金额门槛"  @change="handleFormChanges"/>
         </el-form-item>
-        <el-form-item label="促销值" prop="target">
-          <el-input v-model="form.target" placeholder="请输入促销值"  @change="handleFormChanges"/>
+        <el-form-item label="促销" prop="priceTarget" :rules="[{required: !this.itemControl, message: '不能为空', trigger: 'blur'}]" :hidden="itemControl">
+          <el-input v-model="form.priceTarget" placeholder="请输入金额促销"  @change="handleFormChanges"/>
         </el-form-item>
-<!--        <el-form-item label="产品" prop="productId">-->
-<!--          <el-input v-model="form.productId" placeholder="请输入产品编号" :disabled="itemControl"/>-->
-<!--        </el-form-item>-->
-        <el-form-item label="产品" prop="product">
-          <el-select v-model="form.product" value-key="id" placeholder="请选择产品" filterable @change="productSelected">
-            <el-option v-for="item in this.product_list"
-                       :key="item.id" :label="item.name" :value="item" :disabled="itemControl"/>
-          </el-select>
+        <el-form-item label="门槛" prop="amountCondition" :rules="[{required: this.itemControl, message: '不能为空', trigger: 'blur'}]" :hidden="!itemControl">
+          <el-input v-model="form.amountCondition" placeholder="请输入数量门槛"  @change="handleFormChanges"/>
+        </el-form-item>
+        <el-form-item label="促销" prop="amountTarget" :rules="[{required: this.itemControl, message: '不能为空', trigger: 'blur'}]" :hidden="!itemControl">
+          <el-input v-model="form.amountTarget" placeholder="请输入数量促销"  @change="handleFormChanges"/>
         </el-form-item>
 <!--        <el-form-item label="门店编号" prop="branchId">-->
-<!--          <el-input v-model="form.branchId" placeholder="请输入门店编号" />-->
+<!--          <el-input v-model="form.branchId" placeholder="请输入门店编号"  @change="handleFormChanges"/>-->
 <!--        </el-form-item>-->
-<!--        <el-form-item label="商品编号" prop="goodId">-->
-<!--          <el-input v-model="form.goodId" placeholder="请输入商品编号" />-->
-<!--        </el-form-item>-->
+        <el-form-item label="产品" prop="product" :rules="[{required: this.itemControl, message: '不能为空', trigger: 'blur'}]" :hidden="!itemControl">
+          <el-select v-model="form.product" value-key="id" placeholder="请选择产品" filterable @change="handleFormChanges">
+            <el-option v-for="item in this.product_list"
+                       :key="item.id" :label="item.name" :value="item"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="信息" prop="info">
-          <el-input v-model="form.info" placeholder="请输入信息" :disabled="true"/>
+          <el-input v-model="form.info" type="textarea" placeholder="请输入内容" :disabled="true"/>
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -162,8 +167,6 @@ export default {
         pageSize: 10,
         name: null,
         promotionType: null,
-        condition: null,
-        target: null,
         status: null,
       },
       // 表单参数
@@ -171,9 +174,9 @@ export default {
       // 表单校验
       rules: {
         status: [{ required: true, message: "状态不能为空", trigger: "blur" }],
-        product: [{ required: this.itemControl, message: "产品不能为空", trigger: "blur" }],
+        promotionType: [{ required: true, message: "不能为空", trigger: "blur" }],
       },
-      itemControl: false,
+      itemControl: true,
       product_list: [],
     };
   },
@@ -184,10 +187,19 @@ export default {
   methods: {
     typeSelected(type) {
       if (type === 'amount_promotion'){
-          this.itemControl = false
-      } else {
-          this.itemControl = true
-          this.form.productId = null
+        this.itemControl = true
+        this.form.priceCondition = null
+        this.form.priceTarget = null
+        this.form.name = null
+        this.form.info = null
+      }
+      if (type === 'price_promotion') {
+        this.itemControl = false
+        this.form.productId = null
+        this.form.amountCondition = null
+        this.form.amountTarget = null
+        this.form.name = null
+        this.form.info = null
       }
     },
     getProductList() {
@@ -203,17 +215,14 @@ export default {
       this.handleFormChanges();
     },
     handleFormChanges(){
-      if (!this.form.condition || !this.form.target || !this.form.product) {
-        return;
-      }
-      if (this.form.type === 'amount_promotion'){
-        this.form.name = '买' + this.form.condition + '送' + this.form.target;
-        this.form.info = this.form.product.name + this.form.name
-      } else {
-        this.form.name = '满' + this.form.condition + '减' + this.form.target;
+      if (this.form.promotionType === 'amount_promotion' && this.form.product && this.form.amountCondition && this.form.amountTarget){
+        this.form.name = '买' + this.form.amountCondition + '送' + this.form.amountTarget;
         this.form.info = this.form.product.name + this.form.name
       }
-
+      if (this.form.promotionType === 'price_promotion' && this.form.priceCondition && this.form.priceTarget) {
+        this.form.name = '满' + this.form.priceCondition + '减' + this.form.priceTarget;
+        this.form.info = this.form.name
+      }
     },
     /** 查询列表 */
     getList() {
@@ -236,13 +245,15 @@ export default {
         id: undefined,
         name: undefined,
         promotionType: undefined,
-        condition: undefined,
-        target: undefined,
         productId: undefined,
         branchId: undefined,
         goodId: undefined,
         info: undefined,
         status: undefined,
+        priceCondition: undefined,
+        priceTarget: undefined,
+        amountCondition: undefined,
+        amountTarget: undefined,
       };
       this.resetForm("form");
     },
@@ -278,6 +289,7 @@ export default {
         if (!valid) {
           return;
         }
+        this.form.productId = this.form.product.id
         // 修改的提交
         if (this.form.id != null) {
           updatePromotion(this.form).then(response => {
