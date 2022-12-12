@@ -1,6 +1,8 @@
 package cn.iocoder.yudao.module.shop.service.order;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
 import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
@@ -65,33 +67,43 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         orderMapper.insert(order);
         // 插入 items
         createReqVO.getItems().forEach(item -> {
+            item.setOrderId(order.getId());
+            item.setMemberId(order.getMemberId());
+            item.setType("buy");
+            item.setRealPrice(item.getGoodPrice().multiply(BigDecimal.valueOf(item.getAmount())));
+            item.setDiscount(BigDecimal.ZERO);
+            itemService.createOrderItem(item);
+
+            int amount = item.getAmount();
             // 是否有促销活动
             if (item.getPromotionId() != null) {
                 PromotionDO promotion = promotionService.getPromotion(item.getPromotionId());
-                if (promotion == null){
+                if (promotion == null) {
                     throw exception(PROMOTION_NOT_EXISTS);
                 }
                 if (promotion.getStatus() != 0) {
                     throw exception(PROMOTION_STATUS_FALSE);
                 }
 
-                if (item.getAmount()> promotion.getAmountCondition()){
+                if (item.getAmount() >= promotion.getAmountCondition()) {
                     int times = item.getAmount() / promotion.getAmountCondition();
-                    if (times > 0){
-
+                    amount = amount+times;
+                    if (times > 0) {
+                        ShopOrderItemCreateReqVO promotionItem = new ShopOrderItemCreateReqVO();
+                        BeanUtil.copyProperties(item, promotionItem);
+                        promotionItem.setType("promotion");
+                        promotionItem.setAmount(times);
+                        promotionItem.setRealPrice(BigDecimal.ZERO);
+                        promotionItem.setDiscount(promotionItem.getGoodPrice().multiply(BigDecimal.valueOf(times)));
+                        itemService.createOrderItem(promotionItem);
                     }
                 }
-
-
             }
 
-            item.setOrderId(order.getId());
-            item.setMemberId(order.getMemberId());
-            itemService.createOrderItem(item);
             // 扣减库存
-            int result = goodsService.updateGoodStock(item.getGoodId(), -item.getAmount());
-            if (result == 0){
-                throw exception(BRANCH_GOODS_NOT_ENOUGH, item.getGoodName());
+            int result = goodsService.updateGoodStock(item.getGoodId(), -amount);
+            if (result == 0) {
+                throw exception(BRANCH_GOODS_NOT_ENOUGH, StrUtil.format("{}不足{}个", item.getGoodName(), amount));
             }
         });
         // 返回
@@ -124,7 +136,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Override
     public ShopOrderDO getOrder(Long id) {
         ShopOrderDO order = orderMapper.selectById(id);
-        if (order == null){
+        if (order == null) {
             throw exception(ORDER_NOT_EXISTS);
         }
         return order;
@@ -154,11 +166,11 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         // 判断订单是否结清
         BigDecimal paid = NumberUtil.add(order.getBalancePay(), order.getCashPay(), payVO.getAmount());
         int compare = paid.compareTo(order.getPrice());
-        if (compare > 0){
+        if (compare > 0) {
             throw exception(ORDER_PAID_LG_PRICE);
         }
         // 减免金额
-        if ("discount".equals(payVO.getPayType())){
+        if ("discount".equals(payVO.getPayType())) {
             order.setBranchDiscount(payVO.getAmount());
             order.setPrice(order.getPrice().subtract(payVO.getAmount()));
 
@@ -170,7 +182,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
             }
         } else {
             // 支付
-            if(compare == 0){
+            if (compare == 0) {
                 order.setPayStatus(ShopOrderPayStatusEnum.PAID.getStatus());
                 order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
             } else {
@@ -178,7 +190,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
                 order.setOrderStatus(ShopOrderStatusEnum.UNPAID.getStatus());
 
             }
-            if ("balance_pay".equals(payVO.getPayType())){
+            if ("balance_pay".equals(payVO.getPayType())) {
                 // 余额支付金额更新
                 order.setBalancePay(NumberUtil.add(order.getBalancePay(), payVO.getAmount()));
 
@@ -211,13 +223,13 @@ public class ShopOrderServiceImpl implements ShopOrderService {
             throw exception(ORDER_PAID_FAILED, id);
         }
         if (!ShopOrderPayStatusEnum.UNPAID.getStatus().equals(order.getPayStatus())) {
-            if (order.getMemberId() != null){
+            if (order.getMemberId() != null) {
                 // 退回余额支付
-                if (order.getBalancePay().compareTo(BigDecimal.ZERO) >0) {
+                if (order.getBalancePay().compareTo(BigDecimal.ZERO) > 0) {
                     memberAccountService.refund(order);
                     order.setBalancePay(BigDecimal.ZERO);
                 }
-                if (order.getCashPay().compareTo(BigDecimal.ZERO)>0){
+                if (order.getCashPay().compareTo(BigDecimal.ZERO) > 0) {
                     order.setCashPay(BigDecimal.ZERO);
                 }
 
@@ -231,7 +243,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         List<ShopOrderItemDO> items = itemService.getOrderItemList(id);
         for (ShopOrderItemDO item : items) {
             int result = goodsService.updateGoodStock(item.getGoodId(), item.getAmount());
-            if (result == 0){
+            if (result == 0) {
                 throw exception(BRANCH_GOODS_UPDATE_FAILED, item.getGoodName());
             }
         }

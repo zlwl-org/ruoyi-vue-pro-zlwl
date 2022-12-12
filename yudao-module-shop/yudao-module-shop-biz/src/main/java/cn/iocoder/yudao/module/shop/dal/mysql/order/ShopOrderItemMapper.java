@@ -27,6 +27,7 @@ public interface ShopOrderItemMapper extends BaseMapperX<ShopOrderItemDO> {
                 .eqIfPresent(ShopOrderItemDO::getGoodPrice, reqVO.getGoodPrice())
                 .eqIfPresent(ShopOrderItemDO::getAmount, reqVO.getAmount())
                 .betweenIfPresent(ShopOrderItemDO::getCreateTime, reqVO.getCreateTime())
+                .eqIfPresent(ShopOrderItemDO::getType, reqVO.getType())
                 .orderByDesc(ShopOrderItemDO::getId));
     }
 
@@ -39,6 +40,7 @@ public interface ShopOrderItemMapper extends BaseMapperX<ShopOrderItemDO> {
                 .eqIfPresent(ShopOrderItemDO::getGoodPrice, reqVO.getGoodPrice())
                 .eqIfPresent(ShopOrderItemDO::getAmount, reqVO.getAmount())
                 .betweenIfPresent(ShopOrderItemDO::getCreateTime, reqVO.getCreateTime())
+                .eqIfPresent(ShopOrderItemDO::getType, reqVO.getType())
                 .orderByDesc(ShopOrderItemDO::getId));
     }
 

@@ -1,30 +1,28 @@
 package cn.iocoder.yudao.module.shop.service.order;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import javax.annotation.Resource;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.test.core.ut.BaseDbUnitTest;
-
-import cn.iocoder.yudao.module.shop.controller.admin.order.vo.*;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.order.vo.ShopOrderItemUpdateReqVO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderItemMapper;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 
 import javax.annotation.Resource;
-import org.springframework.context.annotation.Import;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
-import static cn.hutool.core.util.RandomUtil.*;
-import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.*;
-import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.*;
-import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.*;
-import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.*;
-import static cn.iocoder.yudao.framework.common.util.date.DateUtils.*;
+import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.cloneIgnoreId;
+import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertPojoEquals;
+import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertServiceException;
+import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.randomLongId;
+import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.randomPojo;
+import static cn.iocoder.yudao.module.shop.enums.ErrorCodeConstants.ORDER_ITEM_NOT_EXISTS;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
 * {@link ShopOrderItemServiceImpl} 的单元测试类
@@ -115,6 +113,7 @@ public class ShopOrderItemServiceImplTest extends BaseDbUnitTest {
            o.setGoodPrice(null);
            o.setAmount(null);
            o.setCreateTime(null);
+           o.setType(null);
        });
        orderItemMapper.insert(dbOrderItem);
        // 测试 memberId 不匹配
@@ -131,6 +130,8 @@ public class ShopOrderItemServiceImplTest extends BaseDbUnitTest {
        orderItemMapper.insert(cloneIgnoreId(dbOrderItem, o -> o.setAmount(null)));
        // 测试 createTime 不匹配
        orderItemMapper.insert(cloneIgnoreId(dbOrderItem, o -> o.setCreateTime(null)));
+       // 测试 type 不匹配
+       orderItemMapper.insert(cloneIgnoreId(dbOrderItem, o -> o.setType(null)));
        // 准备参数
        ShopOrderItemPageReqVO reqVO = new ShopOrderItemPageReqVO();
        reqVO.setMemberId(null);
@@ -140,6 +141,7 @@ public class ShopOrderItemServiceImplTest extends BaseDbUnitTest {
        reqVO.setGoodPrice(null);
        reqVO.setAmount(null);
        reqVO.setCreateTime((new Date[]{}));
+       reqVO.setType(null);
 
        // 调用
        PageResult<ShopOrderItemDO> pageResult = orderItemService.getOrderItemPage(reqVO);
@@ -161,6 +163,7 @@ public class ShopOrderItemServiceImplTest extends BaseDbUnitTest {
            o.setGoodPrice(null);
            o.setAmount(null);
            o.setCreateTime(null);
+           o.setType(null);
        });
        orderItemMapper.insert(dbOrderItem);
        // 测试 memberId 不匹配
@@ -177,6 +180,8 @@ public class ShopOrderItemServiceImplTest extends BaseDbUnitTest {
        orderItemMapper.insert(cloneIgnoreId(dbOrderItem, o -> o.setAmount(null)));
        // 测试 createTime 不匹配
        orderItemMapper.insert(cloneIgnoreId(dbOrderItem, o -> o.setCreateTime(null)));
+       // 测试 type 不匹配
+       orderItemMapper.insert(cloneIgnoreId(dbOrderItem, o -> o.setType(null)));
        // 准备参数
        ShopOrderItemExportReqVO reqVO = new ShopOrderItemExportReqVO();
        reqVO.setMemberId(null);
@@ -186,6 +191,7 @@ public class ShopOrderItemServiceImplTest extends BaseDbUnitTest {
        reqVO.setGoodPrice(null);
        reqVO.setAmount(null);
        reqVO.setCreateTime((new Date[]{}));
+       reqVO.setType(null);
 
        // 调用
        List<ShopOrderItemDO> list = orderItemService.getOrderItemList(reqVO);

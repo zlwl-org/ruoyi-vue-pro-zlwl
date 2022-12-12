@@ -1,10 +1,10 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order.vo;
 
-import lombok.*;
-import java.util.*;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import io.swagger.annotations.*;
-import javax.validation.constraints.*;
 
 /**
 * 门店订单明细 Base VO，提供给添加、修改、详细的子 VO 使用
@@ -34,5 +34,22 @@ public class ShopOrderItemBaseVO {
     @ApiModelProperty(value = "数量", required = true)
     @NotNull(message = "数量不能为空")
     private Integer amount;
+
+    @ApiModelProperty(value = "减免金额", required = true)
+    @NotNull(message = "减免金额不能为空")
+    private BigDecimal discount;
+
+    @ApiModelProperty(value = "实际金额", required = true)
+    @NotNull(message = "实际金额不能为空")
+    private BigDecimal realPrice;
+
+    @ApiModelProperty(value = "促销活动编号")
+    private Long promotionId;
+
+    @ApiModelProperty(value = "促销活动名称")
+    private String promotionName;
+
+    @ApiModelProperty(value = "类型")
+    private String type;
 
 }

@@ -1,11 +1,12 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
-import cn.iocoder.yudao.framework.common.pojo.PageParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
@@ -34,5 +35,8 @@ public class ShopOrderItemExportReqVO {
     @ApiModelProperty(value = "创建时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date[] createTime;
+
+    @ApiModelProperty(value = "类型")
+    private String type;
 
 }

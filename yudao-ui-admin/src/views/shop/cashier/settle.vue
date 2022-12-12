@@ -8,9 +8,7 @@
       </template>
       <el-descriptions-item label="订单编号">{{ order.id }}</el-descriptions-item>
       <el-descriptions-item label="创建时间">{{ parseTime(order.createTime) }}</el-descriptions-item>
-      <el-descriptions-item label="订单金额">{{ order.price + '  元' }}</el-descriptions-item>
       <el-descriptions-item label="支付状态">{{ this.getDictDataLabel(DICT_TYPE.SHOP_ORDER_PAY_STATUS, order.payStatus) }}</el-descriptions-item>
-      <el-descriptions-item label="已付金额">{{ (order.balancePay + order.cashPay) + '  元' }}</el-descriptions-item>
       <el-descriptions-item label="订单状态">{{ this.getDictDataLabel(DICT_TYPE.SHOP_ORDER_STATUS, order.orderStatus) }}</el-descriptions-item>
     </el-descriptions>
     <el-divider/>
@@ -35,9 +33,12 @@
     <el-divider/>
     <el-descriptions title="订单结算" :column="2" border :content-style="contentStyle" :label-style="labelStyle">
       <el-descriptions-item label="订单金额">{{ order.orderPrice + '  元' }}</el-descriptions-item>
-      <el-descriptions-item label="已付金额">{{ (order.balancePay + order.cashPay) + '  元' }}</el-descriptions-item>
       <el-descriptions-item label="订单优惠">{{ order.orderDiscount + '  元' }}</el-descriptions-item>
       <el-descriptions-item label="减免金额">{{ order.branchDiscount + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="实际需付">{{ order.price + '  元' }}</el-descriptions-item>
+      <el-descriptions-item label="已付金额">{{ (order.balancePay + order.cashPay) + '  元' }}</el-descriptions-item>
+
+
     </el-descriptions>
 
     <h2 v-if="order.orderStatus === 'done' || order.orderStatus === 'canceled' " style="font-weight: bold;color: #303133; text-align: center">订单已完成</h2>

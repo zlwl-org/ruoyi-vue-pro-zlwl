@@ -25,6 +25,12 @@
         <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
                         range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
       </el-form-item>
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="queryParams.type" placeholder="请选择类型" clearable size="small">
+          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_ORDER_ITEM_TYPE)"
+                       :key="dict.value" :label="dict.label" :value="dict.value"/>
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
@@ -56,6 +62,15 @@
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="减免金额" align="center" prop="discount" />
+      <el-table-column label="实际金额" align="center" prop="realPrice" />
+      <el-table-column label="促销活动编号" align="center" prop="promotionId" />
+      <el-table-column label="促销活动名称" align="center" prop="promotionName" />
+      <el-table-column label="类型" align="center" prop="type">
+        <template slot-scope="scope">
+          <dict-tag :type="DICT_TYPE.SHOP_ORDER_ITEM_TYPE" :value="scope.row.type" />
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -91,6 +106,24 @@
         </el-form-item>
         <el-form-item label="数量" prop="amount">
           <el-input v-model="form.amount" placeholder="请输入数量" />
+        </el-form-item>
+        <el-form-item label="减免金额" prop="discount">
+          <el-input v-model="form.discount" placeholder="请输入减免金额" />
+        </el-form-item>
+        <el-form-item label="实际金额" prop="realPrice">
+          <el-input v-model="form.realPrice" placeholder="请输入实际金额" />
+        </el-form-item>
+        <el-form-item label="促销活动编号" prop="promotionId">
+          <el-input v-model="form.promotionId" placeholder="请输入促销活动编号" />
+        </el-form-item>
+        <el-form-item label="促销活动名称" prop="promotionName">
+          <el-input v-model="form.promotionName" placeholder="请输入促销活动名称" />
+        </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="form.type" placeholder="请选择类型">
+            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.SHOP_ORDER_ITEM_TYPE)"
+                       :key="dict.value" :label="dict.label" :value="dict.value" />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -135,6 +168,7 @@ export default {
         goodPrice: null,
         amount: null,
         createTime: [],
+        type: null,
       },
       // 表单参数
       form: {},
@@ -144,6 +178,8 @@ export default {
         goodId: [{ required: true, message: "商品编号不能为空", trigger: "blur" }],
         goodPrice: [{ required: true, message: "商品售价不能为空", trigger: "blur" }],
         amount: [{ required: true, message: "数量不能为空", trigger: "blur" }],
+        discount: [{ required: true, message: "减免金额不能为空", trigger: "blur" }],
+        realPrice: [{ required: true, message: "实际金额不能为空", trigger: "blur" }],
       }
     };
   },
@@ -176,6 +212,11 @@ export default {
         goodName: undefined,
         goodPrice: undefined,
         amount: undefined,
+        discount: undefined,
+        realPrice: undefined,
+        promotionId: undefined,
+        promotionName: undefined,
+        type: undefined,
       };
       this.resetForm("form");
     },
