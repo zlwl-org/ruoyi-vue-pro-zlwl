@@ -86,6 +86,11 @@
           <el-table-column label="商品名称" align="center" prop="name"/>
           <el-table-column label="售价(元)" align="center" prop="price"/>
           <el-table-column label="库存" align="center" prop="stock"/>
+          <el-table-column label="促销" align="center" prop="promotion.name">
+            <template slot-scope="scope">
+              <el-tag size="medium">{{ scope.row.promotion.name }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button size="mini" type="text" icon="el-icon-shopping-cart-2" @click="selectGood(scope.row)"> 选择
@@ -152,7 +157,7 @@ import { createRechargeOrder } from '@/api/shop/rechargeOrder'
 import { getMember } from '@/api/shop/member'
 
 export default {
-  name: 'CashierMemberAccountLog',
+  name: 'CashierOrder',
   components: {
     CashierMemberInfo,
     ShopOrder,
@@ -299,7 +304,8 @@ export default {
           goodId: row.id,
           goodName: row.name,
           amount: 1,
-          goodPrice: row.price
+          goodPrice: row.price,
+          promotionId: row.promotion ? row.promotion.id : null,
         }
         this.cart.push(good)
       }

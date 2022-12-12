@@ -51,6 +51,7 @@ public interface ErrorCodeConstants {
     // ========== 促销活动 1022012001 ==========
     ErrorCode PROMOTION_NOT_EXISTS = new ErrorCode(1022012001, "促销活动不存在");
     ErrorCode PROMOTION_PRODUCT_EXISTED = new ErrorCode(1022012002, "该产品已存在促销活动！");
+    ErrorCode PROMOTION_STATUS_FALSE = new ErrorCode(1022012003, "促销活动已失效");
 
 
 

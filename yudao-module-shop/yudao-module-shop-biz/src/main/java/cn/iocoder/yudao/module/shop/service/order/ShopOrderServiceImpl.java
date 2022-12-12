@@ -7,12 +7,14 @@ import cn.iocoder.yudao.module.shop.convert.order.ShopOrderConvert;
 import cn.iocoder.yudao.module.shop.dal.dataobject.member.ShopMemberDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.order.ShopOrderItemDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
 import cn.iocoder.yudao.module.shop.dal.mysql.order.ShopOrderMapper;
 import cn.iocoder.yudao.module.shop.enums.ShopOrderPayStatusEnum;
 import cn.iocoder.yudao.module.shop.enums.ShopOrderStatusEnum;
 import cn.iocoder.yudao.module.shop.service.branch.BranchGoodsService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberAccountService;
 import cn.iocoder.yudao.module.shop.service.member.ShopMemberService;
+import cn.iocoder.yudao.module.shop.service.promotion.PromotionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +52,9 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Resource
     private BranchGoodsService goodsService;
 
+    @Resource
+    private PromotionService promotionService;
+
     @Override
     public Long createOrder(ShopOrderCreateReqVO createReqVO) {
 
@@ -60,6 +65,26 @@ public class ShopOrderServiceImpl implements ShopOrderService {
         orderMapper.insert(order);
         // 插入 items
         createReqVO.getItems().forEach(item -> {
+            // 是否有促销活动
+            if (item.getPromotionId() != null) {
+                PromotionDO promotion = promotionService.getPromotion(item.getPromotionId());
+                if (promotion == null){
+                    throw exception(PROMOTION_NOT_EXISTS);
+                }
+                if (promotion.getStatus() != 0) {
+                    throw exception(PROMOTION_STATUS_FALSE);
+                }
+
+                if (item.getAmount()> promotion.getAmountCondition()){
+                    int times = item.getAmount() / promotion.getAmountCondition();
+                    if (times > 0){
+
+                    }
+                }
+
+
+            }
+
             item.setOrderId(order.getId());
             item.setMemberId(order.getMemberId());
             itemService.createOrderItem(item);

@@ -91,4 +91,9 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionMapper.selectList(exportReqVO);
     }
 
+    @Override
+    public List<PromotionDO> getPromotionListByProductIds(List<Long> ids) {
+        return promotionMapper.selectListByProductIds(ids);
+    }
+
 }

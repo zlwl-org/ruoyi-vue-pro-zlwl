@@ -1,9 +1,13 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionRespVO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.util.Date;
 
 @ApiModel("管理后台 - 门店商品 Response VO")
 @Data
@@ -16,5 +20,7 @@ public class BranchGoodsRespVO extends BranchGoodsBaseVO {
 
     @ApiModelProperty(value = "创建时间", required = true)
     private Date createTime;
+
+    private PromotionRespVO promotion;
 
 }

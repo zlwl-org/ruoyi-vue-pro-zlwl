@@ -1,30 +1,32 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch;
 
-import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.prepost.PreAuthorize;
-import io.swagger.annotations.*;
-
-import javax.validation.constraints.*;
-import javax.validation.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.IOException;
-
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
-import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
-
 import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
 import cn.iocoder.yudao.module.shop.convert.branch.BranchGoodsConvert;
+import cn.iocoder.yudao.module.shop.convert.promotion.PromotionConvert;
+import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
 import cn.iocoder.yudao.module.shop.service.branch.BranchGoodsService;
+import cn.iocoder.yudao.module.shop.service.promotion.PromotionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Api(tags = "管理后台 - 门店商品")
 @RestController
@@ -34,6 +36,9 @@ public class BranchGoodsController {
 
     @Resource
     private BranchGoodsService branchGoodsService;
+
+    @Resource
+    private PromotionService promotionService;
 
     @PostMapping("/create")
     @ApiOperation("创建门店商品")
@@ -82,7 +87,24 @@ public class BranchGoodsController {
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:query')")
     public CommonResult<PageResult<BranchGoodsRespVO>> getBranchGoodsPage(@Valid BranchGoodsPageReqVO pageVO) {
         PageResult<BranchGoodsDO> pageResult = branchGoodsService.getBranchGoodsPage(pageVO);
-        return success(BranchGoodsConvert.INSTANCE.convertPage(pageResult));
+        List<Long> ids = pageResult.getList().stream().map(BranchGoodsDO::getProductId).toList();
+        List<PromotionDO> promotionList = promotionService.getPromotionListByProductIds(ids);
+        PageResult<BranchGoodsRespVO> result = BranchGoodsConvert.INSTANCE.convertPage(pageResult);
+        if (promotionList != null){
+            for (PromotionDO promotionDO : promotionList) {
+                for (int i = 0; i <result.getList().size(); i++) {
+                    BranchGoodsRespVO good = result.getList().get(i);
+                    if (good.getProductId() == null) {
+                        break;
+                    }
+                    if (good.getProductId().equals(promotionDO.getProductId())) {
+                        result.getList().get(i).setPromotion(PromotionConvert.INSTANCE.convert(promotionDO));
+                        break;
+                    }
+                }
+            }
+        }
+        return success(result);
     }
 
     @GetMapping("/export-excel")

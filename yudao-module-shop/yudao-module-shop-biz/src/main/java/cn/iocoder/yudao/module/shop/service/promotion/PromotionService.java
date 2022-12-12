@@ -1,10 +1,15 @@
 package cn.iocoder.yudao.module.shop.service.promotion;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.*;
-import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionCreateReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionExportReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionPageReqVO;
+import cn.iocoder.yudao.module.shop.controller.admin.promotion.vo.PromotionUpdateReqVO;
+import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 促销活动 Service 接口
@@ -67,4 +72,5 @@ public interface PromotionService {
      */
     List<PromotionDO> getPromotionList(PromotionExportReqVO exportReqVO);
 
+    List<PromotionDO> getPromotionListByProductIds(List<Long> ids);
 }
