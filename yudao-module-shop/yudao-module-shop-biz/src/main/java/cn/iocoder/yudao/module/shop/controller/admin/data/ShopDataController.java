@@ -41,19 +41,27 @@ public class ShopDataController {
     @ApiImplicitParam(name = "id", value = "编号", required = true, example = "1024", dataTypeClass = Long.class)
 //    @PreAuthorize("@ss.hasPermission('shop:data:query')")
     public CommonResult<ShopDataRespVo> get() {
+        ShopDataRespVo vo = new ShopDataRespVo();
+        // 会员统计
         List<ShopMemberDO> newMembers = memberService.todayNewMember();
         List<ShopMemberDO> members = memberService.shopMembers();
-        List<ShopOrderDO> todayOrder = orderService.todayOrder();
-        List<ShopOrderDO> totalOrder = orderService.shopOrders();
-        List<RechargeOrderDO> todayRecharge = rechargeOrderService.todayOrder();
-        List<RechargeOrderDO> totalRecharge = rechargeOrderService.shopOrders();
-        ShopDataRespVo vo = new ShopDataRespVo();
         vo.setTodayMember(newMembers.size());
         vo.setTotalMember(members.size());
+
+        // 订单统计
+        List<ShopOrderDO> todayOrder = orderService.todayOrder();
+        List<ShopOrderDO> totalOrder = orderService.shopOrders();
         vo.setTodayOrder(todayOrder.size());
         vo.setTodaySale(todayOrder.stream().filter(item -> item.getOrderStatus().equals(ShopOrderStatusEnum.DONE.getStatus())).map(ShopOrderDO::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
         vo.setTotalOrder(totalOrder.size());
         vo.setTotalSale(totalOrder.stream().filter(item -> item.getOrderStatus().equals(ShopOrderStatusEnum.DONE.getStatus())).map(ShopOrderDO::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+        vo.setTodayConsume(todayOrder.stream().filter(item -> item.getOrderStatus().equals(ShopOrderStatusEnum.DONE.getStatus()) && item.getOrderType().equals("consume")).map(ShopOrderDO::getOrderPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+        vo.setTotalConsume(totalOrder.stream().filter(item -> item.getOrderStatus().equals(ShopOrderStatusEnum.DONE.getStatus()) && item.getOrderType().equals("consume")).map(ShopOrderDO::getOrderPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+
+        // 充值统计
+        List<RechargeOrderDO> todayRecharge = rechargeOrderService.todayOrder();
+        List<RechargeOrderDO> totalRecharge = rechargeOrderService.shopOrders();
+
         vo.setTodayRecharge(todayRecharge.stream().filter(item -> item.getPayStatus() == 10).map(RechargeOrderDO::getAmount).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
         vo.setTotalRecharge(totalRecharge.stream().filter(item -> item.getPayStatus() == 10).map(RechargeOrderDO::getAmount).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
         return success(vo);

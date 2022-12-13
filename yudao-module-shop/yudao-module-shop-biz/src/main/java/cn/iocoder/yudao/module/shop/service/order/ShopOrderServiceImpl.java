@@ -266,7 +266,12 @@ public class ShopOrderServiceImpl implements ShopOrderService {
     @Override
     public void changeOrder(Long id) {
         ShopOrderDO order = getOrder(id);
+        // 已支付过的订单不允许转为消耗订单
+        if (!ShopOrderPayStatusEnum.UNPAID.getStatus().equals(order.getPayStatus())) {
+            throw exception(ORDER_CHANGE_FAILED);
+        }
         order.setOrderType("consume");
+        order.setPrice(BigDecimal.ZERO);
         order.setOrderStatus(ShopOrderStatusEnum.DONE.getStatus());
         orderMapper.updateById(order);
     }

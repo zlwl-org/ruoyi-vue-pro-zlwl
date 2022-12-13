@@ -11,11 +11,17 @@ import java.math.BigDecimal;
 @ToString(callSuper = true)
 public class ShopDataRespVo {
     private Integer todayOrder;
-    private BigDecimal todaySale;
-    private Integer todayMember;
-    private BigDecimal todayRecharge;
     private Integer totalOrder;
+
+    private BigDecimal todaySale;
     private BigDecimal totalSale;
+
+    private Integer todayMember;
     private Integer totalMember;
+
+    private BigDecimal todayRecharge;
     private BigDecimal totalRecharge;
+
+    private BigDecimal todayConsume;
+    private BigDecimal totalConsume;
 }

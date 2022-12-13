@@ -173,19 +173,12 @@ export default {
       }
       this.resetForm('form')
     },
-
-    open_recharge_dialog() {
-      this.recharge_dialog = true
-    },
-    recharge() {
-
-    },
     submitSettle() {
       this.$refs["form"].validate(valid => {
         if (!valid) {
           return;
         }
-        if (!this.member && this.form.payType === 'balance_pay'){
+        if (!this.order.member && this.form.payType === 'balance_pay'){
           this.$modal.msgError('散客不支持余额支付！');
           return;
         }
@@ -195,25 +188,6 @@ export default {
           this.getOrderData(this.orderId);
         });
       });
-    },
-    submitOrder() {
-      let data = {
-        memberId: this.member.id,
-        orderType: 'cashier',
-        cashier: '',
-        price: this.handleTotal(),
-        branchId: this.queryParams.branchId,
-        items: this.cart
-      }
-      createOrder(data).then(response => {
-        this.$modal.msgSuccess('下单成功')
-        this.settle_dialog = false
-        // this.getList();
-      })
-    },
-    selectPayType(val){
-      this.selectedPayType = val
-      this.form.payType = val
     },
     cancelOrder(){
       this.$modal.confirm('确认取消订单?').then(() => {
