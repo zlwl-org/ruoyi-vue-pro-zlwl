@@ -62,9 +62,11 @@ public class ShopOrderServiceImpl implements ShopOrderService {
 
         // 插入
         ShopOrderDO order = ShopOrderConvert.INSTANCE.convert(createReqVO);
+        order.setPrice(order.getOrderPrice());
         order.setOrderStatus(ShopOrderStatusEnum.UNPAID.getStatus());
         order.setPayStatus(ShopOrderPayStatusEnum.UNPAID.getStatus());
         orderMapper.insert(order);
+
         // 插入 items
         createReqVO.getItems().forEach(item -> {
             item.setOrderId(order.getId());
@@ -92,6 +94,7 @@ public class ShopOrderServiceImpl implements ShopOrderService {
                         ShopOrderItemCreateReqVO promotionItem = new ShopOrderItemCreateReqVO();
                         BeanUtil.copyProperties(item, promotionItem);
                         promotionItem.setType("promotion");
+                        promotionItem.setPromotionName(promotion.getName());
                         promotionItem.setAmount(times);
                         promotionItem.setRealPrice(BigDecimal.ZERO);
                         promotionItem.setDiscount(promotionItem.getGoodPrice().multiply(BigDecimal.valueOf(times)));

@@ -30,7 +30,7 @@
             <el-col style="flex-grow: inherit;">
               <div style="margin-bottom: 3px">
                 <el-link :underline="false">{{ item.goodName }}</el-link>
-                <el-link type="primary" style="float: right;">删除</el-link>
+                <el-link type="primary" style="float: right;" @click="removeItem(item.goodId)">删除</el-link>
               </div>
               <div>
                 <el-link :underline="false">{{ '¥  ' + item.goodPrice }}</el-link>
@@ -88,7 +88,7 @@
           <el-table-column label="库存" align="center" prop="stock"/>
           <el-table-column label="促销" align="center" prop="promotion.name">
             <template slot-scope="scope">
-              <el-tag size="medium">{{ scope.row.promotion.name }}</el-tag>
+              <el-tag size="medium" v-if="scope.row.promotion">{{ scope.row.promotion.name }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -328,7 +328,7 @@ export default {
         memberId: this.member ? this.member.id : null,
         orderType: 'cashier',
         cashier: '',
-        price: this.handleTotal(true),
+        orderPrice: this.handleTotal(true),
         branchId: this.queryParams.branchId,
         items: this.cart
       }
@@ -373,6 +373,9 @@ export default {
       };
       this.resetForm("recharge_form");
     },
+    removeItem(goodId){
+      this.cart = this.cart.filter( item => item.goodId !== goodId)
+    }
 
   }
 }

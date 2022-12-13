@@ -28,6 +28,11 @@
       <el-table-column label="商品名称" align="center" prop="goodName" />
       <el-table-column label="售价（元）" align="center" prop="goodPrice" />
       <el-table-column label="数量" align="center" prop="amount" />
+      <el-table-column label="类型" align="center" prop="type">
+        <template slot-scope="scope">
+          <dict-tag :type="DICT_TYPE.SHOP_ORDER_ITEM_TYPE" :value="scope.row.type" />
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-divider/>
