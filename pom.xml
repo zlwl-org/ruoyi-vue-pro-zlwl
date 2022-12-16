@@ -23,7 +23,9 @@
         <!-- 示例项目 -->
         <module>yudao-example</module>
         <module>yudao-module-demo</module>
+        <!-- ZLWL -->
         <module>yudao-module-shop</module>
+        <module>yudao-module-blockchain</module>
     </modules>
 
     <name>${project.artifactId}</name>
