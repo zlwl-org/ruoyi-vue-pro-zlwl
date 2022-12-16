@@ -37,11 +37,11 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
       <el-table-column label="分类编号" align="center" prop="id" />
-      <el-table-column label="父分类编号" align="center" prop="parentId" />
+<!--      <el-table-column label="父分类编号" align="center" prop="parentId" />-->
       <el-table-column label="分类名称" align="center" prop="name" />
-      <el-table-column label="分类图片" align="center" prop="picUrl" />
+<!--      <el-table-column label="分类图片" align="center" prop="picUrl" />-->
       <el-table-column label="分类排序" align="center" prop="sort" />
-      <el-table-column label="分类描述" align="center" prop="description" />
+<!--      <el-table-column label="分类描述" align="center" prop="description" />-->
       <el-table-column label="开启状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
@@ -68,21 +68,21 @@
     <!-- 对话框(添加 / 修改) -->
     <el-dialog :title="title" :visible.sync="open" width="500px" v-dialogDrag append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="父分类编号" prop="parentId">
-          <el-input v-model="form.parentId" placeholder="请输入父分类编号" />
-        </el-form-item>
+<!--        <el-form-item label="父分类编号" prop="parentId">-->
+<!--          <el-input v-model="form.parentId" placeholder="请输入父分类编号" />-->
+<!--        </el-form-item>-->
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入分类名称" />
         </el-form-item>
-        <el-form-item label="分类图片" prop="picUrl">
-          <el-input v-model="form.picUrl" placeholder="请输入分类图片" />
-        </el-form-item>
+<!--        <el-form-item label="分类图片" prop="picUrl">-->
+<!--          <el-input v-model="form.picUrl" placeholder="请输入分类图片" />-->
+<!--        </el-form-item>-->
         <el-form-item label="分类排序" prop="sort">
           <el-input v-model="form.sort" placeholder="请输入分类排序" />
         </el-form-item>
-        <el-form-item label="分类描述">
-          <editor v-model="form.description" :min-height="192"/>
-        </el-form-item>
+<!--        <el-form-item label="分类描述">-->
+<!--          <editor v-model="form.description" :min-height="192"/>-->
+<!--        </el-form-item>-->
         <el-form-item label="开启状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.COMMON_STATUS)"

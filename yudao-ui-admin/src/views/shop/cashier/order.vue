@@ -373,6 +373,7 @@ export default {
       };
       this.resetForm("recharge_form");
     },
+    // 代码示例：list 删除元素
     removeItem(goodId){
       this.cart = this.cart.filter( item => item.goodId !== goodId)
     }
