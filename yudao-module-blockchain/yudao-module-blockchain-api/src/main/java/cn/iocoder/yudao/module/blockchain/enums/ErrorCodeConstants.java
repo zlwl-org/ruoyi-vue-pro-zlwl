@@ -1,0 +1,15 @@
+package cn.iocoder.yudao.module.blockchain.enums;
+
+import cn.iocoder.yudao.framework.common.exception.ErrorCode;
+
+/**
+ * 工作流 错误码枚举类
+ *
+ * 工作流系统，使用 1-009-000-000 段
+ */
+public interface ErrorCodeConstants {
+
+    // ========== 网络 1023001001 ==========
+    ErrorCode NET_NOT_EXISTS = new ErrorCode(1023001001, "网络不存在");
+
+}
