@@ -14,7 +14,8 @@
       </el-form-item>
       <el-form-item label="网络类型" prop="type">
         <el-select v-model="queryParams.type" placeholder="请选择网络类型" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
+          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.BLOCKCHAIN_NET_TYPE)"
+                       :key="dict.value" :label="dict.label" :value="dict.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="链ID" prop="chainId">
@@ -48,7 +49,11 @@
       <el-table-column label="浏览器" align="center" prop="explorer" />
       <el-table-column label="默认节点" align="center" prop="publicRpc" />
       <el-table-column label="私密节点" align="center" prop="privateRpc" />
-      <el-table-column label="网络类型" align="center" prop="type" />
+      <el-table-column label="网络类型" align="center" prop="type">
+        <template slot-scope="scope">
+          <dict-tag :type="DICT_TYPE.BLOCKCHAIN_NET_TYPE" :value="scope.row.type" />
+        </template>
+      </el-table-column>
       <el-table-column label="链ID" align="center" prop="chainId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -86,7 +91,8 @@
         </el-form-item>
         <el-form-item label="网络类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择网络类型">
-            <el-option label="请选择字典生成" value="" />
+            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.BLOCKCHAIN_NET_TYPE)"
+                       :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="链ID" prop="chainId">

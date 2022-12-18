@@ -35,14 +35,20 @@ public class NetServiceImpl implements NetService {
     public Long createNet(NetCreateReqVO createReqVO) {
         // 检查默认节点
         Web3j web3j = Web3j.build(new HttpService(createReqVO.getPublicRpc()));
-        if (NumberUtil.compare(web3j.ethChainId().getId(), createReqVO.getChainId()) != 0) {
+        long id = 0;
+        try {
+            id = web3j.ethChainId().send().getChainId().intValue();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (id - createReqVO.getChainId() != 0) {
             throw new IllegalArgumentException("默认节点的链ID与配置的链ID不同,请仔细检查!");
         }
         // 检查私有节点
         if (createReqVO.getPrivateRpc() != null){
             Web3j web3j_1 = Web3j.build(new HttpService(createReqVO.getPrivateRpc()));
-            if (NumberUtil.compare(web3j.ethChainId().getId(), createReqVO.getChainId()) != 0) {
-                throw new IllegalArgumentException("默认节点的链ID与配置的链ID不同,请仔细检查!");
+            if (web3j_1.ethChainId().getId() - createReqVO.getChainId() != 0) {
+                throw new IllegalArgumentException("私密节点的链ID与配置的链ID不同,请仔细检查!");
             }
         }
         // 插入
