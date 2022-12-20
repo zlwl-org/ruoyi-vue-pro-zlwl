@@ -138,6 +138,7 @@ yudao:
       - infra_job_log
       - infra_job_log
       - infra_data_source_config
+      - infra_proxy
       - jimu_dict
       - jimu_dict_item
       - jimu_report

@@ -21,7 +21,8 @@ public interface CodegenTableMapper extends BaseMapperX<CodegenTableDO> {
         return selectPage(pageReqVO, new LambdaQueryWrapperX<CodegenTableDO>()
                 .likeIfPresent(CodegenTableDO::getTableName, pageReqVO.getTableName())
                 .likeIfPresent(CodegenTableDO::getTableComment, pageReqVO.getTableComment())
-                .betweenIfPresent(CodegenTableDO::getCreateTime, pageReqVO.getCreateTime()));
+                .betweenIfPresent(CodegenTableDO::getCreateTime, pageReqVO.getCreateTime())
+                .orderByDesc(CodegenTableDO::getCreateTime));
     }
 
     default List<CodegenTableDO> selectListByDataSourceConfigId(Long dataSourceConfigId) {

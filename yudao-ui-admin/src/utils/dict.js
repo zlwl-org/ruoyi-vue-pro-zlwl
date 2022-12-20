@@ -35,6 +35,7 @@ export const DICT_TYPE = {
   INFRA_CODEGEN_TEMPLATE_TYPE: 'infra_codegen_template_type',
   INFRA_CODEGEN_SCENE: 'infra_codegen_scene',
   INFRA_FILE_STORAGE: 'infra_file_storage',
+  INFRA_PROXY_PROTOCOL: 'infra_proxy_protocol',
 
   // ========== BPM 模块 ==========
   BPM_MODEL_CATEGORY: 'bpm_model_category',
