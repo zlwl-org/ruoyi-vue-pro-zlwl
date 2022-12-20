@@ -35,6 +35,12 @@
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-infra-biz</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>okhttp</artifactId>
+                    <groupId>com.squareup.okhttp3</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
@@ -70,6 +76,12 @@
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-blockchain-biz</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>okhttp</artifactId>
+                    <groupId>com.squareup.okhttp3</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- 数据报表 -->
@@ -107,8 +119,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.0</version>
         </dependency>
 
     </dependencies>

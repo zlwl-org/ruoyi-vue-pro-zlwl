@@ -1,4 +1,4 @@
-package cn.iocoder.yudao.module.auto;
+package io.iocoder.yudao.module.mobile.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

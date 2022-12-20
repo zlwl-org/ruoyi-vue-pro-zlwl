@@ -26,6 +26,7 @@
         <!-- ZLWL -->
         <module>yudao-module-shop</module>
         <module>yudao-module-blockchain</module>
+        <module>yudao-module-mobile</module>
     </modules>
 
     <name>${project.artifactId}</name>

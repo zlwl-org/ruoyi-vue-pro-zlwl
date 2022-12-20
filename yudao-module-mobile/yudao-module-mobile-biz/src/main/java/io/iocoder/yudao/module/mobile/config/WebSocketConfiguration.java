@@ -1,4 +1,4 @@
-package cn.iocoder.yudao.module.auto;
+package io.iocoder.yudao.module.mobile.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
