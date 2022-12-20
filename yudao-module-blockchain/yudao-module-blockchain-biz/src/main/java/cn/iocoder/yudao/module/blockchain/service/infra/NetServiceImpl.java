@@ -1,23 +1,32 @@
 package cn.iocoder.yudao.module.blockchain.service.infra;
 
-import cn.hutool.core.util.NumberUtil;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-
-import java.io.IOException;
-import java.util.*;
-import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.*;
-import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetCreateReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetExportReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetPageReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetUpdateReqVO;
 import cn.iocoder.yudao.module.blockchain.convert.infra.NetConvert;
+import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
 import cn.iocoder.yudao.module.blockchain.dal.mysql.infra.NetMapper;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.util.Collection;
+import java.util.List;
+
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.blockchain.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.blockchain.enums.ErrorCodeConstants.NET_NOT_EXISTS;
 
 /**
  * 网络 Service 实现类
@@ -33,8 +42,40 @@ public class NetServiceImpl implements NetService {
 
     @Override
     public Long createNet(NetCreateReqVO createReqVO) {
+        // 检查网络连通性
+//        createReqVO.getPublicRpc()
+
+        final int proxyPort = 38438; //your proxy port
+        final String proxyHost = "45.128.209.151";
+        final String username = "YFtPDDgPIm";
+        final String password = "PgqFstPI1e";
+        InetSocketAddress proxyAddr = new InetSocketAddress(proxyHost, proxyPort);
+        Proxy proxy = new Proxy(Proxy.Type.SOCKS, proxyAddr);
+
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                if (getRequestingHost().equalsIgnoreCase(proxyHost)) {
+                    if (proxyPort == getRequestingPort()) {
+                        return new PasswordAuthentication(username, password.toCharArray());
+                    }
+                }
+                return null;
+            }
+        });
+
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .proxy(proxy)
+                .build();
+
+        try (Response response = client.newCall(new Request.Builder().url("https://www.google.com").build()).execute()) {
+//            log.info(response.body().string());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         // 检查默认节点
-        Web3j web3j = Web3j.build(new HttpService(createReqVO.getPublicRpc()));
+        Web3j web3j = Web3j.build(new HttpService(createReqVO.getPublicRpc(), client));
         long id = 0;
         try {
             id = web3j.ethChainId().send().getChainId().intValue();

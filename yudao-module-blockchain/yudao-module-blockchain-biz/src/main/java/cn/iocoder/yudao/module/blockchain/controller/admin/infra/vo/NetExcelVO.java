@@ -1,10 +1,10 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo;
 
-import lombok.*;
-import java.util.*;
-import io.swagger.annotations.*;
-
+import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
+import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
+
 
 /**
  * 网络 Excel VO
@@ -21,7 +21,7 @@ public class NetExcelVO {
     private String name;
 
     @ExcelProperty("中文名称")
-    private Integer nameZh;
+    private String nameZh;
 
     @ExcelProperty("原生代币")
     private String symbol;
@@ -35,7 +35,8 @@ public class NetExcelVO {
     @ExcelProperty("私密节点")
     private String privateRpc;
 
-    @ExcelProperty("网络类型")
+    @ExcelProperty(value = "网络类型", converter = DictConvert.class)
+    @DictFormat("blockchain_net_type") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
     private String type;
 
     @ExcelProperty("链ID")

@@ -1,9 +1,10 @@
 package cn.iocoder.yudao.module.blockchain.dal.dataobject.infra;
 
-import lombok.*;
-import java.util.*;
-import com.baomidou.mybatisplus.annotation.*;
 import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import com.baomidou.mybatisplus.annotation.KeySequence;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
 
 /**
  * 网络 DO
@@ -32,7 +33,7 @@ public class NetDO extends BaseDO {
     /**
      * 中文名称
      */
-    private Integer nameZh;
+    private String nameZh;
     /**
      * 原生代币
      */
@@ -51,6 +52,8 @@ public class NetDO extends BaseDO {
     private String privateRpc;
     /**
      * 网络类型
+     *
+     * 枚举 {@link TODO blockchain_net_type 对应的类}
      */
     private String type;
     /**
