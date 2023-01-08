@@ -1,10 +1,15 @@
 package cn.iocoder.yudao.module.blockchain.service.infra;
 
-import java.util.*;
-import javax.validation.*;
-import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.*;
-import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetCreateReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetExportReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetPageReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetUpdateReqVO;
+import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 网络 Service 接口
@@ -66,5 +71,8 @@ public interface NetService {
      * @return 网络列表
      */
     List<NetDO> getNetList(NetExportReqVO exportReqVO);
+
+
+    NetDO getNet(String symbol);
 
 }

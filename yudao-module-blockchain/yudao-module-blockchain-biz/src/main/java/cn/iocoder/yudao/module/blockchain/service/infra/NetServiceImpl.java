@@ -135,4 +135,9 @@ public class NetServiceImpl implements NetService {
         return netMapper.selectList(exportReqVO);
     }
 
+    @Override
+    public NetDO getNet(String symbol) {
+        return netMapper.selectOne(NetDO::getSymbol, symbol);
+    }
+
 }

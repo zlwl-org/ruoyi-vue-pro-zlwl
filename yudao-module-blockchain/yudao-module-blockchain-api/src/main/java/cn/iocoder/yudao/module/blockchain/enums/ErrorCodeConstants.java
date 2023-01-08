@@ -15,4 +15,6 @@ public interface ErrorCodeConstants {
     // ========== 以太坊账户 1023002001 ==========
     ErrorCode ETH_ACCOUNT_NOT_EXISTS = new ErrorCode(1023002001, "以太坊账户不存在");
 
+    // ========== 以太坊主网地址 1023003001 ==========
+    ErrorCode ETH_MAIN_NET_ADDRESS_NOT_EXISTS = new ErrorCode(1023003001, "以太坊主网地址不存在");
 }

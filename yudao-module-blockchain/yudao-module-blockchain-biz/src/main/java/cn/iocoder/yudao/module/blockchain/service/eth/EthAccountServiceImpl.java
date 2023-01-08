@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -80,6 +81,16 @@ public class EthAccountServiceImpl implements EthAccountService {
     @Override
     public List<EthAccountDO> getEthAccountList(EthAccountExportReqVO exportReqVO) {
         return ethAccountMapper.selectList(exportReqVO);
+    }
+
+    @Override
+    public List<EthAccountDO> getEthAccountList(Date date) {
+        return ethAccountMapper.selectListByTime(date);
+    }
+
+    @Override
+    public List<EthAccountDO> getEthAccountList() {
+        return ethAccountMapper.selectList();
     }
 
 }
