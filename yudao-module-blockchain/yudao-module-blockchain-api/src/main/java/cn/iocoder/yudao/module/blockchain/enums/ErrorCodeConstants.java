@@ -12,4 +12,7 @@ public interface ErrorCodeConstants {
     // ========== 网络 1023001001 ==========
     ErrorCode NET_NOT_EXISTS = new ErrorCode(1023001001, "网络不存在");
 
+    // ========== 以太坊账户 1023002001 ==========
+    ErrorCode ETH_ACCOUNT_NOT_EXISTS = new ErrorCode(1023002001, "以太坊账户不存在");
+
 }
