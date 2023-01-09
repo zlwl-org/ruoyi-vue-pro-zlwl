@@ -160,7 +160,7 @@ yudao:
       - blockchain_net
       - blockchain_eth_account
       - blockchain_eth_main_net_address
-      - blockchain_scan_event
+      - blockchain_event
   sms-code: # 短信验证码相关的配置项
     expire-times: 10m
     send-frequency: 1m

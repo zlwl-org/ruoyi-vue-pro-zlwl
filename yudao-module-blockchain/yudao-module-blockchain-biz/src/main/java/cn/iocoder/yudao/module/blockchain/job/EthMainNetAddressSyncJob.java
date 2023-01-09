@@ -3,11 +3,13 @@ package cn.iocoder.yudao.module.blockchain.job;
 import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.EthMainNetAddressCreateReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.event.vo.EventCreateReqVO;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.eth.EthAccountDO;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.eth.EthMainNetAddressDO;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
 import cn.iocoder.yudao.module.blockchain.service.eth.EthAccountService;
 import cn.iocoder.yudao.module.blockchain.service.eth.EthMainNetAddressService;
+import cn.iocoder.yudao.module.blockchain.service.event.EventService;
 import cn.iocoder.yudao.module.blockchain.service.infra.NetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,9 @@ public class EthMainNetAddressSyncJob implements JobHandler {
 
     @Resource
     private NetService netService;
+
+    @Resource
+    private EventService eventService;
 
     @Override
     public String execute(String param) throws Exception {
@@ -58,6 +63,15 @@ public class EthMainNetAddressSyncJob implements JobHandler {
             BigInteger balance = web3j.ethGetBalance(ethAccountDO.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance();
             create.setBalance(new BigDecimal(balance).divide(BigDecimal.TEN.pow(18)));
             mainNetAddressService.createEthMainNetAddress(create);
+
+            if (balance.compareTo(BigInteger.ZERO) != 0){
+                EventCreateReqVO event = new EventCreateReqVO();
+                event.setTopic("account found");
+                event.setNet("Eth MainNet");
+                event.setAddress(ethAccountDO.getAddress());
+                event.setInfo(StrUtil.format("账户余额：{}", create.getBalance()));
+                eventService.createEvent(event);
+            }
         }
         log.info("EthMainNetAddressSyncJob ended");
         return StrUtil.format("同步完成：同步{}个账户", ethAccountList.size());

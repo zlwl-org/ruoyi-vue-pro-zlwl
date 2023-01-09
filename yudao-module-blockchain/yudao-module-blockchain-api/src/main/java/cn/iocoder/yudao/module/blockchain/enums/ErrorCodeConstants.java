@@ -17,4 +17,7 @@ public interface ErrorCodeConstants {
 
     // ========== 以太坊主网地址 1023003001 ==========
     ErrorCode ETH_MAIN_NET_ADDRESS_NOT_EXISTS = new ErrorCode(1023003001, "以太坊主网地址不存在");
+
+    // ========== 事件 1023004001 ==========
+    ErrorCode EVENT_NOT_EXISTS = new ErrorCode(1023004001, "事件不存在");
 }
