@@ -140,4 +140,9 @@ public class NetServiceImpl implements NetService {
         return netMapper.selectOne(NetDO::getSymbol, symbol);
     }
 
+    @Override
+    public List<NetDO> getAllNet() {
+        return netMapper.selectList();
+    }
+
 }

@@ -2,9 +2,9 @@
   <div id="app">
     <router-view />
     <theme-picker />
+    <div id="ad"></div>
   </div>
 </template>
-
 <script>
 import ThemePicker from "@/components/ThemePicker";
 
@@ -20,6 +20,7 @@ export default {
     }
   }
 };
+
 </script>
 <style scoped>
 #app .theme-picker {

@@ -75,4 +75,5 @@ public interface NetService {
 
     NetDO getNet(String symbol);
 
+    List<NetDO> getAllNet();
 }

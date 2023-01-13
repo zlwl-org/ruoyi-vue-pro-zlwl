@@ -1,13 +1,15 @@
 package cn.iocoder.yudao.module.blockchain.convert.infra;
 
-import java.util.*;
-
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetCreateReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetExcelVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetRespVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.NetUpdateReqVO;
+import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo.*;
-import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
+
+import java.util.List;
 
 /**
  * 网络 Convert
@@ -31,4 +33,5 @@ public interface NetConvert {
 
     List<NetExcelVO> convertList02(List<NetDO> list);
 
+    List<NetRespSimpleVO> convertList03(List<NetDO> list);
 }

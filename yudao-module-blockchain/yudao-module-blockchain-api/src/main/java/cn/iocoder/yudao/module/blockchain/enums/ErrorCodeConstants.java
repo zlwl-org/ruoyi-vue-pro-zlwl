@@ -20,4 +20,7 @@ public interface ErrorCodeConstants {
 
     // ========== 事件 1023004001 ==========
     ErrorCode EVENT_NOT_EXISTS = new ErrorCode(1023004001, "事件不存在");
+
+    // ========== 用户钱包 1023005001 ==========
+    ErrorCode USER_WALLET_NOT_EXISTS = new ErrorCode(1023005001, "用户钱包不存在");
 }
