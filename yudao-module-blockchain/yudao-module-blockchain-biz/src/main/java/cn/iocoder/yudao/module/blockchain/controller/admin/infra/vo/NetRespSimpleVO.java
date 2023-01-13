@@ -1,10 +1,16 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.infra.vo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@ApiModel("管理后台 - 网络 Response Simple VO")
+@Data
+@EqualsAndHashCode()
+@ToString(callSuper = true)
 public class NetRespSimpleVO {
-    @ApiModelProperty(value = "编号", required = true)
-    private Long id;
 
     @ApiModelProperty(value = "名称")
     private String name;

@@ -99,7 +99,7 @@ public class NetController {
     @GetMapping("/list-simple")
     @ApiOperation("获得网络列表")
     @PreAuthorize("@ss.hasPermission('blockchain:net:query')")
-    public CommonResult<PageResult<NetRespVO>> getNetListSimple() {
+    public CommonResult<List<NetRespSimpleVO>> getNetListSimple() {
         List<NetDO> list = netService.getAllNet();
         return success(NetConvert.INSTANCE.convertList03(list));
     }

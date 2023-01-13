@@ -52,3 +52,11 @@ export function exportNetExcel(query) {
     responseType: 'blob'
   })
 }
+
+// 获得网络分页
+export function getNetSimple() {
+  return request({
+    url: '/blockchain/net/list-simple',
+    method: 'get',
+  })
+}

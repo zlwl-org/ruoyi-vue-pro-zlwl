@@ -14,8 +14,8 @@
       </el-form-item>
       <el-form-item label="网络" prop="net">
         <el-select v-model="queryParams.net" placeholder="请选择网络" clearable size="small">
-          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.BLOCKCHAIN_NET_TYPE)"
-                       :key="dict.value" :label="dict.label" :value="dict.value"/>
+          <el-option v-for="item in this.netList"
+                       :key="item.symbol" :label="item.name" :value="item.symbol"/>
         </el-select>
       </el-form-item>
       <el-form-item label="代币" prop="symbol">
@@ -54,9 +54,9 @@
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="地址" align="center" prop="address" />
       <el-table-column label="网络" align="center" prop="net">
-        <template v-slot="scope">
-          <dict-tag :type="DICT_TYPE.BLOCKCHAIN_NET_TYPE" :value="scope.row.net" />
-        </template>
+<!--        <template v-slot="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.BLOCKCHAIN_NET_TYPE" :value="scope.row.net" />-->
+<!--        </template>-->
       </el-table-column>
       <el-table-column label="代币" align="center" prop="symbol" />
       <el-table-column label="余额" align="center" prop="balance" />
@@ -92,8 +92,8 @@
         </el-form-item>
         <el-form-item label="网络" prop="net">
           <el-select v-model="form.net" placeholder="请选择网络">
-            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.BLOCKCHAIN_NET_TYPE)"
-                       :key="dict.value" :label="dict.label" :value="dict.value" />
+            <el-option v-for="item in this.netList"
+                       :key="item.symbol" :label="item.name" :value="item.symbol"/>
           </el-select>
         </el-form-item>
         <el-form-item label="代币" prop="symbol">
@@ -113,6 +113,7 @@
 
 <script>
 import { createUserWallet, updateUserWallet, deleteUserWallet, getUserWallet, getUserWalletPage, exportUserWalletExcel } from "@/api/blockchain/userWallet";
+import { getNetSimple } from '@/api/blockchain/net'
 
 export default {
   name: "UserWallet",
@@ -151,13 +152,20 @@ export default {
       // 表单校验
       rules: {
         userId: [{ required: true, message: "用户ID不能为空", trigger: "blur" }],
-      }
+      },
+      netList: {},
     };
   },
   created() {
     this.getList();
+    this.getNetList();
   },
   methods: {
+    getNetList(){
+      getNetSimple().then(response =>{
+        this.netList = response.data;
+      })
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
