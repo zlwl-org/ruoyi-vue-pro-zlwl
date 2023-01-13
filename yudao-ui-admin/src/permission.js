@@ -9,7 +9,7 @@ import { isRelogin } from '@/utils/request'
 NProgress.configure({ showSpinner: false })
 
 // 增加三方登陆 update by 芋艿
-const whiteList = ['/login', '/social-login',  '/auth-redirect', '/bind', '/register', '/oauthLogin/gitee']
+const whiteList = ['/login', '/tenant', '/social-login',  '/auth-redirect', '/bind', '/register', '/oauthLogin/gitee']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
@@ -44,7 +44,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     // 没有token
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.indexOf(to.path) !== -1 || to.meta.requiresAuth === false) {
       // 在免登录白名单，直接进入
       next()
     } else {

@@ -47,7 +47,7 @@
       </el-table-column>
       <el-table-column label="执行时长" align="center" prop="duration">
         <template v-slot="scope">
-          <span>{{ scope.row.duration + ' 毫秒' }}</span>
+          <span>{{ scope.row.duration / 1000  }} 秒</span>
         </template>
       </el-table-column>
       <el-table-column label="任务状态" align="center" prop="status">

@@ -54,4 +54,7 @@ public interface ErrorCodeConstants {
     ErrorCode DATA_SOURCE_CONFIG_NOT_EXISTS = new ErrorCode(1001007000, "数据源配置不存在");
     ErrorCode DATA_SOURCE_CONFIG_NOT_OK = new ErrorCode(1001007001, "数据源配置不正确，无法进行连接");
 
+    // ========== 网络代理 1001008000  ==========
+    ErrorCode PROXY_NOT_EXISTS = new ErrorCode(1001008001, "网络代理不存在");
+
 }

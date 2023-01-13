@@ -23,6 +23,10 @@
         <!-- 示例项目 -->
         <module>yudao-example</module>
         <module>yudao-module-demo</module>
+        <!-- ZLWL -->
+        <module>yudao-module-shop</module>
+        <module>yudao-module-blockchain</module>
+        <module>yudao-module-mobile</module>
     </modules>
 
     <name>${project.artifactId}</name>
@@ -90,12 +94,12 @@
     </build>
 
     <!-- 使用 aliyun 的 Maven 源，提升下载速度 -->
-    <repositories>
-        <repository>
-            <id>aliyunmaven</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>aliyunmaven</id>-->
+<!--            <name>aliyun</name>-->
+<!--            <url>https://maven.aliyun.com/repository/public</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
 </project>

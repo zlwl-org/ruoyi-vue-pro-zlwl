@@ -35,6 +35,7 @@ export const DICT_TYPE = {
   INFRA_CODEGEN_TEMPLATE_TYPE: 'infra_codegen_template_type',
   INFRA_CODEGEN_SCENE: 'infra_codegen_scene',
   INFRA_FILE_STORAGE: 'infra_file_storage',
+  INFRA_PROXY_PROTOCOL: 'infra_proxy_protocol',
 
   // ========== BPM 模块 ==========
   BPM_MODEL_CATEGORY: 'bpm_model_category',
@@ -68,6 +69,23 @@ export const DICT_TYPE = {
   PROMOTION_COUPON_TAKE_TYPE: 'promotion_coupon_take_type', // 优惠劵的领取方式
   PROMOTION_ACTIVITY_STATUS: 'promotion_activity_status', // 优惠活动的状态
   PROMOTION_CONDITION_TYPE: 'promotion_condition_type', // 营销的条件类型枚举
+
+  // ========== SHOP 模块 ==========
+  DISABLE_STATUS: 'disable_status', // 禁用状态
+  SHOP_CUSTOMER_TYPE: 'shop_customer_type', // 禁用状态
+  SHOP_MEMBER_STATUS: 'shop_member_status', // 禁用状态
+  SHOP_MEMBER_ACCOUNT_LOG_TYPE: 'shop_member_account_log_type', // 禁用状态
+  SHOP_RECHARGE_PAY_TYPE: 'shop_recharge_pay_type', // 禁用状态
+  SHOP_STOCK_TYPE: 'shop_stock_type', // 禁用状态
+  SHOP_ORDER_TYPE: 'shop_order_type', // 禁用状态
+  SHOP_ORDER_STATUS: 'shop_order_status', // 禁用状态
+  SHOP_PAY_TYPE: 'shop_pay_type', // 禁用状态
+  SHOP_ORDER_PAY_STATUS: 'shop_order_pay_status', // 禁用状态
+  SHOP_PROMOTION_TYPE: 'shop_promotion_type', // 禁用状态
+  SHOP_ORDER_ITEM_TYPE: 'shop_order_item_type', // 禁用状态
+
+  // ========== BLOCKCHAIN 模块 ==========
+  BLOCKCHAIN_NET_TYPE: 'blockchain_net_type', // 禁用状态
 }
 
 /**
@@ -125,4 +143,7 @@ export function getDictData(dictType, value) {
 export function getDictDataLabel(dictType, value) {
   const dict = getDictData(dictType, value);
   return dict ? dict.label : '';
+}
+
+export class getDictDataL {
 }

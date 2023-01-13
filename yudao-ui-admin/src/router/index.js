@@ -45,6 +45,12 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/tenant/:tenant',
+    component: (resolve) => require(['@/views/tenant'], resolve),
+    hidden: true,
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/sso',
     component: (resolve) => require(['@/views/sso'], resolve),
     hidden: true
@@ -67,15 +73,21 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: 'index',
+    // redirect: 'index', //注释该行，则不默认打开index
+    hidden: true,
     children: [{
         path: 'index',
         component: (resolve) => require(['@/views/index'], resolve),
-        name: '首页',
-        meta: {title: '首页', icon: 'dashboard', affix: true}
+        // name: '首页',
+        meta: {
+          // title: '首页',
+          icon: 'dashboard',
+          affix: false, //固定tab选项卡
+        }
       }
     ]
-  }, {
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,
@@ -218,7 +230,24 @@ export const constantRoutes = [
         component: (resolve) => require(['@/views/mall/trade/order/detail'], resolve)
       }
     ]
-  }
+  },
+  {
+    path: '/shop',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'member/detail/:memberId(\\d+)',
+      component: (resolve) => require(['@/views/shop/member/detail'], resolve),
+      name: 'GenEdit',
+      meta: {title: '会员详情', activeMenu: '/shop-member/member'}
+    },{
+      path: 'cashier/detail/:memberId(\\d+)',
+      component: (resolve) => require(['@/views/shop/cashier/order'], resolve),
+      name: 'GenEdit',
+      meta: {title: '会员详情', activeMenu: '/shop-member/member'}
+    },
+    ]
+  },
 ]
 
 // 防止连续点击多次路由报错

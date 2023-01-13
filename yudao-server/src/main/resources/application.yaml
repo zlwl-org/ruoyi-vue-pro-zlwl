@@ -142,6 +142,7 @@ yudao:
       - infra_job_log
       - infra_job_log
       - infra_data_source_config
+      - infra_proxy
       - jimu_dict
       - jimu_dict_item
       - jimu_report
@@ -160,6 +161,10 @@ yudao:
       - tmp_report_data_income
       - demo_infra_endpoint
       - demo_infra_net
+      - blockchain_net
+      - blockchain_eth_account
+      - blockchain_eth_main_net_address
+      - blockchain_event
   sms-code: # 短信验证码相关的配置项
     expire-times: 10m
     send-frequency: 1m
