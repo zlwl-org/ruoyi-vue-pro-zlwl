@@ -28,4 +28,7 @@ public class EthAccountBaseVO {
     @NotNull(message = "归属不能为空")
     private Boolean owned;
 
+    @ApiModelProperty(value = "网络")
+    private String net;
+
 }

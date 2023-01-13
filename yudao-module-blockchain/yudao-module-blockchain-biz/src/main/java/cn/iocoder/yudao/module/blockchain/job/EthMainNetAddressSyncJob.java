@@ -5,7 +5,6 @@ import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.EthMainNetAddressCreateReqVO;
 import cn.iocoder.yudao.module.blockchain.controller.admin.event.vo.EventCreateReqVO;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.eth.EthAccountDO;
-import cn.iocoder.yudao.module.blockchain.dal.dataobject.eth.EthMainNetAddressDO;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.infra.NetDO;
 import cn.iocoder.yudao.module.blockchain.service.eth.EthAccountService;
 import cn.iocoder.yudao.module.blockchain.service.eth.EthMainNetAddressService;
@@ -20,6 +19,7 @@ import org.web3j.protocol.http.HttpService;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 @Component
@@ -37,30 +37,33 @@ public class EthMainNetAddressSyncJob implements JobHandler {
     @Resource
     private EventService eventService;
 
+    private final String netSymbol = "Eth";
+
     @Override
     public String execute(String param) throws Exception {
         log.info("EthMainNetAddressSyncJob start");
-        EthMainNetAddressDO latest = mainNetAddressService.getLatest();
-        List<EthAccountDO> ethAccountList;
-        if (latest == null){
-            ethAccountList = ethAccountService.getEthAccountList();
-        } else {
-            ethAccountList = ethAccountService.getEthAccountList(latest.getCreateTime());
-        }
-
-        if (ethAccountList == null) {
-            return "同步完成：无新增账户";
-        }
-
-        NetDO net = netService.getNet("ETH");
+        NetDO net = netService.getNet(netSymbol);
         if (net == null){
             return "同步失败：netService.getNet(ETH)为空;";
         }
+
+        List<EthAccountDO> ethAccountList = ethAccountService.getEthAccountList(netSymbol);;
+        if (ethAccountList == null) {
+            return "同步完成：无新增账户";
+        }
+        log.info("获取{}个账户", ethAccountList.size());
+
         Web3j web3j = Web3j.build(new HttpService(net.getPublicRpc()));
         for (EthAccountDO ethAccountDO : ethAccountList) {
             EthMainNetAddressCreateReqVO create = new EthMainNetAddressCreateReqVO();
             create.setAddress(ethAccountDO.getAddress());
-            BigInteger balance = web3j.ethGetBalance(ethAccountDO.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance();
+            BigInteger balance = null;
+            try {
+                balance = web3j.ethGetBalance(ethAccountDO.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance();
+            } catch (SocketTimeoutException e){
+                log.error("web3j 获取余额超时");
+                continue;
+            }
             create.setBalance(new BigDecimal(balance).divide(BigDecimal.TEN.pow(18)));
             mainNetAddressService.createEthMainNetAddress(create);
 
@@ -72,6 +75,9 @@ public class EthMainNetAddressSyncJob implements JobHandler {
                 event.setInfo(StrUtil.format("账户余额：{}", create.getBalance()));
                 eventService.createEvent(event);
             }
+
+//            ethAccountDO.setNet(ethAccountDO.getNet() == null? netSymbol: StrUtil.format("{}{};", ethAccountDO.getNet(), netSymbol));
+            ethAccountService.updateEthAccountNet(ethAccountDO.getAddress(), netSymbol );
         }
         log.info("EthMainNetAddressSyncJob ended");
         return StrUtil.format("同步完成：同步{}个账户", ethAccountList.size());

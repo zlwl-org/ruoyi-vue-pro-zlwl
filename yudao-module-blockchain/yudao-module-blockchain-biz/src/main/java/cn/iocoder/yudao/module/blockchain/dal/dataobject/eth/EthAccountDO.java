@@ -1,9 +1,10 @@
 package cn.iocoder.yudao.module.blockchain.dal.dataobject.eth;
 
-import lombok.*;
-import java.util.*;
-import com.baomidou.mybatisplus.annotation.*;
 import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import com.baomidou.mybatisplus.annotation.KeySequence;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
 
 /**
  * 以太坊账户 DO
@@ -45,5 +46,9 @@ public class EthAccountDO extends BaseDO {
      * 归属
      */
     private Boolean owned;
+    /**
+     * 网络
+     */
+    private String net;
 
 }

@@ -62,7 +62,7 @@
       </el-table-column>
       <el-table-column label="执行时长" align="center" prop="startTime">
         <template slot-scope="scope">
-          <span>{{ scope.row.duration }}  ms</span>
+          <span>{{ scope.row.duration / 1000 }}  s</span>
         </template>
       </el-table-column>
       <el-table-column label="操作结果" align="center" prop="status">

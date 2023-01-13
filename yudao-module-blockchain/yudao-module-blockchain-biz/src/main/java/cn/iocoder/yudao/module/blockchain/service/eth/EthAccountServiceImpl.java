@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -84,13 +83,13 @@ public class EthAccountServiceImpl implements EthAccountService {
     }
 
     @Override
-    public List<EthAccountDO> getEthAccountList(Date date) {
-        return ethAccountMapper.selectListByTime(date);
+    public List<EthAccountDO> getEthAccountList(String symbol) {
+        return ethAccountMapper.selectListLimit100(symbol);
     }
 
     @Override
-    public List<EthAccountDO> getEthAccountList() {
-        return ethAccountMapper.selectList();
+    public int updateEthAccountNet(String address, String netSymbol) {
+        return ethAccountMapper.updateNet(address, netSymbol);
     }
 
 }

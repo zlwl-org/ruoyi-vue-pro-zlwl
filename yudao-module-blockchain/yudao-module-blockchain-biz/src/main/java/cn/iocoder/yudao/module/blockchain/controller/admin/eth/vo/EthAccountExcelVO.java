@@ -1,10 +1,9 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo;
 
-import lombok.*;
-import java.util.*;
-import io.swagger.annotations.*;
-
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 以太坊账户 Excel VO
@@ -34,5 +33,8 @@ public class EthAccountExcelVO {
 
     @ExcelProperty("创建时间")
     private Date createTime;
+
+    @ExcelProperty("网络")
+    private String net;
 
 }

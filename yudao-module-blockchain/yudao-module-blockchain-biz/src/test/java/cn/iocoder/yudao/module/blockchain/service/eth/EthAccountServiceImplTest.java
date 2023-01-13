@@ -1,30 +1,28 @@
 package cn.iocoder.yudao.module.blockchain.service.eth;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import javax.annotation.Resource;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.test.core.ut.BaseDbUnitTest;
-
-import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.*;
+import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.EthAccountCreateReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.EthAccountExportReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.EthAccountPageReqVO;
+import cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo.EthAccountUpdateReqVO;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.eth.EthAccountDO;
 import cn.iocoder.yudao.module.blockchain.dal.mysql.eth.EthAccountMapper;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 
 import javax.annotation.Resource;
-import org.springframework.context.annotation.Import;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
-import static cn.hutool.core.util.RandomUtil.*;
-import static cn.iocoder.yudao.module.blockchain.enums.ErrorCodeConstants.*;
-import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.*;
-import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.*;
-import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.*;
-import static cn.iocoder.yudao.framework.common.util.date.DateUtils.*;
+import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.cloneIgnoreId;
+import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertPojoEquals;
+import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertServiceException;
+import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.randomLongId;
+import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.randomPojo;
+import static cn.iocoder.yudao.module.blockchain.enums.ErrorCodeConstants.ETH_ACCOUNT_NOT_EXISTS;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
 * {@link EthAccountServiceImpl} 的单元测试类
@@ -114,6 +112,7 @@ public class EthAccountServiceImplTest extends BaseDbUnitTest {
            o.setPrivateKey(null);
            o.setOwned(null);
            o.setCreateTime(null);
+           o.setNet(null);
        });
        ethAccountMapper.insert(dbEthAccount);
        // 测试 name 不匹配
@@ -128,6 +127,8 @@ public class EthAccountServiceImplTest extends BaseDbUnitTest {
        ethAccountMapper.insert(cloneIgnoreId(dbEthAccount, o -> o.setOwned(null)));
        // 测试 createTime 不匹配
        ethAccountMapper.insert(cloneIgnoreId(dbEthAccount, o -> o.setCreateTime(null)));
+       // 测试 net 不匹配
+       ethAccountMapper.insert(cloneIgnoreId(dbEthAccount, o -> o.setNet(null)));
        // 准备参数
        EthAccountPageReqVO reqVO = new EthAccountPageReqVO();
        reqVO.setName(null);
@@ -136,6 +137,7 @@ public class EthAccountServiceImplTest extends BaseDbUnitTest {
        reqVO.setPrivateKey(null);
        reqVO.setOwned(null);
        reqVO.setCreateTime((new Date[]{}));
+       reqVO.setNet(null);
 
        // 调用
        PageResult<EthAccountDO> pageResult = ethAccountService.getEthAccountPage(reqVO);
@@ -156,6 +158,7 @@ public class EthAccountServiceImplTest extends BaseDbUnitTest {
            o.setPrivateKey(null);
            o.setOwned(null);
            o.setCreateTime(null);
+           o.setNet(null);
        });
        ethAccountMapper.insert(dbEthAccount);
        // 测试 name 不匹配
@@ -170,6 +173,8 @@ public class EthAccountServiceImplTest extends BaseDbUnitTest {
        ethAccountMapper.insert(cloneIgnoreId(dbEthAccount, o -> o.setOwned(null)));
        // 测试 createTime 不匹配
        ethAccountMapper.insert(cloneIgnoreId(dbEthAccount, o -> o.setCreateTime(null)));
+       // 测试 net 不匹配
+       ethAccountMapper.insert(cloneIgnoreId(dbEthAccount, o -> o.setNet(null)));
        // 准备参数
        EthAccountExportReqVO reqVO = new EthAccountExportReqVO();
        reqVO.setName(null);
@@ -178,6 +183,7 @@ public class EthAccountServiceImplTest extends BaseDbUnitTest {
        reqVO.setPrivateKey(null);
        reqVO.setOwned(null);
        reqVO.setCreateTime((new Date[]{}));
+       reqVO.setNet(null);
 
        // 调用
        List<EthAccountDO> list = ethAccountService.getEthAccountList(reqVO);

@@ -9,7 +9,6 @@ import cn.iocoder.yudao.module.blockchain.dal.dataobject.eth.EthAccountDO;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,8 +72,8 @@ public interface EthAccountService {
      */
     List<EthAccountDO> getEthAccountList(EthAccountExportReqVO exportReqVO);
 
-    List<EthAccountDO> getEthAccountList(Date date);
 
-    List<EthAccountDO> getEthAccountList();
+    List<EthAccountDO> getEthAccountList(String symbol);
 
+    int updateEthAccountNet(String address, String netSymbol);
 }
