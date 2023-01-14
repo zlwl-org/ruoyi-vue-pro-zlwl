@@ -47,10 +47,19 @@
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="钱包编号" align="center" prop="id" />
-      <el-table-column label="名称" align="center" prop="name" />
-      <el-table-column label="地址" align="center" prop="address" />
-      <el-table-column label="网络" align="center" prop="net">
+      <el-table-column label="编号" align="center" prop="id" width="80" />
+      <el-table-column label="名称" align="center" prop="name" width="100">
+        <template v-slot="scope">
+          <span>{{scope.row.name}}</span>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"></el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="地址" align="center" prop="address" width="400">
+        <template v-slot="scope">
+          <el-link type="success" @click="openExplorer(scope.row.symbol, scope.row.address)">{{scope.row.address}}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="网络" align="center" prop="net" width="160">
 <!--        <template v-slot="scope">-->
 <!--          <dict-tag :type="DICT_TYPE.BLOCKCHAIN_NET_TYPE" :value="scope.row.net" />-->
 <!--        </template>-->
@@ -64,9 +73,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template v-slot="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['blockchain:user-wallet:update']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+          <el-button size="mini" type="text" icon="el-icon-delete"
                      v-hasPermi="['blockchain:user-wallet:delete']">删除</el-button>
         </template>
       </el-table-column>
@@ -138,10 +145,12 @@ import {
   importUserWallet
 } from '@/api/blockchain/userWallet'
 import { getNetSimple } from '@/api/blockchain/net'
+import ScrollPane from '@/layout/components/TagsView/ScrollPane'
 
 export default {
   name: "UserWallet",
   components: {
+    ScrollPane
   },
   data() {
     return {
@@ -188,6 +197,15 @@ export default {
     this.getNetList();
   },
   methods: {
+    openExplorer(symbol, address){
+      let url
+      if (symbol === 'ETH') {
+        url = 'https://etherscan.io/address/'
+      } else if (symbol === "MATIC"){
+        url = 'https://polygonscan.com/address/'
+      }
+      window.open(url + address,'_blank')
+    },
     getNetList(){
       getNetSimple().then(response =>{
         this.netList = response.data;
