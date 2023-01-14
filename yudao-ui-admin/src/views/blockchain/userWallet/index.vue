@@ -3,9 +3,6 @@
 
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户ID" prop="userId">
-        <el-input v-model="queryParams.userId" placeholder="请输入用户ID" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-input v-model="queryParams.name" placeholder="请输入名称" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -21,9 +18,6 @@
       <el-form-item label="代币" prop="symbol">
         <el-input v-model="queryParams.symbol" placeholder="请输入代币" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="余额" prop="balance">
-        <el-input v-model="queryParams.balance" placeholder="请输入余额" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker v-model="queryParams.createTime" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
                         range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
@@ -37,8 +31,12 @@
     <!-- 操作工具栏 -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleImport"
+                   v-hasPermi="['blockchain:user-wallet:create']">导入钱包</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-                   v-hasPermi="['blockchain:user-wallet:create']">新增</el-button>
+                   v-hasPermi="['blockchain:user-wallet:create']">添加钱包</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" :loading="exportLoading"
@@ -50,7 +48,6 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
       <el-table-column label="钱包编号" align="center" prop="id" />
-      <el-table-column label="用户ID" align="center" prop="userId" />
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="地址" align="center" prop="address" />
       <el-table-column label="网络" align="center" prop="net">
@@ -78,29 +75,16 @@
     <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNo" :limit.sync="queryParams.pageSize"
                 @pagination="getList"/>
 
-    <!-- 对话框(添加 / 修改) -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" v-dialogDrag append-to-body>
+    <!-- 对话框(添加) -->
+    <el-dialog :title="title" :visible.sync="add" width="500px" v-dialogDrag append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户ID" />
+        <el-form-item label="网络" prop="net">
+          <el-select v-model="form.net" placeholder="请选择网络" filterable clearable>
+            <el-option v-for="item in this.netList" :key="item.symbol" :label="item.name" :value="item.symbol"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入名称" />
-        </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-input v-model="form.address" placeholder="请输入地址" />
-        </el-form-item>
-        <el-form-item label="网络" prop="net">
-          <el-select v-model="form.net" placeholder="请选择网络">
-            <el-option v-for="item in this.netList"
-                       :key="item.symbol" :label="item.name" :value="item.symbol"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="代币" prop="symbol">
-          <el-input v-model="form.symbol" placeholder="请输入代币" />
-        </el-form-item>
-        <el-form-item label="余额" prop="balance">
-          <el-input v-model="form.balance" placeholder="请输入余额" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,11 +92,51 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框(导入) -->
+    <el-dialog :title="title" :visible.sync="impot" width="500px" v-dialogDrag append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="网络" prop="net">
+          <el-select v-model="form.net" placeholder="请选择网络" filterable clearable>
+            <el-option v-for="item in this.netList" :key="item.symbol" :label="item.name" :value="item.symbol"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入名称" />
+        </el-form-item>
+        <el-form-item label="助记词" prop="mnemonic">
+          <el-input type="textarea" :rows="3" v-model="form.mnemonic" placeholder="请输入助记词" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="impot=false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 对话框(修改) -->
+    <el-dialog :title="title" :visible.sync="edit" width="500px" v-dialogDrag append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入名称" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="edit=false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { createUserWallet, updateUserWallet, deleteUserWallet, getUserWallet, getUserWalletPage, exportUserWalletExcel } from "@/api/blockchain/userWallet";
+import {
+  createUserWallet,
+  updateUserWallet,
+  deleteUserWallet,
+  getUserWallet,
+  getUserWalletPage,
+  exportUserWalletExcel,
+  importUserWallet
+} from '@/api/blockchain/userWallet'
 import { getNetSimple } from '@/api/blockchain/net'
 
 export default {
@@ -134,7 +158,9 @@ export default {
       // 弹出层标题
       title: "",
       // 是否显示弹出层
-      open: false,
+      add: false,
+      impot: false,
+      edit: false,
       // 查询参数
       queryParams: {
         pageNo: 1,
@@ -151,7 +177,8 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        userId: [{ required: true, message: "用户ID不能为空", trigger: "blur" }],
+        mnemonic: [{ required: true, message: "助记词不能为空", trigger: "blur" }],
+        net: [{ required: true, message: "网络不能为空", trigger: "blur" }],
       },
       netList: {},
     };
@@ -178,7 +205,7 @@ export default {
     },
     /** 取消按钮 */
     cancel() {
-      this.open = false;
+      this.add = false;
       this.reset();
     },
     /** 表单重置 */
@@ -207,8 +234,13 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.open = true;
-      this.title = "添加用户钱包";
+      this.add = true;
+      this.title = "生成钱包";
+    },
+    handleImport() {
+      this.reset();
+      this.impot = true;
+      this.title = "导入钱包";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -216,8 +248,8 @@ export default {
       const id = row.id;
       getUserWallet(id).then(response => {
         this.form = response.data;
-        this.open = true;
-        this.title = "修改用户钱包";
+        this.edit = true;
+        this.title = "修改钱包";
       });
     },
     /** 提交按钮 */
@@ -230,17 +262,26 @@ export default {
         if (this.form.id != null) {
           updateUserWallet(this.form).then(response => {
             this.$modal.msgSuccess("修改成功");
-            this.open = false;
+            this.edit = false;
             this.getList();
           });
           return;
         }
         // 添加的提交
-        createUserWallet(this.form).then(response => {
-          this.$modal.msgSuccess("新增成功");
-          this.open = false;
-          this.getList();
-        });
+        if (this.add === true){
+          createUserWallet(this.form).then(response => {
+            this.$modal.msgSuccess("新增成功");
+            this.add = false;
+            this.getList();
+          });
+        }
+        if (this.impot === true){
+          importUserWallet(this.form).then(response => {
+            this.$modal.msgSuccess("导入成功");
+            this.impot = false;
+            this.getList();
+          });
+        }
       });
     },
     /** 删除按钮操作 */

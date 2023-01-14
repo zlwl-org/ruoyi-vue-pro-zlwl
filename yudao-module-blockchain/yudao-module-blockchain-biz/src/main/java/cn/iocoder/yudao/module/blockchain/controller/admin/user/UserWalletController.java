@@ -1,30 +1,29 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.user;
 
-import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.prepost.PreAuthorize;
-import io.swagger.annotations.*;
-
-import javax.validation.constraints.*;
-import javax.validation.*;
-import javax.servlet.http.*;
-import java.util.*;
-import java.io.IOException;
-
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
-import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
-
 import cn.iocoder.yudao.module.blockchain.controller.admin.user.vo.*;
-import cn.iocoder.yudao.module.blockchain.dal.dataobject.user.UserWalletDO;
 import cn.iocoder.yudao.module.blockchain.convert.user.UserWalletConvert;
+import cn.iocoder.yudao.module.blockchain.dal.dataobject.user.UserWalletDO;
 import cn.iocoder.yudao.module.blockchain.service.user.UserWalletService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Api(tags = "管理后台 - 用户钱包")
 @RestController
@@ -40,6 +39,13 @@ public class UserWalletController {
     @PreAuthorize("@ss.hasPermission('blockchain:user-wallet:create')")
     public CommonResult<Long> createUserWallet(@Valid @RequestBody UserWalletCreateReqVO createReqVO) {
         return success(userWalletService.createUserWallet(createReqVO));
+    }
+
+    @PostMapping("/import")
+    @ApiOperation("导入用户钱包")
+    @PreAuthorize("@ss.hasPermission('blockchain:user-wallet:create')")
+    public CommonResult<Long> importUserWallet(@Valid @RequestBody UserWalletImportReqVO createReqVO) {
+        return success(userWalletService.importUserWallet(createReqVO));
     }
 
     @PutMapping("/update")
@@ -90,7 +96,7 @@ public class UserWalletController {
     @PreAuthorize("@ss.hasPermission('blockchain:user-wallet:export')")
     @OperateLog(type = EXPORT)
     public void exportUserWalletExcel(@Valid UserWalletExportReqVO exportReqVO,
-              HttpServletResponse response) throws IOException {
+                                      HttpServletResponse response) throws IOException {
         List<UserWalletDO> list = userWalletService.getUserWalletList(exportReqVO);
         // 导出 Excel
         List<UserWalletExcelVO> datas = UserWalletConvert.INSTANCE.convertList02(list);

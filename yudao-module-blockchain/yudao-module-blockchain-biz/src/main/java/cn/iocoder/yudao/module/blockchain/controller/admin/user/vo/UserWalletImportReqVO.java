@@ -10,11 +10,18 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode()
 @ToString(callSuper = true)
-public class UserWalletCreateReqVO {
+public class UserWalletImportReqVO {
 
     @ApiModelProperty(value = "网络")
     private String net;
 
+    @ApiModelProperty(value = "助记词")
+    private String mnemonic;
+
+    @ApiModelProperty(value = "私钥")
+    private String privateKey;
+
     @ApiModelProperty(value = "名称")
     private String name;
+
 }

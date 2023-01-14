@@ -20,4 +20,7 @@ public class NetRespSimpleVO {
 
     @ApiModelProperty(value = "原生代币")
     private String symbol;
+
+    @ApiModelProperty(value = "网络类型")
+    private String type;
 }

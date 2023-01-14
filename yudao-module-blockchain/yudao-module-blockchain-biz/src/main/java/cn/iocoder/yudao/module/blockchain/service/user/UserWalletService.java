@@ -1,10 +1,12 @@
 package cn.iocoder.yudao.module.blockchain.service.user;
 
-import java.util.*;
-import javax.validation.*;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.blockchain.controller.admin.user.vo.*;
 import cn.iocoder.yudao.module.blockchain.dal.dataobject.user.UserWalletDO;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 用户钱包 Service 接口
@@ -67,4 +69,5 @@ public interface UserWalletService {
      */
     List<UserWalletDO> getUserWalletList(UserWalletExportReqVO exportReqVO);
 
+    Long importUserWallet(@Valid UserWalletImportReqVO createReqVO);
 }

@@ -9,6 +9,15 @@ export function createUserWallet(data) {
   })
 }
 
+// 导入用户钱包
+export function importUserWallet(data) {
+  return request({
+    url: '/blockchain/user-wallet/import',
+    method: 'post',
+    data: data
+  })
+}
+
 // 更新用户钱包
 export function updateUserWallet(data) {
   return request({

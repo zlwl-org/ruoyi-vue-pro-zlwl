@@ -154,23 +154,47 @@ public class MnemonicUtil {
      * 使用助记词创建默认账户密钥对
      *
      * @param mnemonic 助记词
-     * @param coin     硬币
+     * @param chainTech     公链技术
      * @return {@link ECKeyPair}
      */
-    public static ECKeyPair createDefaultKeyFromMnemonic(String mnemonic, String coin) {
-        ImmutableList<ChildNumber> defaultPath = coinDefaultPath(coin);
+    public static ECKeyPair createDefaultKeyFromMnemonic(String mnemonic, String chainTech) {
+        ImmutableList<ChildNumber> defaultPath = coinDefaultPath(chainTech);
         return createFromMnemonic(mnemonic, DEFAULT_PASSWORD, defaultPath, DEFAULT_ADDRESS_INDEX);
     }
 
-    public static String getDefaultAddressFromMnemonic(String mnemonic, String coin) {
+
+    /**
+     * 从助记词得到默认地址
+     *
+     * @param mnemonic 助记词
+     * @param chainTech 公链技术
+     * @return {@link String}
+     */
+    public static String getDefaultAddressFromMnemonic(String mnemonic, String chainTech) {
         String address = null;
-        ECKeyPair keyPair = createDefaultKeyFromMnemonic(mnemonic, coin);
-        switch (coin) {
+        ECKeyPair keyPair = createDefaultKeyFromMnemonic(mnemonic, chainTech);
+        switch (chainTech) {
             case trx_string -> address = TronAddressUtil.publicKeyToBase58(keyPair.getPublicKey());
             case eth_string -> address = "0x" + Keys.getAddress(keyPair);
-            case btc_string -> address = "还没实现";
+            case btc_string -> throw new UnsupportedOperationException("还未实现");
         }
         return address;
+    }
+
+    /**
+     * 获得私钥
+     *
+     * @param keyPair 密钥对
+     * @param chainTech 公链技术
+     * @return {@link String}
+     */
+    public static String getPrivateKeyFromKeyPair(ECKeyPair keyPair, String chainTech) {
+        String key = null;
+        switch (chainTech) {
+            case trx_string, btc_string -> throw new UnsupportedOperationException("还未实现");
+            case eth_string -> key = "0x" + String.format("%64s", keyPair.getPrivateKey().toString(16)).replace(" ", "0");
+        }
+        return key;
     }
 
 }

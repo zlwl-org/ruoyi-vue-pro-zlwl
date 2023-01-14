@@ -87,23 +87,26 @@ public class BranchGoodsController {
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:query')")
     public CommonResult<PageResult<BranchGoodsRespVO>> getBranchGoodsPage(@Valid BranchGoodsPageReqVO pageVO) {
         PageResult<BranchGoodsDO> pageResult = branchGoodsService.getBranchGoodsPage(pageVO);
-        List<Long> ids = pageResult.getList().stream().map(BranchGoodsDO::getProductId).toList();
-        List<PromotionDO> promotionList = promotionService.getPromotionListByProductIds(ids);
         PageResult<BranchGoodsRespVO> result = BranchGoodsConvert.INSTANCE.convertPage(pageResult);
-        if (promotionList != null){
-            for (PromotionDO promotionDO : promotionList) {
-                for (int i = 0; i <result.getList().size(); i++) {
-                    BranchGoodsRespVO good = result.getList().get(i);
-                    if (good.getProductId() == null) {
-                        break;
-                    }
-                    if (good.getProductId().equals(promotionDO.getProductId())) {
-                        result.getList().get(i).setPromotion(PromotionConvert.INSTANCE.convert(promotionDO));
-                        break;
+        List<Long> ids = pageResult.getList().stream().map(BranchGoodsDO::getProductId).toList();
+        if (ids.size() != 0) {
+            List<PromotionDO> promotionList = promotionService.getPromotionListByProductIds(ids);
+            if (promotionList != null) {
+                for (PromotionDO promotionDO : promotionList) {
+                    for (int i = 0; i < result.getList().size(); i++) {
+                        BranchGoodsRespVO good = result.getList().get(i);
+                        if (good.getProductId() == null) {
+                            break;
+                        }
+                        if (good.getProductId().equals(promotionDO.getProductId())) {
+                            result.getList().get(i).setPromotion(PromotionConvert.INSTANCE.convert(promotionDO));
+                            break;
+                        }
                     }
                 }
             }
         }
+
         return success(result);
     }
 
@@ -112,7 +115,7 @@ public class BranchGoodsController {
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:export')")
     @OperateLog(type = EXPORT)
     public void exportBranchGoodsExcel(@Valid BranchGoodsExportReqVO exportReqVO,
-              HttpServletResponse response) throws IOException {
+                                       HttpServletResponse response) throws IOException {
         List<BranchGoodsDO> list = branchGoodsService.getBranchGoodsList(exportReqVO);
         // 导出 Excel
         List<BranchGoodsExcelVO> datas = BranchGoodsConvert.INSTANCE.convertList02(list);
