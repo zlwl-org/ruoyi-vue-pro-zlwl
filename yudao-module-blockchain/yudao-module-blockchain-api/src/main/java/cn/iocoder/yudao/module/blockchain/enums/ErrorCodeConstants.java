@@ -23,4 +23,7 @@ public interface ErrorCodeConstants {
 
     // ========== 用户钱包 1023005001 ==========
     ErrorCode USER_WALLET_NOT_EXISTS = new ErrorCode(1023005001, "用户钱包不存在");
+
+    // ========== Eth区块数据 1023006001 ==========
+    ErrorCode ETH_BLOCK_NOT_EXISTS = new ErrorCode(1023006001, "Eth区块数据不存在");
 }
