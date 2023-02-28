@@ -4,9 +4,8 @@
     <el-tabs v-model="activeName" class="tabs">
       <!-- 基础设置 -->
       <!-- TODO @luowenfeng：基础设置，分成基础信息、配送信息 -->
-      <!-- TODO @luowenfeng：base=》basic 会更好哈 -->
-      <el-tab-pane label="基础设置" name="base">
-        <el-form ref="base" :model="baseForm" :rules="rules" label-width="100px" style="width: 95%">
+      <el-tab-pane label="基础设置" name="basic">
+        <el-form ref="basic" :model="baseForm" :rules="rules" label-width="100px" style="width: 95%">
           <el-form-item label="商品名称" prop="name">
             <el-input v-model="baseForm.name" placeholder="请输入商品名称" />
           </el-form-item>
@@ -70,27 +69,18 @@
               <template v-if="this.specSwitch">
                 <el-table-column :key="index" v-for="(item, index) in dynamicSpec.filter(v => v.specName !== undefined)"
                                  :label="item.specName">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-input v-if="scope.row.spec" v-model="scope.row.spec[index]" disabled/>
                   </template>
                 </el-table-column>
               </template>
               <el-table-column label="规格图片" width="120px" :render-header="addRedStar" key="90">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <ImageUpload v-model="scope.row.picUrl" :limit="1" :isShowTip="false" style="width: 100px; height: 50px"/>
                 </template>
               </el-table-column>
-              <template v-if="this.specSwitch">
-                <el-table-column label="sku名称" :render-header="addRedStar" key="91">
-                  <template slot-scope="scope">
-                    <el-form-item :prop="'rates.'+ scope.$index + '.name'" :rules="[{required: true, trigger: 'change'}]">
-                      <el-input v-model="scope.row.name"/>
-                    </el-form-item>
-                  </template>
-                </el-table-column>
-              </template>
               <el-table-column label="市场价(元)" :render-header="addRedStar" key="92">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-form-item :prop="'rates.'+ scope.$index + '.marketPrice'" :rules="[{required: true, trigger: 'change'}]">
                     <el-input v-model="scope.row.marketPrice"
                               oninput="value= value.match(/\d+(\.\d{0,2})?/) ? value.match(/\d+(\.\d{0,2})?/)[0] : ''"/>
@@ -98,7 +88,7 @@
                 </template>
               </el-table-column>
               <el-table-column label="销售价(元)" :render-header="addRedStar" key="93">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-form-item :prop="'rates.'+ scope.$index + '.price'"
                                 :rules="[{required: true, trigger: 'change'}]">
                     <el-input v-model="scope.row.price"
@@ -107,7 +97,7 @@
                 </template>
               </el-table-column>
               <el-table-column label="成本价" :render-header="addRedStar" key="94">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-form-item :prop="'rates.'+ scope.$index + '.costPrice'"
                                 :rules="[{required: true, trigger: 'change'}]">
                     <el-input v-model="scope.row.costPrice"
@@ -116,35 +106,35 @@
                 </template>
               </el-table-column>
               <el-table-column label="库存" :render-header="addRedStar" key="95">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-form-item :prop="'rates.'+ scope.$index + '.stock'" :rules="[{required: true, trigger: 'change'}]">
                     <el-input v-model="scope.row.stock" oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column label="预警库存" key="96">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-input v-model="scope.row.warnStock" oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="体积" key="97">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-input v-model="scope.row.volume" />
                 </template>
               </el-table-column>
               <el-table-column label="重量" key="98">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-input v-model="scope.row.weight" />
                 </template>
               </el-table-column>
               <el-table-column label="条码" key="99">
-                <template slot-scope="scope">
+                <template v-slot="scope">
                   <el-input v-model="scope.row.barCode" />
                 </template>
               </el-table-column>
               <template v-if="this.specSwitch">
                 <el-table-column fixed="right" label="操作" width="50" key="100">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-button @click="scope.row.status = 1" type="text" size="small"
                                v-show="scope.row.status === undefined || scope.row.status === 0 ">禁用
                     </el-button>
@@ -164,9 +154,8 @@
       </el-tab-pane>
 
       <!-- 商品详情 -->
-      <!-- TODO @luowenfeng：third=》detail 会更好哈 -->
-      <el-tab-pane label="商品详情" name="third">
-        <el-form ref="third" :model="baseForm" :rules="rules">
+      <el-tab-pane label="商品详情" name="detail">
+        <el-form ref="detail" :model="baseForm" :rules="rules">
           <el-form-item prop="description">
             <editor v-model="baseForm.description" :min-height="380"/>
           </el-form-item>
@@ -174,9 +163,8 @@
       </el-tab-pane>
 
       <!-- 销售设置 -->
-      <!-- TODO @luowenfeng：fourth=》senior 会更好哈 -->
-      <el-tab-pane label="高级设置" name="fourth">
-        <el-form ref="fourth" :model="baseForm" :rules="rules" label-width="100px" style="width: 95%">
+      <el-tab-pane label="高级设置" name="senior">
+        <el-form ref="senior" :model="baseForm" :rules="rules" label-width="100px" style="width: 95%">
           <el-form-item label="排序字段">
             <el-input v-model="baseForm.sort" placeholder="请输入排序字段" oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"/>
           </el-form-item>
@@ -217,7 +205,7 @@ export default {
   data() {
     return {
       specSwitch: false,
-      activeName: "base",
+      activeName: "basic",
       propName: {
         checkStrictly: true,
         label: "name",

@@ -1,2 +1,0 @@
-import './dataTimePicker'
-import './dict'

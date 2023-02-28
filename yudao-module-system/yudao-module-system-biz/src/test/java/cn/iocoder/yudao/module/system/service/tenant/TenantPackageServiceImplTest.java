@@ -2,22 +2,23 @@ package cn.iocoder.yudao.module.system.service.tenant;
 
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.test.core.ut.BaseDbUnitTest;
 import cn.iocoder.yudao.module.system.controller.admin.tenant.vo.packages.TenantPackageCreateReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.tenant.vo.packages.TenantPackagePageReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.tenant.vo.packages.TenantPackageUpdateReqVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.tenant.TenantDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.tenant.TenantPackageDO;
 import cn.iocoder.yudao.module.system.dal.mysql.tenant.TenantPackageMapper;
-import cn.iocoder.yudao.framework.test.core.ut.BaseDbUnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import javax.annotation.Resource;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-import static cn.iocoder.yudao.framework.common.util.date.DateUtils.buildLocalDateTime;
+import static cn.iocoder.yudao.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;
+import static cn.iocoder.yudao.framework.common.util.date.LocalDateTimeUtils.buildTime;
 import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.cloneIgnoreId;
 import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertPojoEquals;
 import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertServiceException;
@@ -142,7 +143,7 @@ public class TenantPackageServiceImplTest extends BaseDbUnitTest {
            o.setName("芋道源码");
            o.setStatus(CommonStatusEnum.ENABLE.getStatus());
            o.setRemark("源码解析");
-           o.setCreateTime(buildLocalDateTime(2022, 10, 10));
+           o.setCreateTime(buildTime(2022, 10, 10));
        });
        tenantPackageMapper.insert(dbTenantPackage);
        // 测试 name 不匹配
@@ -152,13 +153,13 @@ public class TenantPackageServiceImplTest extends BaseDbUnitTest {
        // 测试 remark 不匹配
        tenantPackageMapper.insert(cloneIgnoreId(dbTenantPackage, o -> o.setRemark("解析")));
        // 测试 createTime 不匹配
-       tenantPackageMapper.insert(cloneIgnoreId(dbTenantPackage, o -> o.setCreateTime(buildLocalDateTime(2022, 11, 11))));
+       tenantPackageMapper.insert(cloneIgnoreId(dbTenantPackage, o -> o.setCreateTime(buildTime(2022, 11, 11))));
        // 准备参数
        TenantPackagePageReqVO reqVO = new TenantPackagePageReqVO();
        reqVO.setName("芋道");
        reqVO.setStatus(CommonStatusEnum.ENABLE.getStatus());
        reqVO.setRemark("源码");
-       reqVO.setCreateTime((new LocalDateTime[]{buildLocalDateTime(2022, 10, 9),buildLocalDateTime(2022, 10, 11)}));
+       reqVO.setCreateTime(buildBetweenTime(2022, 10, 9, 2022, 10, 11));
 
        // 调用
        PageResult<TenantPackageDO> pageResult = tenantPackageService.getTenantPackagePage(reqVO);
@@ -201,4 +202,34 @@ public class TenantPackageServiceImplTest extends BaseDbUnitTest {
         assertServiceException(() -> tenantPackageService.validTenantPackage(dbTenantPackage.getId()),
                 TENANT_PACKAGE_DISABLE, dbTenantPackage.getName());
     }
+
+    @Test
+    public void testGetTenantPackage() {
+        // mock 数据
+        TenantPackageDO dbTenantPackage = randomPojo(TenantPackageDO.class);
+        tenantPackageMapper.insert(dbTenantPackage);// @Sql: 先插入出一条存在的数据
+
+        // 调用
+        TenantPackageDO result = tenantPackageService.getTenantPackage(dbTenantPackage.getId());
+        // 断言
+        assertPojoEquals(result, dbTenantPackage);
+    }
+
+    @Test
+    public void testGetTenantPackageListByStatus() {
+        // mock 数据
+        TenantPackageDO dbTenantPackage = randomPojo(TenantPackageDO.class,
+                o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        tenantPackageMapper.insert(dbTenantPackage);
+        // 测试 status 不匹配
+        tenantPackageMapper.insert(cloneIgnoreId(dbTenantPackage,
+                o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())));
+
+        // 调用
+        List<TenantPackageDO> list = tenantPackageService.getTenantPackageListByStatus(
+                CommonStatusEnum.ENABLE.getStatus());
+        assertEquals(1, list.size());
+        assertPojoEquals(dbTenantPackage, list.get(0));
+    }
+
 }

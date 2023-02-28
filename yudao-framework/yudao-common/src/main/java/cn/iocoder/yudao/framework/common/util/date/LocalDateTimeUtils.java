@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
  */
 public class LocalDateTimeUtils {
 
+    /**
+     * 空的 LocalDateTime 对象，主要用于 DB 唯一索引的默认值
+     */
+    public static LocalDateTime EMPTY = buildTime(1970, 1, 1);
+
     public static LocalDateTime addTime(Duration duration) {
         return LocalDateTime.now().plus(duration);
     }
@@ -34,6 +39,11 @@ public class LocalDateTimeUtils {
      */
     public static LocalDateTime buildTime(int year, int mouth, int day) {
         return LocalDateTime.of(year, mouth, day, 0, 0, 0);
+    }
+
+    public static LocalDateTime[] buildBetweenTime(int year1, int mouth1, int day1,
+                                                   int year2, int mouth2, int day2) {
+        return new LocalDateTime[]{buildTime(year1, mouth1, day1), buildTime(year2, mouth2, day2)};
     }
 
     /**

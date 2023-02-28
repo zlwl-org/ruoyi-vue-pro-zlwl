@@ -8,11 +8,13 @@ import cn.iocoder.yudao.framework.mq.core.RedisMQTemplate;
 import cn.iocoder.yudao.framework.mq.core.interceptor.RedisMessageInterceptor;
 import cn.iocoder.yudao.framework.mq.core.pubsub.AbstractChannelMessageListener;
 import cn.iocoder.yudao.framework.mq.core.stream.AbstractStreamMessageListener;
+import cn.iocoder.yudao.framework.mq.job.RedisPendingMessageResendJob;
 import cn.iocoder.yudao.framework.redis.config.YudaoRedisAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
@@ -25,7 +27,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.stream.DefaultStreamMessageListenerContainerX;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 import java.util.Properties;
@@ -35,9 +37,9 @@ import java.util.Properties;
  *
  * @author 芋道源码
  */
-@Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(YudaoRedisAutoConfiguration.class)
 @Slf4j
+@EnableScheduling // 启用定时任务，用于 RedisPendingMessageResendJob 重发消息
+@AutoConfiguration(after = YudaoRedisAutoConfiguration.class)
 public class YudaoMQAutoConfiguration {
 
     @Bean
@@ -54,8 +56,7 @@ public class YudaoMQAutoConfiguration {
     /**
      * 创建 Redis Pub/Sub 广播消费的容器
      */
-    @Bean
-    @Async // 异步化，可降低 2 秒左右的启动时间
+    @Bean(initMethod = "start", destroyMethod = "stop")
     public RedisMessageListenerContainer redisMessageListenerContainer(
             RedisMQTemplate redisMQTemplate, List<AbstractChannelMessageListener<?>> listeners) {
         // 创建 RedisMessageListenerContainer 对象
@@ -73,12 +74,22 @@ public class YudaoMQAutoConfiguration {
     }
 
     /**
+     * 创建 Redis Stream 重新消费的任务
+     */
+    @Bean
+    public RedisPendingMessageResendJob redisPendingMessageResendJob(List<AbstractStreamMessageListener<?>> listeners,
+                                                                     RedisMQTemplate redisTemplate,
+                                                                     @Value("${spring.application.name}") String groupName,
+                                                                     RedissonClient redissonClient) {
+        return new RedisPendingMessageResendJob(listeners, redisTemplate, groupName, redissonClient);
+    }
+
+    /**
      * 创建 Redis Stream 集群消费的容器
-     *
+     * <p>
      * Redis Stream 的 xreadgroup 命令：https://www.geek-book.com/src/docs/redis/redis/redis.io/commands/xreadgroup.html
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Async // 异步化，可降低 5 秒左右的启动时间
     public StreamMessageListenerContainer<String, ObjectRecord<String, String>> redisStreamMessageListenerContainer(
             RedisMQTemplate redisMQTemplate, List<AbstractStreamMessageListener<?>> listeners) {
         RedisTemplate<String, ?> redisTemplate = redisMQTemplate.getRedisTemplate();
@@ -103,7 +114,8 @@ public class YudaoMQAutoConfiguration {
             // 创建 listener 对应的消费者分组
             try {
                 redisTemplate.opsForStream().createGroup(listener.getStreamKey(), listener.getGroup());
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
             // 设置 listener 对应的 redisTemplate
             listener.setRedisMQTemplate(redisMQTemplate);
             // 创建 Consumer 对象

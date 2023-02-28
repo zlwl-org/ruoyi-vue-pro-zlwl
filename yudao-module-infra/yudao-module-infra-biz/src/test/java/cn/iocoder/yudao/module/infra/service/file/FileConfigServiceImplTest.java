@@ -7,6 +7,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.file.core.client.FileClient;
 import cn.iocoder.yudao.framework.file.core.client.FileClientConfig;
 import cn.iocoder.yudao.framework.file.core.client.FileClientFactory;
+import cn.iocoder.yudao.framework.file.core.client.local.LocalFileClient;
 import cn.iocoder.yudao.framework.file.core.client.local.LocalFileClientConfig;
 import cn.iocoder.yudao.framework.file.core.enums.FileStorageEnum;
 import cn.iocoder.yudao.framework.test.core.ut.BaseDbUnitTest;
@@ -28,9 +29,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import static cn.hutool.core.util.RandomUtil.randomEle;
-import static cn.iocoder.yudao.framework.common.util.date.DateUtils.buildLocalDateTime;
+import static cn.iocoder.yudao.framework.common.util.date.LocalDateTimeUtils.buildTime;
 import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.cloneIgnoreId;
-import static cn.iocoder.yudao.framework.common.util.object.ObjectUtils.max;
 import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertPojoEquals;
 import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertServiceException;
 import static cn.iocoder.yudao.framework.test.core.util.RandomUtils.randomLongId;
@@ -74,16 +74,13 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
         when(fileClientFactory.getFileClient(eq(1L))).thenReturn(masterFileClient);
 
         // 调用
-        fileConfigService.initFileClients();
+        fileConfigService.initLocalCache();
         // 断言 fileClientFactory 调用
         verify(fileClientFactory).createOrUpdateFileClient(eq(1L),
                 eq(configDO1.getStorage()), eq(configDO1.getConfig()));
         verify(fileClientFactory).createOrUpdateFileClient(eq(2L),
                 eq(configDO2.getStorage()), eq(configDO2.getConfig()));
         assertSame(masterFileClient, fileConfigService.getMasterFileClient());
-        // 断言 maxUpdateTime 缓存
-        assertEquals(max(configDO1.getUpdateTime(), configDO2.getUpdateTime()),
-                fileConfigService.getMaxUpdateTime());
     }
 
     @Test
@@ -219,8 +216,8 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
        FileConfigPageReqVO reqVO = new FileConfigPageReqVO();
        reqVO.setName("芋道");
        reqVO.setStorage(FileStorageEnum.LOCAL.getStorage());
-       reqVO.setCreateTime((new LocalDateTime[]{buildLocalDateTime(2020, 1, 1),
-               buildLocalDateTime(2020, 1, 24)}));
+       reqVO.setCreateTime((new LocalDateTime[]{buildTime(2020, 1, 1),
+               buildTime(2020, 1, 24)}));
 
        // 调用
        PageResult<FileConfigDO> pageResult = fileConfigService.getFileConfigPage(reqVO);
@@ -240,10 +237,34 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
         // mock 获得 Client
         FileClient fileClient = mock(FileClient.class);
         when(fileClientFactory.getFileClient(eq(id))).thenReturn(fileClient);
-        when(fileClient.upload(any(), any())).thenReturn("https://www.iocoder.cn");
+        when(fileClient.upload(any(), any(), any())).thenReturn("https://www.iocoder.cn");
 
         // 调用，并断言
         assertEquals("https://www.iocoder.cn", fileConfigService.testFileConfig(id));
+    }
+
+    @Test
+    public void testGetFileConfig() {
+        // mock 数据
+        FileConfigDO dbFileConfig = randomFileConfigDO().setMaster(false);
+        fileConfigMapper.insert(dbFileConfig);// @Sql: 先插入出一条存在的数据
+        // 准备参数
+        Long id = dbFileConfig.getId();
+
+        // 调用，并断言
+        assertPojoEquals(dbFileConfig, fileConfigService.getFileConfig(id));
+    }
+
+    @Test
+    public void testGetFileClient() {
+        // 准备参数
+        Long id = randomLongId();
+        // mock 获得 Client
+        FileClient fileClient = new LocalFileClient(id, new LocalFileClientConfig());
+        when(fileClientFactory.getFileClient(eq(id))).thenReturn(fileClient);
+
+        // 调用，并断言
+        assertSame(fileClient, fileConfigService.getFileClient(id));
     }
 
     private FileConfigDO randomFileConfigDO() {
