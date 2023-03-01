@@ -11,9 +11,8 @@ import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchGoodsDO;
 import cn.iocoder.yudao.module.shop.dal.dataobject.promotion.PromotionDO;
 import cn.iocoder.yudao.module.shop.service.branch.BranchGoodsService;
 import cn.iocoder.yudao.module.shop.service.promotion.PromotionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
-@Api(tags = "管理后台 - 门店商品")
+@Tag(name = "管理后台 - 门店商品")
 @RestController
 @RequestMapping("/shop/branch-goods")
 @Validated
@@ -41,14 +40,14 @@ public class BranchGoodsController {
     private PromotionService promotionService;
 
     @PostMapping("/create")
-    @ApiOperation("创建门店商品")
+    @Operation(summary = "创建门店商品")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:create')")
     public CommonResult<Long> createBranchGoods(@Valid @RequestBody BranchGoodsCreateReqVO createReqVO) {
         return success(branchGoodsService.createBranchGoods(createReqVO));
     }
 
     @PutMapping("/update")
-    @ApiOperation("更新门店商品")
+    @Operation(summary = "更新门店商品")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:update')")
     public CommonResult<Boolean> updateBranchGoods(@Valid @RequestBody BranchGoodsUpdateReqVO updateReqVO) {
         branchGoodsService.updateBranchGoods(updateReqVO);
@@ -56,8 +55,7 @@ public class BranchGoodsController {
     }
 
     @DeleteMapping("/delete")
-    @ApiOperation("删除门店商品")
-    @ApiImplicitParam(name = "id", value = "编号", required = true, dataTypeClass = Long.class)
+    @Operation(summary = "删除门店商品")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:delete')")
     public CommonResult<Boolean> deleteBranchGoods(@RequestParam("id") Long id) {
         branchGoodsService.deleteBranchGoods(id);
@@ -65,8 +63,7 @@ public class BranchGoodsController {
     }
 
     @GetMapping("/get")
-    @ApiOperation("获得门店商品")
-    @ApiImplicitParam(name = "id", value = "编号", required = true, example = "1024", dataTypeClass = Long.class)
+    @Operation(summary = "获得门店商品")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:query')")
     public CommonResult<BranchGoodsRespVO> getBranchGoods(@RequestParam("id") Long id) {
         BranchGoodsDO branchGoods = branchGoodsService.getBranchGoods(id);
@@ -74,8 +71,7 @@ public class BranchGoodsController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("获得门店商品列表")
-    @ApiImplicitParam(name = "ids", value = "编号列表", required = true, example = "1024,2048", dataTypeClass = List.class)
+    @Operation(summary = "获得门店商品列表")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:query')")
     public CommonResult<List<BranchGoodsRespVO>> getBranchGoodsList(@RequestParam("ids") Collection<Long> ids) {
         List<BranchGoodsDO> list = branchGoodsService.getBranchGoodsList(ids);
@@ -83,7 +79,7 @@ public class BranchGoodsController {
     }
 
     @GetMapping("/page")
-    @ApiOperation("获得门店商品分页")
+    @Operation(summary = "获得门店商品分页")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:query')")
     public CommonResult<PageResult<BranchGoodsRespVO>> getBranchGoodsPage(@Valid BranchGoodsPageReqVO pageVO) {
         PageResult<BranchGoodsDO> pageResult = branchGoodsService.getBranchGoodsPage(pageVO);
@@ -111,7 +107,7 @@ public class BranchGoodsController {
     }
 
     @GetMapping("/export-excel")
-    @ApiOperation("导出门店商品 Excel")
+    @Operation(summary = "导出门店商品 Excel")
     @PreAuthorize("@ss.hasPermission('shop:branch-goods:export')")
     @OperateLog(type = EXPORT)
     public void exportBranchGoodsExcel(@Valid BranchGoodsExportReqVO exportReqVO,

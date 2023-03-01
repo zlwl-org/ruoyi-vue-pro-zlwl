@@ -1,32 +1,36 @@
 package cn.iocoder.yudao.module.shop.controller.admin.recharge.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@ApiModel("管理后台 - 充值订单 Response VO")
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+@Schema(description = "管理后台 - 充值订单 Response VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class RechargeOrderRespVO extends RechargeOrderBaseVO {
 
-    @ApiModelProperty(value = "订单编号", required = true)
+    @Schema(description = "订单编号", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "会员编号", required = true)
+    @Schema(description = "会员编号", required = true)
     private Long memberId;
 
-    @ApiModelProperty(value = "充值金额", required = true)
+    @Schema(description = "充值金额", required = true)
     private BigDecimal amount;
 
-    @ApiModelProperty(value = "充值活动编号")
+    @Schema(description = "充值活动编号")
     private Long rechargeId;
 
-    @ApiModelProperty(value = "充值活动名称")
+    @Schema(description = "充值活动名称")
     private String rechargeName;
 
-    @ApiModelProperty(value = "创建时间", required = true)
+    @Schema(description = "创建时间", required = true)
     private Date createTime;
 
 }

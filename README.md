@@ -23,7 +23,8 @@
 
 ![架构图](https://static.iocoder.cn/ruoyi-vue-pro-architecture.png)
 
-* 管理后台的 Vue3 版本采用 [vue-element-plus-admin](https://gitee.com/kailong110120130/vue-element-plus-admin) ，Vue2 版本采用 [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 
+* 管理后台的 Vue3 版本采用 [vue-element-plus-admin](https://gitee.com/kailong110120130/vue-element-plus-admin) ，Vue2
+  版本采用 [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
 * 管理后台的移动端采用 [uni-app](https://github.com/dcloudio/uni-app) 方案，一份代码多终端适配，同时支持 APP、小程序、H5！
 * 后端采用 Spring Boot 多模块架构、MySQL + MyBatis Plus、Redis + Redisson
 * 数据库可使用 MySQL、Oracle、PostgreSQL、SQL Server、MariaDB、国产达梦 DM、TiDB 等
@@ -60,9 +61,11 @@
 
 **为什么推荐使用本项目？**
 
-① 本项目采用比 Apache 2.0 更宽松的 [MIT License](https://gitee.com/zhijiantianya/ruoyi-vue-pro/blob/master/LICENSE) 开源协议，个人与企业可 100% 免费使用，不用保留类作者、Copyright 信息。
+① 本项目采用比 Apache 2.0 更宽松的 [MIT License](https://gitee.com/zhijiantianya/ruoyi-vue-pro/blob/master/LICENSE) 开源协议，个人与企业可
+100% 免费使用，不用保留类作者、Copyright 信息。
 
-② 代码全部开源，不会像其他项目一样，只开源部分代码，让你无法了解整个项目的架构设计。[国产开源项目对比](https://www.yuque.com/xiatian-bsgny/lm0ec1/wqf8mn)
+②
+代码全部开源，不会像其他项目一样，只开源部分代码，让你无法了解整个项目的架构设计。[国产开源项目对比](https://www.yuque.com/xiatian-bsgny/lm0ec1/wqf8mn)
 
 ![开源项目对比](https://static.iocoder.cn/project-vs.png?imageView2/2/format/webp/w/1280)
 
@@ -222,11 +225,11 @@ ps：核心功能已经实现，正在对接微信小程序中...
 | `yudao-module-report`                                                    | 大屏报表 Module 模块     |
 
 > 前端项目的地址：
-> 
+>
 > * [`yudao-ui-admin-vue3`](https://gitee.com/yudaocode/yudao-ui-admin-vue3)：基于 Vue3 + element-plus 实现的管理后台
 > * `yudao-ui-admin`：基于 Vue2 + element-ui 实现的管理后台
 > * [`yudao-ui-go-view`](https://gitee.com/yudaocode/yudao-ui-go-view)：基于 Vue3 + naive-ui 实现的大屏报表
-> * `yudao-ui-admin-uniapp`：基于 uni-app + uni-ui 实现的管理后台的小程序 
+> * `yudao-ui-admin-uniapp`：基于 uni-app + uni-ui 实现的管理后台的小程序
 > * `yudao-ui-app`：基于 uni-app + uview 实现的用户 App
 
 ### 后端

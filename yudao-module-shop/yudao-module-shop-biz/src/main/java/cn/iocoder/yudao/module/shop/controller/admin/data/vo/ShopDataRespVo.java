@@ -1,12 +1,12 @@
 package cn.iocoder.yudao.module.shop.controller.admin.data.vo;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 
 import java.math.BigDecimal;
 
-@ApiModel("管理后台 - Shop Data Response VO")
+@Schema(description = "管理后台 - Shop Data Response VO")
 @Data
 @ToString(callSuper = true)
 public class ShopDataRespVo {

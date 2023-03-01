@@ -1,11 +1,12 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.user.vo;
 
 import lombok.*;
+
 import java.util.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalDateTime;
-import io.swagger.annotations.*;
+
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;

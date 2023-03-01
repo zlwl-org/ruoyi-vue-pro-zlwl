@@ -1,7 +1,6 @@
 package cn.iocoder.yudao.module.shop.controller.admin.order.vo;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,33 +9,33 @@ import java.util.Date;
 
 import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
-@ApiModel(value = "管理后台 - 门店订单明细 Excel 导出 Request VO", description = "参数和 ShopOrderItemPageReqVO 是一致的")
+@Schema(name = "管理后台 - 门店订单明细 Excel 导出 Request VO", description = "参数和 ShopOrderItemPageReqVO 是一致的")
 @Data
 public class ShopOrderItemExportReqVO {
 
-    @ApiModelProperty(value = "会员编号")
+    @Schema(description = "会员编号")
     private Long memberId;
 
-    @ApiModelProperty(value = "订单编号")
+    @Schema(description = "订单编号")
     private Long orderId;
 
-    @ApiModelProperty(value = "商品编号")
+    @Schema(description = "商品编号")
     private Long goodId;
 
-    @ApiModelProperty(value = "商品名称")
+    @Schema(description = "商品名称")
     private String goodName;
 
-    @ApiModelProperty(value = "商品售价")
+    @Schema(description = "商品售价")
     private BigDecimal goodPrice;
 
-    @ApiModelProperty(value = "数量")
+    @Schema(description = "数量")
     private Integer amount;
 
-    @ApiModelProperty(value = "创建时间")
+    @Schema(description = "创建时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date[] createTime;
 
-    @ApiModelProperty(value = "类型")
+    @Schema(description = "类型")
     private String type;
 
 }

@@ -1,12 +1,11 @@
 package cn.iocoder.yudao.module.shop.controller.admin.category.vo;
 
-import lombok.*;
-import java.util.*;
-import io.swagger.annotations.*;
-
-import com.alibaba.excel.annotation.ExcelProperty;
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
 import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
+import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
+
+import java.util.Date;
 
 
 /**

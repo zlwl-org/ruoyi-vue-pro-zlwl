@@ -1,24 +1,24 @@
 package cn.iocoder.yudao.module.shop.controller.admin.promotion.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@ApiModel("管理后台 - 促销活动分页 Request VO")
+@Schema(description = "管理后台 - 促销活动分页 Request VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class PromotionPageReqVO extends PageParam {
 
-    @ApiModelProperty(value = "名称")
+    @Schema(description = "名称")
     private String name;
 
-    @ApiModelProperty(value = "促销类型")
+    @Schema(description = "促销类型")
     private String promotionType;
 
-    @ApiModelProperty(value = "状态")
+    @Schema(description = "状态")
     private Integer status;
 
 }

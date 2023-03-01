@@ -4,17 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import java.util.*;
 import java.math.BigDecimal;
-import io.swagger.annotations.*;
+
 import javax.validation.constraints.*;
 ## 处理 Date 字段的引入
 #foreach ($column in $columns)
-#if (${column.updateOperation} && (!${column.createOperation} || !${column.listOperationResult})
+    #if (${column.updateOperation} && (!${column.createOperation} || !${column.listOperationResult})
     && ${column.javaType} == "LocalDateTime")## 时间类型
-import org.springframework.format.annotation.DateTimeFormat;
-import java.time.LocalDateTime;
-import static ${DateUtilsClassName}.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
-#break
-#end
+    import org.springframework.format.annotation.DateTimeFormat;
+    import java.time.LocalDateTime;
+    import static ${DateUtilsClassName}.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
+        #break
+    #end
 #end
 
 @Schema(description = "${sceneEnum.name} - ${table.classComment}更新 Request VO")
@@ -24,9 +24,9 @@ import static ${DateUtilsClassName}.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 public class ${sceneEnum.prefixClass}${table.className}UpdateReqVO extends ${sceneEnum.prefixClass}${table.className}BaseVO {
 
 #foreach ($column in $columns)
-#if (${column.updateOperation} && (!${column.createOperation} || !${column.listOperationResult}))##不是通用字段
-    #parse("codegen/java/controller/vo/_column.vm")
+    #if (${column.updateOperation} && (!${column.createOperation} || !${column.listOperationResult}))##不是通用字段
+        #parse("codegen/java/controller/vo/_column.vm")
 
-#end
+    #end
 #end
 }

@@ -1,11 +1,10 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
-
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 门店商品 Excel VO

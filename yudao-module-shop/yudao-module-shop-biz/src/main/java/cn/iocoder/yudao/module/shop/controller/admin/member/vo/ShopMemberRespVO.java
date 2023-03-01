@@ -1,32 +1,36 @@
 package cn.iocoder.yudao.module.shop.controller.admin.member.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@ApiModel("管理后台 - 会员 Response VO")
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+@Schema(description = "管理后台 - 会员 Response VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ShopMemberRespVO extends ShopMemberBaseVO {
 
-    @ApiModelProperty(value = "会员编号", required = true)
+    @Schema(description = "会员编号", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "积分", required = true)
+    @Schema(description = "积分", required = true)
     private BigDecimal point;
 
-    @ApiModelProperty(value = "余额", required = true)
+    @Schema(description = "余额", required = true)
     private BigDecimal balance;
 
-    @ApiModelProperty(value = "成长值", required = true)
+    @Schema(description = "成长值", required = true)
     private BigDecimal growth;
 
-    @ApiModelProperty(value = "创建时间", required = true)
+    @Schema(description = "创建时间", required = true)
     private Date createTime;
 
-    @ApiModelProperty(value = "赠送余额", required = true)
+    @Schema(description = "赠送余额", required = true)
     private BigDecimal gift;
 
 }

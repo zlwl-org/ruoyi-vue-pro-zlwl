@@ -1,26 +1,29 @@
 package cn.iocoder.yudao.module.shop.controller.admin.member.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@ApiModel("管理后台 - 会员账户流水 Response VO")
+import java.util.Date;
+
+
+@Schema(description = "管理后台 - 会员账户流水 Response VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class MemberAccountLogRespVO extends MemberAccountLogBaseVO {
 
-    @ApiModelProperty(value = "流水编号", required = true)
+    @Schema(description = "流水编号", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "会员编号", required = true)
+    @Schema(description = "会员编号", required = true)
     private Long memberId;
 
-    @ApiModelProperty(value = "关联表编号")
+    @Schema(description = "关联表编号")
     private Long relatedId;
 
-    @ApiModelProperty(value = "创建时间", required = true)
+    @Schema(description = "创建时间", required = true)
     private Date createTime;
 
 }

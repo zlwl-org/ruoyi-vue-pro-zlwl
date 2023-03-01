@@ -1,9 +1,10 @@
 package cn.iocoder.yudao.module.shop.controller.admin.member.vo;
 
 import lombok.*;
+
 import java.util.*;
 import java.math.BigDecimal;
-import io.swagger.annotations.*;
+
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;

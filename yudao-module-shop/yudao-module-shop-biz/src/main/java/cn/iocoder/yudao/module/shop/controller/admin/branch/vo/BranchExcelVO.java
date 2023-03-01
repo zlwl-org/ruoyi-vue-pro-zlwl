@@ -1,8 +1,9 @@
 package cn.iocoder.yudao.module.shop.controller.admin.branch.vo;
 
 import lombok.*;
+
 import java.util.*;
-import io.swagger.annotations.*;
+
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;

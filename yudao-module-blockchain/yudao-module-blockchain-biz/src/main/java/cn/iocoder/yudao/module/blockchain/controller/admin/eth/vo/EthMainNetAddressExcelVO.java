@@ -1,9 +1,10 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo;
 
 import lombok.*;
+
 import java.util.*;
 import java.math.BigDecimal;
-import io.swagger.annotations.*;
+
 
 import com.alibaba.excel.annotation.ExcelProperty;
 

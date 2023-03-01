@@ -8,9 +8,8 @@ import cn.iocoder.yudao.module.shop.controller.admin.branch.vo.*;
 import cn.iocoder.yudao.module.shop.convert.branch.BranchStockItemConvert;
 import cn.iocoder.yudao.module.shop.dal.dataobject.branch.BranchStockItemDO;
 import cn.iocoder.yudao.module.shop.service.branch.BranchStockItemService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
-@Api(tags = "管理后台 - 门店出入库明细")
+@Tag(name = "管理后台 - 门店出入库明细")
 @RestController
 @RequestMapping("/shop/branch-stock-item")
 @Validated
@@ -35,14 +34,14 @@ public class BranchStockItemController {
     private BranchStockItemService branchStockItemService;
 
     @PostMapping("/create")
-    @ApiOperation("创建门店出入库明细")
+    @Operation(summary = "创建门店出入库明细")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:create')")
     public CommonResult<Long> createBranchStockItem(@Valid @RequestBody BranchStockItemCreateReqVO createReqVO) {
         return success(branchStockItemService.createBranchStockItem(createReqVO));
     }
 
     @PutMapping("/update")
-    @ApiOperation("更新门店出入库明细")
+    @Operation(summary = "更新门店出入库明细")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:update')")
     public CommonResult<Boolean> updateBranchStockItem(@Valid @RequestBody BranchStockItemUpdateReqVO updateReqVO) {
         branchStockItemService.updateBranchStockItem(updateReqVO);
@@ -50,8 +49,7 @@ public class BranchStockItemController {
     }
 
     @DeleteMapping("/delete")
-    @ApiOperation("删除门店出入库明细")
-    @ApiImplicitParam(name = "id", value = "编号", required = true, dataTypeClass = Long.class)
+    @Operation(summary = "删除门店出入库明细")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:delete')")
     public CommonResult<Boolean> deleteBranchStockItem(@RequestParam("id") Long id) {
         branchStockItemService.deleteBranchStockItem(id);
@@ -59,8 +57,7 @@ public class BranchStockItemController {
     }
 
     @GetMapping("/get")
-    @ApiOperation("获得门店出入库明细")
-    @ApiImplicitParam(name = "id", value = "编号", required = true, example = "1024", dataTypeClass = Long.class)
+    @Operation(summary = "获得门店出入库明细")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock:query')")
     public CommonResult<BranchStockItemRespVO> getBranchStockItem(@RequestParam("id") Long id) {
         BranchStockItemDO branchStockItem = branchStockItemService.getBranchStockItem(id);
@@ -68,8 +65,7 @@ public class BranchStockItemController {
     }
 
     @GetMapping("/list")
-    @ApiOperation("获得门店出入库明细列表")
-    @ApiImplicitParam(name = "ids", value = "编号列表", required = true, example = "1024,2048", dataTypeClass = List.class)
+    @Operation(summary = "获得门店出入库明细列表")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock:query')")
     public CommonResult<List<BranchStockItemRespVO>> getBranchStockItemList(@RequestParam("ids") Collection<Long> ids) {
         List<BranchStockItemDO> list = branchStockItemService.getBranchStockItemList(ids);
@@ -77,7 +73,7 @@ public class BranchStockItemController {
     }
 
     @GetMapping("/page")
-    @ApiOperation("获得门店出入库明细分页")
+    @Operation(summary = "获得门店出入库明细分页")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock:query')")
     public CommonResult<PageResult<BranchStockItemRespVO>> getBranchStockItemPage(@Valid BranchStockItemPageReqVO pageVO) {
         PageResult<BranchStockItemDO> pageResult = branchStockItemService.getBranchStockItemPage(pageVO);
@@ -85,11 +81,11 @@ public class BranchStockItemController {
     }
 
     @GetMapping("/export-excel")
-    @ApiOperation("导出门店出入库明细 Excel")
+    @Operation(summary = "导出门店出入库明细 Excel")
     @PreAuthorize("@ss.hasPermission('shop:branch-stock-item:export')")
     @OperateLog(type = EXPORT)
     public void exportBranchStockItemExcel(@Valid BranchStockItemExportReqVO exportReqVO,
-              HttpServletResponse response) throws IOException {
+                                           HttpServletResponse response) throws IOException {
         List<BranchStockItemDO> list = branchStockItemService.getBranchStockItemList(exportReqVO);
         // 导出 Excel
         List<BranchStockItemExcelVO> datas = BranchStockItemConvert.INSTANCE.convertList02(list);

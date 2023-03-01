@@ -1,21 +1,21 @@
 package cn.iocoder.yudao.module.blockchain.controller.admin.eth.vo;
 
-import lombok.*;
-import java.util.*;
-import java.math.BigDecimal;
-import io.swagger.annotations.*;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@ApiModel("管理后台 - 以太坊主网地址分页 Request VO")
+@Schema(description = "管理后台 - 以太坊主网地址分页 Request VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class EthMainNetAddressPageReqVO extends PageParam {
 
-    @ApiModelProperty(value = "地址")
+    @Schema(description = "地址")
     private String address;
 
-    @ApiModelProperty(value = "标签")
+    @Schema(description = "标签")
     private String tags;
 
 }

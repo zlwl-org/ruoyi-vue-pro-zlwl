@@ -1,19 +1,23 @@
 package cn.iocoder.yudao.module.shop.controller.admin.category.vo;
 
-import lombok.*;
-import java.util.*;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@ApiModel("管理后台 - 商品分类 Response VO")
+import java.util.Date;
+
+
+@Schema(description = "管理后台 - 商品分类 Response VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class CategoryRespVO extends CategoryBaseVO {
 
-    @ApiModelProperty(value = "分类编号", required = true)
+    @Schema(description = "分类编号", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "创建时间", required = true)
+    @Schema(description = "创建时间", required = true)
     private Date createTime;
 
 }
